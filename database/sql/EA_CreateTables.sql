@@ -1,6 +1,6 @@
 -- EA_CreateTables.sql: Creates tables for schema 'emulatorarchive'
 --
--- $Revision: 601 $ $Date: 2011-05-31 00:13:40 +0100 (Tue, 31 May 2011) $ $Author: BLohman $
+-- $Revision$ $Date$ $Author$
 --
 -- /*
 -- $header:
