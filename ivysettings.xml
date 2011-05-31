@@ -1,0 +1,59 @@
+<!--
+ * Copyright (c) 2009-2011 Tessella plc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information about this project, visit
+ *   http://www.keep-project.eu/
+ *   http://emuframework.sourceforge.net/
+ * or contact us via email:
+ *   blohman at users.sourceforge.net
+ *   dav_m at users.sourceforge.net
+ *   bkiers at users.sourceforge.net
+ * Developed by:
+ *   Tessella plc <www.tessella.com>
+ *   Koninklijke Bibliotheek <www.kb.nl>
+ *   KEEP <www.keep-project.eu>
+ * Project Title: Core Emulation Framework (Core EF)
+ -->
+
+<ivysettings>
+    <settings defaultResolver="chain-1"/>
+    <caches defaultCacheDir="${ivy.default.ivy.user.dir}/cache"/>
+    <property name="ivy.checksums" value=""/>
+    <property name="ivy.local.default.root"             value="${ivy.default.ivy.user.dir}/local" override="false"/>
+    <property name="ivy.local.default.ivy.pattern"      value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+    <property name="ivy.local.default.artifact.pattern" value="[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" override="false"/>
+    <resolvers>
+        <chain name="chain-1">
+            <filesystem name="local" checkmodified="true">
+                <ivy pattern="${ivy.local.default.root}/${ivy.local.default.ivy.pattern}" />
+                <artifact pattern="${ivy.local.default.root}/${ivy.local.default.artifact.pattern}" />
+            </filesystem>
+            <ibiblio name="ibiblio" m2compatible="true" usepoms="true"/>
+            <url name="repository.jboss.org" m2compatible="true">
+                <artifact pattern="https://repository.jboss.org/nexus/content/groups/public/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+            </url>
+            <url name="com.springsource.repository.bundles.release">
+                <ivy pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+                <artifact pattern="http://repository.springsource.com/ivy/bundles/release/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+            </url>
+            <url name="com.springsource.repository.bundles.external">
+                <ivy pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+                <artifact pattern="http://repository.springsource.com/ivy/bundles/external/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+            </url>
+            <url name="jpdfunit" m2compatible="true">
+                <artifact pattern="http://jpdfunit.sourceforge.net/repo/[organisation]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+            </url>
+        </chain>
+    </resolvers>
+</ivysettings>

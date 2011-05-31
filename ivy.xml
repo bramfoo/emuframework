@@ -1,0 +1,82 @@
+<!--
+ * Copyright (c) 2009-2011 Tessella plc.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * For more information about this project, visit
+ *   http://www.keep-project.eu/
+ *   http://emuframework.sourceforge.net/
+ * or contact us via email:
+ *   blohman at users.sourceforge.net
+ *   dav_m at users.sourceforge.net
+ *   bkiers at users.sourceforge.net
+ * Developed by:
+ *   Tessella plc <www.tessella.com>
+ *   Koninklijke Bibliotheek <www.kb.nl>
+ *   KEEP <www.keep-project.eu>
+ * Project Title: Core Emulation Framework (Core EF)
+-->
+
+<ivy-module version="2.0">
+    <info organisation="eu.keep" module="EFCore"/>
+    <configurations defaultconfmapping="dist">
+        <conf name="dist"/>
+        <conf name="fits"/>
+        <conf name="dev" visibility="private"/>
+    </configurations>
+    <publications>
+        <artifact conf="dist"/>
+    </publications>
+    <dependencies>
+<!-- Core -->
+		<dependency org="commons-configuration" name="commons-configuration" rev="1.6" conf="dist->default"/>
+		<dependency org="org.apache.cxf" name="cxf-bundle" rev="2.2.7" conf="dist->default"/>
+		<dependency org="org.apache.cxf" name="cxf-xjc-ts" rev="2.2" conf="dist->default"/>
+		<dependency org="org.freemarker" name="freemarker" rev="2.3.16" conf="dist->default"/>
+		<dependency org="com.h2database" name="h2" rev="1.2.133" conf="dist->default"/>
+		<dependency org="log4j" name="log4j" rev="1.2.16" conf="dist->default"/>
+<!-- Core dev -->
+		<dependency org="org.beanshell" name="bsh" rev="2.0b4" conf="dev->default"/>
+		<dependency org="jline" name="jline" rev="0.9.94" conf="dev->default"/>
+		<dependency org="junit" name="junit" rev="4.7" conf="dev->default"/>
+		<dependency org="org.mockito" name="mockito-all" rev="1.8.5" conf="dev->default"/>
+<!-- FITS -->
+		<dependency org="eu.keep" name="keep-externals" rev="1.0.0" changing="true" conf="fits->fits"/>
+		<dependency org="commons-cli" name="commons-cli" rev="1.1" conf="fits->default"/> 
+        <dependency org="org.jdom" name="jaxen-core" rev="1.0-FCS" conf="fits->default"/>
+        <dependency org="org.jdom" name="jaxen-jdom" rev="1.0-FCS" conf="fits->default"/>
+        <dependency org="org.jdom" name="jdom" rev="1.1" conf="fits->default"/>
+		<dependency org="xalan" name="serializer" rev="2.7.1" conf="fits->default"/>		
+		<dependency org="saxpath" name="saxpath" rev="1.0-FCS" conf="fits->default"/>
+		<dependency org="org.codehaus.staxmate" name="staxmate" rev="2.0.0" conf="fits->default"/>
+        <dependency org="org.codehaus.woodstox" name="woodstox-core-lgpl" rev="4.0.7" conf="fits->default"/>
+		<dependency org="xmlunit" name="xmlunit" rev="1.2" conf="fits->default"/>
+<!-- FITS (Droid) -->
+		<dependency org="eu.keep" name="keep-externals" rev="1.0.0" changing="true" conf="fits->fitsDroid; fits->fitsJhove; fits->fitsNZME"/>
+		<dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.0" conf="fits->default"/>
+		<dependency org="com.jgoodies" name="looks" rev="2.2.2" conf="fits->default"/>
+		<dependency org="javax.mail" name="mail" rev="1.4" conf="fits->default"/>
+		<dependency org="soap" name="soap" rev="2.3.1" conf="fits->default"/>
+		<dependency org="xerces" name="xercesImpl" rev="2.9.1" conf="fits->default"/>
+<!-- FITS (Jhove) -->
+		<dependency org="eu.keep" name="keep-externals" rev="1.0.0" changing="true" conf="fits->fitsJhove; fits->fitsNZME"/>
+<!-- FITS (NZME) -->
+		<dependency org="eu.keep" name="keep-externals" rev="1.0.0" changing="true" conf="fits->fitsNZME"/>
+		<dependency org="pdfbox" name="pdfbox" rev="0.7.3" conf="fits->default"/>
+		<dependency org="org.apache.poi" name="poi" rev="3.6" conf="fits->default"/>
+<!-- Unused?
+		<dependency org="com.sun.xml.fastinfoset" name="FastInfoset" rev="1.2.7" conf="dist->default"/>
+		<dependency org="javax.help" name="javahelp" rev="2.0.02" conf="dist->default"/>
+		<dependency org="com.sun.xml.bind" name="jaxb1-impl" rev="2.0" conf="dist->default"/>
+-->
+    </dependencies>
+</ivy-module>

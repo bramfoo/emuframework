@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+<!-- 
+    $Revision: 790 $ $Date: 2011-05-22 21:37:22 +0100 (Sun, 22 May 2011) $ $Author: BLohman $
+
+    KEEP installation builder script for IZPack
+    To compile: ./util/IzPack/bin/compile config/release/install.xml -b . -o build/release/installer.jar
+    To run: java -jar build/release/installer.jar
+    This script is meant to be run from the Ant script using the 'release' tasks.
+-->
+
+<installation version="1.0">
+    <!-- 
+        The info section.
+        The meaning of the tags should be natural ...
+    -->
+    <info>
+        <appname>KEEP Emulation Framework</appname>
+        <appversion>@{version}</appversion>
+        <appsubpath>KeepEF</appsubpath>
+        <url>http://www.keep-project.eu</url>
+        <uninstaller write="yes" name="uninstaller.jar" path="${INSTALL_PATH}/uninstaller"/>
+        <javaversion>1.6</javaversion>
+    </info>
+
+    <!-- 
+        The gui preferences indication.
+    -->
+    <guiprefs width="640" height="480" resizable="yes"/>
+
+    <!-- 
+        The locale section.
+        Asks here to include the English and French langpacks.
+    -->
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+
+    <!-- 
+        The resources section.
+        The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+    -->
+    <resources>
+        <res id="LicencePanel.licence" src="resources/release/licence.txt"/>
+        <!--
+        <res id="InfoPanel.info" src="readme.txt"/>
+        -->
+        <res id="Installer.image" src="resources/release/KEEP_Logo_small.jpg" />
+    </resources>
+
+    <!-- 
+        The panels section.
+        We indicate here which panels we want to use. The order will be respected.
+    -->
+    <panels>
+        <panel classname="HelloPanel"/>
+        <!--
+        Useful for adding a readme file of some sort.
+        <panel classname="InfoPanel"/>
+        -->
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="PacksPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="FinishPanel"/>
+    </panels>
+
+    <!-- 
+        The packs section.
+        We specify here the independent modules that can be installed separately.
+    -->
+    <packs>
+        <pack name="Core Emulation Framework" required="yes">
+            <description>Core Emulation Framework</description>
+            <fileset dir="build/release/EF" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
+        </pack>
+    <!-- 
+        <pack name="Emulation Framework front-end (GUI)" required="no" preselected="yes">
+            <description>Graphical User Interface for the emulation framework Core</description>
+            <fileset dir="build/release/gui/build/jar" targetdir="$INSTALL_PATH" includes="EFGUI-*.jar" excludes="**/.svn/**"/>
+            <fileset dir="build/release/gui" targetdir="$INSTALL_PATH" includes="images/**" excludes="**/.svn/**"/>
+        </pack>
+    -->
+        <pack name="Emulator Archive" required="no" preselected="yes">
+            <description>Emulator archive used by the Emulation Framework to retrieve supported emulator packages via web services.</description>
+            <fileset dir="build/release/ea" targetdir="$INSTALL_PATH/ea" excludes="**/.svn/**"/>
+        </pack>
+        <pack name="Software Archive" required="no" preselected="yes">
+            <description>Software archive used the Emulation Framework to retrieve software images via web services.</description>
+            <fileset dir="build/release/swa" targetdir="$INSTALL_PATH/swa" excludes="**/.svn/**"/>
+        </pack>
+    </packs>
+</installation>

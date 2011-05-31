@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pw:pathway xmlns:pw="http://softwarearchive.keep.eu/Pathway">
+    <objectFormat id="">
+        <name></name>
+        <description></description>
+        <version></version>
+    </objectFormat>
+    <application id="">
+        <name></name>
+        <version></version>
+        <description></description>
+    </application>
+    <operatingSystem id="">
+        <name></name>
+        <version></version>
+        <description></description>
+    </operatingSystem>
+    <hardwarePlatform id="">
+        <name></name>
+        <description></description>
+    </hardwarePlatform>
+</pw:pathway>
