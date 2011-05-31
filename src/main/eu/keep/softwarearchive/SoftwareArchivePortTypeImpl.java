@@ -1,6 +1,6 @@
 /*
-$Revison$ $Date: 2011-05-31 00:17:31 +0100 (Tue, 31 May 2011) $
-* $Author: BLohman $
+$Revison$ $Date$
+* $Author$
 * $header:
 * Copyright (c) 2009-2011 Tessella plc.
 * Licensed under the Apache License, Version 2.0 (the "License");

@@ -2,7 +2,7 @@
 --                         This script needs to be run as system/root/administrator
 --                         For H2 this is 'sa'
 --
--- $Revision: 662 $ $Date: 2011-05-11 13:19:22 +0200 (Wed, 11 May 2011) $ $Author: BKiers $
+-- $Revision$ $Date$ $Author$
 --
 -- /*
 -- $header:
