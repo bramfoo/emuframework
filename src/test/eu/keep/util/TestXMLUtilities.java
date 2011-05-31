@@ -1,6 +1,6 @@
 /*
-* $Revision: 751 $ $Date: 2011-05-17 12:20:42 +0100 (Tue, 17 May 2011) $
-* $Author: BLohman $
+* $Revision$ $Date$
+* $Author$
 * $header:
 * Copyright (c) 2009-2011 Tessella plc.
 * Licensed under the Apache License, Version 2.0 (the "License");

@@ -1,6 +1,6 @@
 /*
- * * $Revision: 272 $ $Date: 2010-03-31 10:23:48 +0200 (Wed, 31 Mar 2010) $
- * * $Author: BKiers $
+ * * $Revision$ $Date$
+ * * $Author$
  */
 
 /*

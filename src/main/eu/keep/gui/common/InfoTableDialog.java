@@ -1,6 +1,6 @@
 /*
- * $Revision: 730 $ $Date: 2011-04-29 12:28:46 +0200 (Fri, 29 Apr 2011) $
- * $Author: BKiers $
+ * $Revision$ $Date$
+ * $Author$
  * $header:
  * Copyright (c) 2009-2011 Tessella plc.
  * Licensed under the Apache License, Version 2.0 (the "License");

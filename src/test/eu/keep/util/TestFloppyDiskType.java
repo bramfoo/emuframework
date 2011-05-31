@@ -1,6 +1,6 @@
 /*
-* $Revision: 604 $ $Date: 2010-11-18 15:53:37 +0100 (Thu, 18 Nov 2010) $
-* $Author: DMichel $
+* $Revision$ $Date$
+* $Author$
 * $header:
 * Copyright (c) 2009-2011 Tessella plc.
 * Licensed under the Apache License, Version 2.0 (the "License");
