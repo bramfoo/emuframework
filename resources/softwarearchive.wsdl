@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+$Revision: 685 $ $Date: 2011-05-31 00:17:31 +0100 (Tue, 31 May 2011) $ $Author: BLohman $
+-->
+
+<!--
+$header:
+* Copyright (c) 2009-2011 Tessella plc.
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* For more information about this project, visit
+*   http://www.keep-project.eu/
+*   http://emuframework.sourceforge.net/
+* or contact us via email:
+*   blohman at users.sourceforge.net
+*   dav_m at users.sourceforge.net
+*   bkiers at users.sourceforge.net
+* Developed by:
+*   Tessella plc <www.tessella.com>
+*   Koninklijke Bibliotheek <www.kb.nl>
+*   KEEP <www.keep-project.eu>
+* Project Title: Software Archive (SWA)
+$
+-->
+
+<wsdl:definitions name="SoftwareArchive"
+                  targetNamespace="http://softwarearchive.keep.eu"
+                  xmlns:tns="http://softwarearchive.keep.eu"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:pw="http://softwarearchive.keep.eu/Pathway">
+
+    <!-- type/schema definition -->
+    <wsdl:types>
+       
+        <xs:schema xmlns:tns="http://softwarearchive.keep.eu" 
+                   targetNamespace="http://softwarearchive.keep.eu" 
+                   xmlns:swa="http://softwarearchive.keep.eu/SoftwarePackage"
+                   xmlns:pw="http://softwarearchive.keep.eu/Pathway"
+		   		   xmlns:xmime="http://www.w3.org/2005/05/xmlmime">  
+                     
+            <!-- http://www.ibm.com/developerworks/xml/library/ws-tip-imports.html -->
+            <xs:import namespace="http://softwarearchive.keep.eu/SoftwarePackage" 
+                      schemaLocation="SoftwarePackageSchema.xsd"/>            
+            <xs:import namespace="http://softwarearchive.keep.eu/Pathway" 
+                      schemaLocation="PathwaySchema.xsd"/>            
+
+			<xs:element name="softwarePackage" type="swa:softwarePackage"/>
+            <xs:element name="softwarePackageList">             
+                <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="softwarePackage" type="swa:softwarePackage" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                </xs:complexType>
+            </xs:element>  
+
+            <xs:element name="pathwayList">             
+                <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="pw:pathway" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                </xs:complexType>
+            </xs:element>  
+       
+            <!--
+            The same element/message cannot be used for several operations
+            Workaround: define multiple elements for each usage.
+            See forum discussion here: http://old.nabble.com/%22Non-unique-body-parts%22-error-when-trying-to-use-same-input-message-for-2-different-operations-ts28387764.html          
+            -->
+            <xs:element name="softwareID_1"     type="xs:string"/> 
+            <xs:element name="softwareID_2"     type="xs:string"/> 
+                        
+            <xs:element name="softwareFile"     type="xs:base64Binary" 
+					     xmime:expectedContentTypes="application/octet-stream"/>
+
+            <xs:element name="fileFormat"        type="xs:string"/>
+            
+            <!--
+            Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)
+            Apparently not supported by CXF (?)
+            -->
+            <xs:element name="dummyElement_1" type="xs:string"/>
+       </xs:schema>
+    </wsdl:types>
+    
+
+    <!-- message definition -->
+        <wsdl:message name="GetSoftwarePackageInfoInput">
+        <wsdl:part name="parameters" element="tns:softwareID_1"/>
+    </wsdl:message>     
+    <wsdl:message name="GetSoftwarePackageInfoOutput">
+        <wsdl:part name="emulatorPackage" element="tns:softwarePackage"/>    
+    </wsdl:message>
+    <wsdl:message name="GetAllSoftwarePackagesInfoInput">
+        <wsdl:part name="parameters" element="tns:dummyElement_1"/>
+    </wsdl:message>     
+    <wsdl:message name="GetAllSoftwarePackagesInfoOutput">
+        <wsdl:part name="softwarePackageList" element="tns:softwarePackageList"/>    
+    </wsdl:message>    
+    <wsdl:message name="GetPathwaysByFileFormatInput">
+        <wsdl:part name="parameters1" element="tns:fileFormat"/>
+    </wsdl:message>
+    <wsdl:message name="GetPathwaysByFileFormatOutput">
+        <wsdl:part name="parameters" element="tns:pathwayList"/>
+    </wsdl:message>      
+    <wsdl:message name="GetSoftwarePackagesByPathwayInput">
+        <wsdl:part name="parameters1" element="pw:pathway"/>
+    </wsdl:message>
+    <wsdl:message name="GetSoftwarePackagesByPathwayOutput">
+        <wsdl:part name="parameters" element="tns:softwarePackageList"/>
+    </wsdl:message>      
+    <wsdl:message name="DownloadSoftwareInput">
+        <wsdl:part name="parameters" element="tns:softwareID_2"/>
+    </wsdl:message>   
+    <wsdl:message name="DownloadSoftwareOutput">
+        <wsdl:part name="parameters" element="tns:softwareFile"/>
+    </wsdl:message>   
+    
+    <!-- portType definition -->
+    <wsdl:portType name="SoftwareArchivePortType">
+        <wsdl:operation name="GetSoftwarePackageInfo">
+           <wsdl:input message="tns:GetSoftwarePackageInfoInput"/>
+           <wsdl:output message="tns:GetSoftwarePackageInfoOutput"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetAllSoftwarePackagesInfo">
+           <wsdl:input message="tns:GetAllSoftwarePackagesInfoInput"/>
+           <wsdl:output message="tns:GetAllSoftwarePackagesInfoOutput"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetPathwaysByFileFormat">
+           <wsdl:input message="tns:GetPathwaysByFileFormatInput"/>
+           <wsdl:output message="tns:GetPathwaysByFileFormatOutput"/>
+        </wsdl:operation>
+        <wsdl:operation name="GetSoftwarePackagesByPathway">
+           <wsdl:input message="tns:GetSoftwarePackagesByPathwayInput"/>
+           <wsdl:output message="tns:GetSoftwarePackagesByPathwayOutput"/>
+        </wsdl:operation>
+        <wsdl:operation name="DownloadSoftware">
+           <wsdl:input message="tns:DownloadSoftwareInput"/>
+           <wsdl:output message="tns:DownloadSoftwareOutput"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    
+    <!-- binding definition -->    
+    <wsdl:binding name="SoftwareArchiveBinding" type="tns:SoftwareArchivePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="GetSoftwarePackageInfo">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackageInfo" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetAllSoftwarePackagesInfo">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetAllSoftwarePackagesInfo" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>                
+        <wsdl:operation name="GetPathwaysByFileFormat">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetPathwaysByFileFormat" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="GetSoftwarePackagesByPathway">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackagesByPathway" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="DownloadSoftware">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/DownloadSoftware" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>                 
+    </wsdl:binding>
+    
+    <!-- service definition -->
+    <wsdl:service name="SoftwareArchiveService">
+        <wsdl:port name="SoftwareArchivePort" binding="tns:SoftwareArchiveBinding">
+           <soap:address location="http://localhost:9000/softwarearchive/"/>
+        </wsdl:port>
+    </wsdl:service>
+    
+</wsdl:definitions>
