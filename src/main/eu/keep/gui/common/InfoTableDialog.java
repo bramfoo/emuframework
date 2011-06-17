@@ -43,6 +43,12 @@ public class InfoTableDialog extends JDialog {
     private GUI parent;
 
     public InfoTableDialog(GUI gui, File file, Object[] colNames, Object[][] data) {
+
+        if(data.length == 0) {
+            colNames = new String[]{""};
+            data = new String[][]{{""}, {"No meta data available unfortunately."}, {""}};
+        }
+
         parent = gui;
 
         parent.setEnabled(false);
