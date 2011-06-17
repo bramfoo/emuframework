@@ -46,7 +46,7 @@ public class InfoTableDialog extends JDialog {
 
         if(data.length == 0) {
             colNames = new String[]{""};
-            data = new String[][]{{""}, {"No meta data available unfortunately."}, {""}};
+            data = new String[][]{{""}, {"No additional information about the file(s) available."}, {""}};
         }
 
         parent = gui;
