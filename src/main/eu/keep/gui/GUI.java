@@ -209,7 +209,8 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(GUI.this,
-                        "Emulation Framework - Copyright (c) 2009-2011 Tessella plc.\n" +
+                        model.getVendor() + "\n\n" +
+                        model.getTitle() + " " + model.getVersion() + " - Copyright (c) 2009-2011 Tessella plc.\n" +
                         "GUI - Copyright (c) 2011 National Library of the Netherlands\n" +
                         "\n" +
                         "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
