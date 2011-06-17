@@ -57,7 +57,6 @@ import java.util.Map;
 public class ConfigPanel extends JPanel {
 
     protected GUI parent;
-
     protected FileExplorerPanel explorerPanel;
 
     // drop down #1
@@ -84,6 +83,8 @@ public class ConfigPanel extends JPanel {
     private JButton startConfig;
     private JButton saveConfig;
 
+    private Integer lastConfiguredID;
+
     public ConfigPanel(GUI gui) {
         parent = gui;
         setupGUI();
@@ -100,6 +101,8 @@ public class ConfigPanel extends JPanel {
     }
 
     private void initActionListeners() {
+
+        //TODO final int rememberedID;
 
         // find pathways button
         findPathways.addActionListener(new ActionListener() {
@@ -195,9 +198,10 @@ public class ConfigPanel extends JPanel {
                     @Override
                     public void run() {
                         try {
-                            Integer id = parent.model.prepareConfiguration(explorerPanel.selectedFile, emu, swPack,
+                            lastConfiguredID = parent.model.prepareConfiguration(explorerPanel.selectedFile, emu, swPack,
                                     ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway);
-                            Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(id);
+
+                            Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
 
                             if (configMap.isEmpty()) {
                                 parent.unlock("Sorry, could not find a configuration for: " + swPack.getDescription());
@@ -250,10 +254,8 @@ public class ConfigPanel extends JPanel {
                     @Override
                     public void run() {
                         try {
-                            Integer id = parent.model.prepareConfiguration(explorerPanel.selectedFile, emu, sw,
-                                    ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway);
-                            parent.model.setEmuConfig(configModel.getMap(), id);
-                            parent.model.runEmulationProcess(id);
+                            parent.model.setEmuConfig(configModel.getMap(), lastConfiguredID);
+                            parent.model.runEmulationProcess(lastConfiguredID);
                             parent.unlock("Emulation process started.");
 
                             // TODO refactor: quick-and-dirty hack ahead!

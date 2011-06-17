@@ -70,7 +70,7 @@ public class GUI extends JFrame {
      * @throws java.io.IOException if the gui.properties file can not be found.
      */
     private GUI(CoreEngineModel model) throws IOException {
-        super("EF ~ Test GUI");
+        super("KEEP ~ Emulation Framework");
         this.model = model;
         super.setSize(WIDTH, HEIGHT);
         super.setResizable(false);
