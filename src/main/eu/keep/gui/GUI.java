@@ -220,7 +220,7 @@ public class GUI extends JFrame {
                         "you may not use this software except in compliance with the License.\n" +
                         "You may obtain a copy of the License at:\n" +
                         "\n" +
-                        "    http://www.apache.org/licenses/LICENSE-2.0\n" +
+                        "  http://www.apache.org/licenses/LICENSE-2.0\n" +
                         "\n" +
                         "Unless required by applicable law or agreed to in writing, software\n" +
                         "distributed under the License is distributed on an \"AS IS\" BASIS,\n" +
@@ -235,14 +235,12 @@ public class GUI extends JFrame {
                         "\n" +
                         "Credits:\n" +
                         "  - Bram Lohman (Tessella plc., Emulation Framework)\n" +
-                        "        blohman@users.sourceforge.net\n" +
                         "  - David Michel (Tessella plc., Emulation Framework)\n" +
-                        "        dav_m@users.sourceforge.net\n" +
                         "  - Bart Kiers (National Library of the Netherlands, GUI)\n" +
-                        "        bkiers@users.sourceforge.net\n" +
                         "  - Jeffrey van der Hoeven (National Library of the Netherlands, Coordination)\n" +
                         "\n"+
-                        "Support: https://sourceforge.net/projects/emuframework/support"
+                        "Support:\n" +
+                        "  https://sourceforge.net/projects/emuframework/support"
                 );
             }
         });
