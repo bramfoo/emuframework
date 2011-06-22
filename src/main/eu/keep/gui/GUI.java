@@ -240,7 +240,9 @@ public class GUI extends JFrame {
                         "        dav_m@users.sourceforge.net\n" +
                         "  - Bart Kiers (National Library of the Netherlands, GUI)\n" +
                         "        bkiers@users.sourceforge.net\n" +
-                        "  - Jeffrey van der Hoeven (National Library of the Netherlands, Coordination)"
+                        "  - Jeffrey van der Hoeven (National Library of the Netherlands, Coordination)\n" +
+                        "\n"+
+                        "Support: https://sourceforge.net/projects/emuframework/support"
                 );
             }
         });
