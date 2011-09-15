@@ -239,8 +239,8 @@ $Revision$ $Date$ $Author$
 
     <!-- Generate CLI scripts to start Emulation Framework -->
     <target name="cli.scripts">
-        <echo file="${runCLI}.sh" append="false" message="#!/bin/sh${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}-${version}.jar"/>
-        <echo file="${runCLI}.bat" append="false" message="@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}-${version}.jar"/>
+        <echo file="${runCLI}.sh" append="false" message="#!/bin/sh${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}-${version}.jar $@"/>
+        <echo file="${runCLI}.bat" append="false" message="@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}-${version}.jar %*"/>
     </target>
 
 <!--
@@ -321,7 +321,7 @@ $Revision$ $Date$ $Author$
 	<taskdef name="izpack" classpath="${izpack.home}/lib/standalone-compiler.jar"
 	    classname="com.izforge.izpack.ant.IzPackTask"/>
 	
-	<target name="release.installer" description="Create a complete release package" depends="release, javadoc" if="user.properties.present">
+	<target name="release.installer" description="Create a complete release package" depends="db.drop, db.create, release, javadoc" if="user.properties.present">
     	<unzip src="${release.dir}/${jar.name}-${version}.zip" dest="${release.dir}/EF"/>
     	<copy todir="${release.dir}/EF/javadoc">
     	    <fileset dir="${javadoc.dir}"/>
