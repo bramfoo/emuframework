@@ -52,14 +52,14 @@ INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_n
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(12, 'Dioscuri', '0.5.0', 'jar', 'Dioscuri-0.5.0.jar', 'Dioscuri, the modular emulator', 'dioscuri_050Packagev2.zip', 'zip', '2', FILE_READ('./packages/dioscuri_050Packagev2.zip'));
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(13, 'BeebEm', '0.0.13', 'ELF', 'beebem', 'BeebEm, BBC Micro and Master 128 Emulator (Linux)', 'LinBeebEm_0013Package.zip', 'zip', '1', FILE_READ('./packages/LinBeebEm_0013Package.zip'));
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(14, 'BeebEm', '4.13', 'exe', 'beebem.exe', 'BeebEm, BBC Micro and Master 128 Emulator (Windows)', 'WinBeebEm_413Package.zip', 'zip', '1', FILE_READ('./packages/WinBeebEm_413Package.zip'));
-INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(15, 'Thompson', '1.0', 'exe', 'bnftowin.exe', 'Thompson Emulator (Windows)', 'WinThompson_10Package.zip', 'zip', '1', FILE_READ('./packages/WinThompson_10Package.zip'));
+INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(15, 'Thomson', '1.0', 'exe', 'bnftowin.exe', 'Thomson Emulator (Windows)', 'WinThomson_10Package.zip', 'zip', '1', FILE_READ('./packages/WinThomson_10Package.zip'));
 
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(1,'x86');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(2,'C64');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(3,'Amiga');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(4,'Amstrad');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(5,'BBCMICRO');
-INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(6,'Thompson');
+INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(6,'Thomson');
 
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(1,'FAT12');
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(2,'FAT16');

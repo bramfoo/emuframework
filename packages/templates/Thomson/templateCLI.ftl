@@ -1,5 +1,5 @@
 <#ftl attributes={"configDir":"configDir", "configFile":"configFile", "digobj":"digobj", "fixedDisks":{"enabled":"enabled", "index":"index", "master":"master", "cylinders":"cylinders", "heads":"heads", "sectorsPerTrack":"sectorsPerTrack", "swImg":"swImg"}, "floppyDisks":{"type":"type", "num":"num", "digobj":"digobj", "inserted":"inserted"}}>
-<#-- Thompson T07 (Windows) configuration template (CLI) -->
+<#-- Thomson T07 (Windows) configuration template (CLI) -->
 
 <#-- Seperator macro -->
 <#macro separator section="undefined">

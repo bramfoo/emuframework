@@ -236,7 +236,7 @@ $
 	</target>
 
     <!-- emulator packages -->
-	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, packages.Dioscuri, package.JavaCPC-Win6.7, packages.Qemu, packages.Thompson, packages.UAE, packages.Vice">
+	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, packages.Dioscuri, package.JavaCPC-Win6.7, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
 	</target>
 
 	<target name="packages.BeebEm" description="Creates the database packages for BeebEm" depends="package.BeebEm-Lin0.0.13, package.BeebEm-Win4.13">
@@ -304,14 +304,14 @@ $
 	                      templateDir="Qemu" />
 	</target>
 
-    <target name="packages.Thompson" description="Creates the database packages for Thompson" depends="package.WinThompson_10">
-		<echo message="Created emulator packages for Thompson (Windows v. 1.0)"/>
+    <target name="packages.Thomson" description="Creates the database packages for Thomson" depends="package.WinThomson_10">
+		<echo message="Created emulator packages for Thomson (Windows v. 1.0)"/>
 	</target>
 
-    <target name="package.WinThompson_10">
-		<createEmuPackage packageZipName="WinThompson_10Package.zip"
-	                      emulatorZipName="WinThompson_10.zip"
-	                      templateDir="Thompson" />
+    <target name="package.WinThomson_10">
+		<createEmuPackage packageZipName="WinThomson_10Package.zip"
+	                      emulatorZipName="WinThomson_10.zip"
+	                      templateDir="Thomson" />
 	</target>
 
 	<target name="packages.Vice" description="Creates the database packages for Vice" depends="package.Vice-Lin2.2, package.Vice-Win2.2">
