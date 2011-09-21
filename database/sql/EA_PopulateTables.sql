@@ -52,13 +52,14 @@ INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_n
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(12, 'Dioscuri', '0.5.0', 'jar', 'Dioscuri-0.5.0.jar', 'Dioscuri, the modular emulator', 'dioscuri_050Packagev2.zip', 'zip', '2', FILE_READ('./packages/dioscuri_050Packagev2.zip'));
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(13, 'BeebEm', '0.0.13', 'ELF', 'beebem', 'BeebEm, BBC Micro and Master 128 Emulator (Linux)', 'LinBeebEm_0013Package.zip', 'zip', '1', FILE_READ('./packages/LinBeebEm_0013Package.zip'));
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(14, 'BeebEm', '4.13', 'exe', 'beebem.exe', 'BeebEm, BBC Micro and Master 128 Emulator (Windows)', 'WinBeebEm_413Package.zip', 'zip', '1', FILE_READ('./packages/WinBeebEm_413Package.zip'));
+INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,package_name,package_type,package_version,package) VALUES(15, 'Thompson', '1.0', 'exe', 'bnftowin.exe', 'Thompson Emulator (Windows)', 'WinThompson_10Package.zip', 'zip', '1', FILE_READ('./packages/WinThompson_10Package.zip'));
 
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(1,'x86');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(2,'C64');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(3,'Amiga');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(4,'Amstrad');
 INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(5,'BBCMICRO');
-
+INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(6,'Thompson');
 
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(1,'FAT12');
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(2,'FAT16');
@@ -74,6 +75,10 @@ INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(11,'SNA');
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(12,'IMG');
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(13,'SSD');
 INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(14,'EXT3');
+INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(15,'D7');
+INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(16,'DD7');
+INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(17,'M7');
+INSERT INTO emulatorarchive.imageformats (imageformat_id,name) VALUES(18,'K7');
 
 -- populate junction tables
 --
@@ -90,6 +95,7 @@ INSERT INTO emulatorarchive.emus_hardware (emulator_id,hardware_id) VALUES(11,1)
 INSERT INTO emulatorarchive.emus_hardware (emulator_id,hardware_id) VALUES(12,1);
 INSERT INTO emulatorarchive.emus_hardware (emulator_id,hardware_id) VALUES(13,5);
 INSERT INTO emulatorarchive.emus_hardware (emulator_id,hardware_id) VALUES(14,5);
+INSERT INTO emulatorarchive.emus_hardware (emulator_id,hardware_id) VALUES(15,6);
 
 -- Defines what emulators run what imageformats
 INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(3,1);
@@ -123,3 +129,7 @@ INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUE
 INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(13,13);
 INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(14,12);
 INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(14,13);
+INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(15,15);
+INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(15,16);
+INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(15,17);
+INSERT INTO emulatorarchive.emus_imageformats (emulator_id,imageformat_id) VALUES(15,18);

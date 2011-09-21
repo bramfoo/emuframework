@@ -236,7 +236,7 @@ $
 	</target>
 
     <!-- emulator packages -->
-	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, packages.Dioscuri, package.JavaCPC-Win6.7, packages.Qemu, packages.UAE, packages.Vice">
+	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, packages.Dioscuri, package.JavaCPC-Win6.7, packages.Qemu, packages.Thompson, packages.UAE, packages.Vice">
 	</target>
 
 	<target name="packages.BeebEm" description="Creates the database packages for BeebEm" depends="package.BeebEm-Lin0.0.13, package.BeebEm-Win4.13">
@@ -302,6 +302,16 @@ $
 		<createEmuPackage packageZipName="WinQemu_090Package.zip"
 	                      emulatorZipName="WinQemu_090.zip"
 	                      templateDir="Qemu" />
+	</target>
+
+    <target name="packages.Thompson" description="Creates the database packages for Thompson" depends="package.WinThompson_10">
+		<echo message="Created emulator packages for Thompson (Windows v. 1.0)"/>
+	</target>
+
+    <target name="package.WinThompson_10">
+		<createEmuPackage packageZipName="WinThompson_10Package.zip"
+	                      emulatorZipName="WinThompson_10.zip"
+	                      templateDir="Thompson" />
 	</target>
 
 	<target name="packages.Vice" description="Creates the database packages for Vice" depends="package.Vice-Lin2.2, package.Vice-Win2.2">
