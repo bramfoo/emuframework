@@ -306,6 +306,7 @@ $Revision$ $Date$ $Author$
         <mkdir dir="${release.dir}"/>
         <zip destfile="${release.dir}/${jar.name}-${version}.zip">
         	<fileset dir="${basedir}" includes="${runCLI}.*"/>
+    <!--    <fileset dir="${basedir}" includes="runAltGUI.bat"/> -->
         	<zipfileset dir="${jar.dir}" includes="${jar.name}.jar" fullpath="${jar.name}-${version}.jar"/>
            	<zipfileset dir="${libs.dir}" prefix="lib/" excludes="dev/**"/>
            	<zipfileset dir="${database.dir}" prefix="database/" includes="h2/**"/>
@@ -329,7 +330,8 @@ $Revision$ $Date$ $Author$
 
 		<unzip src="${basedir}/../SoftwareArchive/build/release/swa-0.2.0.zip" dest="${release.dir}/swa"/>	
 		<unzip src="${basedir}/../EmulatorArchive/build/release/ea-0.1.4.zip" dest="${release.dir}/ea"/>
-    	
+        <!-- <unzip src="${basedir}/AltGUI.zip" dest="${release.dir}/altGUI"/> -->
+
     	<!-- Launch IzPack packaging process -->
     	<echo message="Running IzPack to build the installer..."/>
     	<izpack input="${resource.dir}/release/install.xml"
@@ -347,6 +349,7 @@ $Revision$ $Date$ $Author$
     <delete dir="${release.dir}/EF"/>
     <delete dir="${release.dir}/ea"/>
     <delete dir="${release.dir}/swa"/>
+    <!-- <delete dir="${release.dir}/altGUI"/> -->
 	</target>
 	
 <!--
@@ -497,6 +500,10 @@ $Revision$ $Date$ $Author$
 
     <target name="ivy-publish" description="Publish the EFCore jar to the repository" depends="ivy-publish-external, ivy-retrieve, clean, jar">
         <ivy:publish resolver="local" pubrevision="${version}" overwrite="true" artifactspattern="${jar.dir}/[artifact].[ext]"/>
+    </target>
+
+    <target name="BK" depends="jar">
+        <copy file="${jar.dir}/${jar.name}.jar" tofile="C:/Temp/ef/${jar.name}-1.0.0.jar" overwrite="yes"/>
     </target>
 
 </project>
