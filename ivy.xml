@@ -38,6 +38,7 @@
     </publications>
     <dependencies>
 <!-- Core -->
+        <dependency org="com.miglayout" name="miglayout" rev="3.7.4" conf="dist->default"/>
 		<dependency org="commons-configuration" name="commons-configuration" rev="1.6" conf="dist->default"/>
 		<dependency org="org.apache.cxf" name="cxf-bundle" rev="2.2.7" conf="dist->default"/>
 		<dependency org="org.apache.cxf" name="cxf-xjc-ts" rev="2.2" conf="dist->default"/>
