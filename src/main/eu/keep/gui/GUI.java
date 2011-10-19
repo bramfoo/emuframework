@@ -42,6 +42,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 
 /**
@@ -53,8 +54,8 @@ public class GUI extends JFrame {
     public static final int TOTAL_WIDTH_UNITS = 17;
     public static final int WIDTH = WIDTH_UNIT * TOTAL_WIDTH_UNITS;
     public static final int HEIGHT = 650;
-    private static final String PROP_FILE_NAME = "gui.properties";
-    private static final String PROP_FILE_NAME_KERNEL = "user.properties";
+    public static final String PROP_FILE_NAME = "gui.properties";
+    public static final String PROP_FILE_NAME_KERNEL = "user.properties";
     private static Logger logger = Logger.getLogger(GUI.class.getName());
 
     public final CoreEngineModel model;
@@ -66,11 +67,14 @@ public class GUI extends JFrame {
     /**
      * Private constructor: instantiation is done through the main method.
      *
+     *
      * @param model the core engine model.
+     * @param adminTabs
      * @throws java.io.IOException if the gui.properties file can not be found.
      */
-    private GUI(CoreEngineModel model) throws IOException {
+    private GUI(CoreEngineModel model, boolean adminTabs) throws IOException {
         super("KEEP ~ Emulation Framework");
+
         this.model = model;
         super.setSize(WIDTH, HEIGHT);
         super.setResizable(false);
@@ -100,7 +104,7 @@ public class GUI extends JFrame {
         super.setGlassPane(new GlassPane());
 
         // initialize all GUI components
-        initGUI();
+        initGUI(adminTabs);
         initActionListeners();
     }
 
@@ -117,6 +121,7 @@ public class GUI extends JFrame {
             model.cleanUp();
             model.stop();
             GUI.this.dispose();
+            System.exit(0);
         } catch (Exception e) {
             logger.warning("Something went wrong while exiting the model:");
             e.printStackTrace();
@@ -166,11 +171,11 @@ public class GUI extends JFrame {
     /*
      * Initialize the GUI components.
      */
-    private void initGUI() {
+    private void initGUI(boolean adminTabs) {
         super.setLayout(new BorderLayout(5, 5));
 
         // init main panel
-        tabPanel = new MainPanel(this);
+        tabPanel = new MainPanel(this, adminTabs);
         super.add(tabPanel, BorderLayout.CENTER);
 
         // log/message label
@@ -183,6 +188,25 @@ public class GUI extends JFrame {
         JMenu file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
 
+        JMenu add = new JMenu("Add");
+        JMenuItem addApp = new JMenuItem("Application");
+        addApp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(GUI.this, "add an application wizard");
+            }
+        });
+        JMenuItem addEmu = new JMenuItem("Emulator");
+        addEmu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(GUI.this, "add an emulator wizard");
+            }
+        });
+        add.add(addApp);
+        add.add(addEmu);
+        file.add(add);
+
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(new ActionListener() {
             @Override
@@ -191,6 +215,30 @@ public class GUI extends JFrame {
             }
         });
         file.add(exit);
+
+        JMenu language = new JMenu("Language");
+        language.setMnemonic(KeyEvent.VK_L);
+        ButtonGroup group = new ButtonGroup();
+
+        JRadioButtonMenuItem english = new JRadioButtonMenuItem("English");
+        JRadioButtonMenuItem german = new JRadioButtonMenuItem("German");
+        JRadioButtonMenuItem french = new JRadioButtonMenuItem("French");
+        JRadioButtonMenuItem dutch = new JRadioButtonMenuItem("Dutch");
+
+        english.setSelected(true);
+        german.setEnabled(false);
+        french.setEnabled(false);
+        dutch.setEnabled(false);
+
+        group.add(english);
+        group.add(german);
+        group.add(french);
+        group.add(dutch);
+
+        language.add(english);
+        language.add(german);
+        language.add(french);
+        language.add(dutch);
 
         JMenu help = new JMenu("Help");
         help.setMnemonic(KeyEvent.VK_H);
@@ -247,6 +295,7 @@ public class GUI extends JFrame {
         help.add(aboutItem);
 
         menuBar.add(file);
+        menuBar.add(language);
         menuBar.add(help);
 
         this.setJMenuBar(menuBar);
@@ -283,7 +332,7 @@ public class GUI extends JFrame {
      *
      * @param args String array of command line parameters, which are ignored.
      */
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         // try to set Nimbus as look-and-feel, if possible
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -310,8 +359,14 @@ public class GUI extends JFrame {
             @Override
             public void run() {
                 try {
+                    // TODO: use something like Apache CLI instead of regex voodoo
+                    boolean adminTabs = false;
+                    if(args.length == 1) {
+                        adminTabs = args[0].matches("(?i)-*admin"); // accepts --admin, -a, ... (case insensitive)
+                    }
+
                     logger.info("Initializing the GUI...");
-                    GUI gui = new GUI(m);
+                    GUI gui = new GUI(m, adminTabs);
                     gui.setVisible(true);
                     logger.info("Started the GUI successfully.");
                 } catch (IOException e) {
