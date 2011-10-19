@@ -51,7 +51,8 @@ CREATE TABLE emulators
   package_name VARCHAR2(250),
   package_type VARCHAR2(250),
   package_version VARCHAR2(250),
-  package BLOB
+  package BLOB,
+  user_instructions VARCHAR2(2000)
 );
 
 -- Table for hardware types
