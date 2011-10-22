@@ -56,6 +56,7 @@ $header:
 		<xs:element name="license" type="xs:string" minOccurs="0"/>
 		<xs:element name="language" type="xs:string" minOccurs="0"/>
 		<xs:element name="reference" type="xs:string" minOccurs="0"/>
+		<xs:element name="userInstructions" type="xs:string" minOccurs="0"/>
 	</xs:all>
 	<xs:attribute name="id" type="xs:string" use="required"/>
 </xs:complexType>			

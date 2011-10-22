@@ -420,6 +420,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 		columnNames.add("APP_LICENSE");
 		columnNames.add("APP_LANGUAGE");
 		columnNames.add("APP_REFERENCE");
+		columnNames.add("APP_USER_INSTRUCTIONS");
 		results = spDAO.getViewData(id, byImgID, "app", columnNames);
 		for (List<String> row : results) {
 			ApplicationType app = new ApplicationType();
@@ -444,7 +445,8 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 			app.setLanguage(item == null ? "N/A" : item);
 			item = it.next();
 			app.setReference(item == null ? "N/A" : item);
-
+			item = it.next();
+			app.setUserInstructions(item == null ? "N/A" : item);
 			apps.add(app);
 		}
 		return apps;

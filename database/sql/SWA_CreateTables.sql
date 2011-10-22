@@ -226,7 +226,8 @@ SELECT imgs.image_id,
        apps.release_date as "APP_RELEASE_DATE",
        apps.license as "APP_LICENSE",
        apps.language as "APP_LANGUAGE",
-       apps.reference as "APP_REFERENCE"
+       apps.reference as "APP_REFERENCE",
+       apps.user_instructions as "APP_USER_INSTRUCTIONS"
 FROM images imgs
 INNER JOIN apps_images app_img
 ON imgs.image_id = app_img.image_id JOIN apps
