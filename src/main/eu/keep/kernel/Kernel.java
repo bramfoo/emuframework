@@ -394,18 +394,46 @@ public class Kernel implements CoreEngineModel {
 
         logger.info("Found emulators matching hardware '" + hw + "': " + emuPacks);
         
-        // Ensure that only explicitly selected emulators are used
+        
+        // Detect current host operating system
+        String osName;
+        try {
+            osName = System.getProperty("os.name");
+            // Set default if null is returned
+            osName = osName == null ? "Windows.default" : osName;
+            logger.info("Host operating system detected as '" + osName +"'. If this is incorrect, successful emulation is not guaranteed!");
+        }
+        catch (Exception e) {
+            logger.error("Could not detect the OS name. Defaulting to 'Windows'. Successful emulation not guaranteed!");
+            osName = "Windows.default";
+        }
+        
+        // Ensure that only explicitly selected emulators, running on the current host operating system, are used
+        String emuType;
         whiteListedPacks = getWhitelistedEmus();
         for (EmulatorPackage emuPack : emuPacks)
-        {
-        	for (EmulatorPackage whitePack: whiteListedPacks)
-        	{
-        		if (emuPack.getPackage().getId() == whitePack.getPackage().getId())
+        {        		
+        	emuType = emuPack.getEmulator().getExecutable().getType();
+        	logger.debug("Found emulator executable type: " + emuType);
+        	if (emuType.equals("exe") && osName.matches("Windows.*") || 
+        			emuType.equals("ELF") && osName.matches("Linux") || 
+        			emuType.equals("jar")) {
+        		logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
+        				" matches host operating system, so can be used");
+        		
+        		for (EmulatorPackage whitePack: whiteListedPacks)
         		{
-	        		logger.info("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " is on whitelist, can be used");
-	        		finalPacks.add(emuPack);
-	        		break;
-        		}
+        			if (emuPack.getPackage().getId() == whitePack.getPackage().getId())
+        			{
+        				logger.info("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " is on whitelist, can be used");
+        				finalPacks.add(emuPack);
+        				break;
+        			}
+        		}           
+        	}
+        	else {
+        		logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
+        				" does not match host operating system, so cannot be used");
         	}
         }
 
