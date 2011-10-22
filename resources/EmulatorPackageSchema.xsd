@@ -107,6 +107,7 @@ $header:
                     </xs:attribute>                  
                     </xs:complexType>
 		        </xs:element>						
+		        <xs:element name="userInstructions" type="xs:string" minOccurs="0" maxOccurs="1"/>				
 	        </xs:sequence>	                    
             </xs:complexType> 
 	        </xs:element>

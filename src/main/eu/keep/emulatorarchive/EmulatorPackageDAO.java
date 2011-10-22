@@ -142,7 +142,14 @@ public interface EmulatorPackageDAO {
      * @return list of hardware name
      */
     public List<String> getHardware(Integer emuID);
-
+    
+    /**
+     * Returns the user instructions for an emulator
+     * @param emuID emulator ID
+     * @return list of hardware name
+     */
+    public String getEmulatorInstructions(Integer emuID);
+    
     /**
      * Returns the package type associated with an emulator
      * @param emuID emulator ID

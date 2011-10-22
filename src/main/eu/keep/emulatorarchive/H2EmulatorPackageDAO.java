@@ -64,6 +64,10 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
+    private static final String SELECT_EMULATOR_USER_INSTRUCTIONS_WHERE= "SELECT user_instructions FROM "
+    																			+ EMULATOR_TABLE_NAME
+    																			+ " WHERE emulator_id=?";
+
     private static final String SELECT_EMULATOR_IDS                    = "SELECT emulator_id FROM "
                                                                                + EMULATOR_TABLE_NAME;
 
@@ -644,6 +648,50 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
         }
 
         return emuType;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getEmulatorInstructions(Integer emuID) {
+
+        // sanity check
+        if (emuID == null || emuID.compareTo(0) <= 0) {
+            throw new IllegalArgumentException("Invalid emulator ID");
+        }
+
+        String emuInstructions = "";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+
+            try {
+
+                pstmt = conn.prepareStatement(SELECT_EMULATOR_USER_INSTRUCTIONS_WHERE);
+                pstmt.setLong(1, emuID);
+                rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    emuInstructions = rs.getString("user_instructions");
+                }
+
+            }
+            finally {
+                rs.close();
+                pstmt.close();
+            }
+
+        }
+        catch (SQLException e) {
+             logger.warning("Database: error while retrieving user instructions for emulator ID= "
+             + emuID + ": " + e.toString());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+
+        return emuInstructions;
 
     }
 
