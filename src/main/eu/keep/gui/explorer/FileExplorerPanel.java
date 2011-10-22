@@ -66,10 +66,10 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         super.setLayout(new BorderLayout(5, 5));
 
         // button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
 
         autoStart = new JButton("auto start");
-        characterize = new JButton("characterize");
+        characterize = new JButton("check environment");
         info = new JButton("info");
 
         autoStart.setEnabled(false);

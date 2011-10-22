@@ -65,11 +65,11 @@ public class ConfigPanel extends JPanel {
 
     // drop down #2
     private JComboBox pathwaysDropDown;
-    private JButton loadEmus;
+    private JButton findEmus;
 
     // drop down #3
     private JComboBox emulatorsDropDown;
-    private JButton loadSoftware;
+    private JButton findSoftware;
 
     // drop down #4
     private JComboBox softwareDropDown;
@@ -130,8 +130,8 @@ public class ConfigPanel extends JPanel {
             }
         });
 
-        // load emulators button
-        loadEmus.addActionListener(new ActionListener() {
+        // find emulators button
+        findEmus.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
@@ -159,8 +159,8 @@ public class ConfigPanel extends JPanel {
             }
         });
 
-        // load software button
-        loadSoftware.addActionListener(new ActionListener() {
+        // find software button
+        findSoftware.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final EmulatorPackageWrapper swObj = (EmulatorPackageWrapper) emulatorsDropDown.getSelectedItem();
@@ -290,6 +290,11 @@ public class ConfigPanel extends JPanel {
                             row.add(e.getExecutable().getType());
                             dataList.add(row);
 
+                            row = new ArrayList<String>();
+                            row.add("User instructions");
+                            row.add(e.getUserInstructions());
+                            dataList.add(row);
+
                             for(ApplicationType app : sw.getApp()) {
 
                                 row = new ArrayList<String>();
@@ -335,6 +340,11 @@ public class ConfigPanel extends JPanel {
                                 row = new ArrayList<String>();
                                 row.add("Reference(s)");
                                 row.add(app.getReference());
+                                dataList.add(row);
+
+                                row = new ArrayList<String>();
+                                row.add("User instructions");
+                                row.add(app.getUserInstructions());
                                 dataList.add(row);
                             }
 
@@ -421,7 +431,7 @@ public class ConfigPanel extends JPanel {
         // reset and enable or disable components
         pathwaysDropDown.removeAllItems();
         pathwaysDropDown.setEnabled(enable);
-        loadEmus.setEnabled(enable);
+        findEmus.setEnabled(enable);
     }
 
     // drop down #3
@@ -433,7 +443,7 @@ public class ConfigPanel extends JPanel {
         // reset and enable or disable components
         emulatorsDropDown.removeAllItems();
         emulatorsDropDown.setEnabled(enable);
-        loadSoftware.setEnabled(enable);
+        findSoftware.setEnabled(enable);
     }
 
     // drop down #4
@@ -489,13 +499,13 @@ public class ConfigPanel extends JPanel {
         pathwaysPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         JLabel pathwaysLabel = new JLabel("Dependencies:");
         pathwaysDropDown = new JComboBox();
-        loadEmus = new JButton("Load emulators");
+        findEmus = new JButton("Find emulators");
         pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
         pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        loadEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        findEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
         pathwaysPanel.add(pathwaysLabel);
         pathwaysPanel.add(pathwaysDropDown);
-        pathwaysPanel.add(loadEmus);
+        pathwaysPanel.add(findEmus);
         topRightPanel.add(pathwaysPanel);
 
         // the 'emulator' components
@@ -503,13 +513,13 @@ public class ConfigPanel extends JPanel {
         emuPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         JLabel emuLabel = new JLabel("Emulators:");
         emulatorsDropDown = new JComboBox();
-        loadSoftware = new JButton("Load software");
+        findSoftware = new JButton("Find software");
         emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
         emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        loadSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        findSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
         emuPanel.add(emuLabel);
         emuPanel.add(emulatorsDropDown);
-        emuPanel.add(loadSoftware);
+        emuPanel.add(findSoftware);
         topRightPanel.add(emuPanel);
 
         // the 'software' components
