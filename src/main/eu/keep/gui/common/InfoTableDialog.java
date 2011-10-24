@@ -44,6 +44,8 @@ public class InfoTableDialog extends JDialog {
 
     public InfoTableDialog(GUI gui, File file, Object[] colNames, Object[][] data) {
 
+        super(gui);
+
         if(data.length == 0) {
             colNames = new String[]{""};
             data = new String[][]{{""}, {"No additional information about the file(s) available."}, {""}};
@@ -83,9 +85,12 @@ public class InfoTableDialog extends JDialog {
     }
 
     private void initGUI(Object[] colNames, Object[][] data) {
+        JPanel panel = new JPanel(new BorderLayout(5, 5));
+        panel.setPreferredSize(new Dimension(500, 350));
         JTable table = new JTable(data, colNames);
-        super.setSize(new Dimension(600, (data.length * 25) + 20));
+        super.setSize(new Dimension(500, 400));
         super.setLayout(new BorderLayout(5, 5));
-        super.add(new JScrollPane(table), BorderLayout.CENTER);
+        panel.add(new JScrollPane(table), BorderLayout.NORTH);
+        super.add(panel, BorderLayout.CENTER);
     }
 }

@@ -290,10 +290,10 @@ public class ConfigPanel extends JPanel {
                             row.add(e.getExecutable().getType());
                             dataList.add(row);
 
-                            row = new ArrayList<String>();
-                            row.add("User instructions");
-                            row.add(e.getUserInstructions());
-                            dataList.add(row);
+                            //row = new ArrayList<String>();
+                            //row.add("User instructions");
+                            //row.add(e.getUserInstructions());
+                            //dataList.add(row);
 
                             for(ApplicationType app : sw.getApp()) {
 
@@ -342,10 +342,10 @@ public class ConfigPanel extends JPanel {
                                 row.add(app.getReference());
                                 dataList.add(row);
 
-                                row = new ArrayList<String>();
-                                row.add("User instructions");
-                                row.add(app.getUserInstructions());
-                                dataList.add(row);
+                                //row = new ArrayList<String>();
+                                //row.add("User instructions");
+                                //row.add(app.getUserInstructions());
+                                //dataList.add(row);
                             }
 
                             // load meta data
