@@ -6933,25 +6933,49 @@
             <Extension>ssd</Extension>            
         </FileFormat>
 
-	<FileFormat Name="Commodore C64 Disk Image">
-	    <Extension>d64</Extension>
-	</FileFormat>
-	<FileFormat Name="Commodore C64 Tape Image">
-	    <Extension>T64</Extension>
-	</FileFormat>
+      	<FileFormat Name="Commodore C64 Disk Image">
+      	    <Extension>d64</Extension>
+      	</FileFormat>
 
-	<FileFormat Name="Amiga Disk Image">
-	    <Extension>adf</Extension>
-	</FileFormat>
+      	<FileFormat Name="Commodore C64 Tape Image">
+      	    <Extension>T64</Extension>
+      	</FileFormat>
+      
+      	<FileFormat Name="Amiga Disk Image">
+      	    <Extension>adf</Extension>
+      	</FileFormat>
 
-	<FileFormat Name="Amstrad Disk Image">
-	    <Extension>dsk</Extension>
-	    <Extension>sna</Extension>
-	</FileFormat>
-	<FileFormat Name="Amstrad Tape Image">
-	    <Extension>cdt</Extension>
-	</FileFormat>
+        <FileFormat Name="Interchangeable Preservation Format">
+            <Extension>ipf</Extension>
+      	</FileFormat>
+
+      	<FileFormat Name="Amstrad Disk Image">
+      	    <Extension>dsk</Extension>
+      	    <Extension>sna</Extension>
+      	</FileFormat>
+      
+      	<FileFormat Name="Amstrad Tape Image">
+      	    <Extension>cdt</Extension>
+      	</FileFormat>
         
+        <FileFormat Name="Eudora Mailbox File">
+      	    <Extension>mbx</Extension>
+      	    <Extension>mbox</Extension>
+      	</FileFormat>
+
+        <FileFormat Name="Thomson Tape Image">
+      	    <Extension>k7</Extension>
+      	</FileFormat>
+
+        <FileFormat Name="Thomson Cartridge Image">
+      	    <Extension>m7</Extension>
+      	</FileFormat>
+
+        <FileFormat Name="Thomson Floppy Image">
+      	    <Extension>d7</Extension>
+            <Extension>dd7</Extension>
+      	</FileFormat>
+
         <!-- KEEP specific addition // END -->
                 
         <FileFormat ID="8" Name="Microsoft Word for  Macintosh Document"
