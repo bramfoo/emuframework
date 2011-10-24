@@ -205,7 +205,7 @@ public class GUI extends JFrame {
         });
         add.add(addApp);
         add.add(addEmu);
-        file.add(add);
+        //file.add(add);
 
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(new ActionListener() {
@@ -216,6 +216,7 @@ public class GUI extends JFrame {
         });
         file.add(exit);
 
+        JMenu settings = new JMenu("Settings");
         JMenu language = new JMenu("Language");
         language.setMnemonic(KeyEvent.VK_L);
         ButtonGroup group = new ButtonGroup();
@@ -239,6 +240,8 @@ public class GUI extends JFrame {
         language.add(german);
         language.add(french);
         language.add(dutch);
+
+        settings.add(language);
 
         JMenu help = new JMenu("Help");
         help.setMnemonic(KeyEvent.VK_H);
@@ -295,7 +298,7 @@ public class GUI extends JFrame {
         help.add(aboutItem);
 
         menuBar.add(file);
-        menuBar.add(language);
+        menuBar.add(settings);
         menuBar.add(help);
 
         this.setJMenuBar(menuBar);
