@@ -106,6 +106,7 @@ INSERT INTO emulator_whitelist (emulator_id, emulator_descr) values (10, 'JavaCP
 INSERT INTO emulator_whitelist (emulator_id, emulator_descr) values (11, 'Dioscuri (0.6)');
 INSERT INTO emulator_whitelist (emulator_id, emulator_descr) values (13, 'BeebEm (Linux)');
 INSERT INTO emulator_whitelist (emulator_id, emulator_descr) values (14, 'BeebEm (Windows)');
+INSERT INTO emulator_whitelist (emulator_id, emulator_descr) values (15, 'Thomson (Windows)');
 
 -- File format table
 -- Contains the name of known file formats 
@@ -195,6 +196,15 @@ INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/393', 'WordPerfe
 INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/394', 'WordPerfect for MS-DOS/Windows Document');
 INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/409', 'MS-DOS Executable');
 INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/410', 'Windows New Executable');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/88', 'Microsoft Powerpoint Presentation');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('fmt/125', 'Microsoft Powerpoint Presentation 95');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('fmt/126', 'Microsoft Powerpoint Presentation 97-2002');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('fmt/215', 'Microsoft Powerpoint for Windows 2007');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/66', 'Microsoft Access Database 2.0');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/240', 'Microsoft Access Database 2000');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/241', 'Microsoft Access Database 2002');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/238', 'Microsoft Access Database 95');
+INSERT INTO PCR_fileformats (fileformat_id, name) VALUES('x-fmt/239', 'Microsoft Access Database 97');
 
 -- EF to PCR file format conversion
 INSERT INTO EF_PCR_fileformats (EF_ff_id, PCR_ff_id) VALUES('FFT-7', 'fmt/14');
@@ -243,3 +253,4 @@ INSERT INTO EF_PCR_fileformats (EF_ff_id, PCR_ff_id) VALUES('FFT-17', 'fmt/40');
 INSERT INTO EF_PCR_fileformats (EF_ff_id, PCR_ff_id) VALUES('FFT-18', 'x-fmt/182');
 INSERT INTO EF_PCR_fileformats (EF_ff_id, PCR_ff_id) VALUES('FFT-21', 'x-fmt/409');
 INSERT INTO EF_PCR_fileformats (EF_ff_id, PCR_ff_id) VALUES('FFT-21', 'x-fmt/410');
+
