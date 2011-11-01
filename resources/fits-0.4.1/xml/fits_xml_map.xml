@@ -5,8 +5,18 @@
 			<element name="colorSpace">
 				<map from="Greyscale" to="Grayscale"/>
 			</element>
+			<element name="identity">
+				<attribute name="format">
+					<!-- Format conversions to make JHove compatible with other tools,
+					     so that formats are merged correctly -->
+					<map from="HTML" to="Hypertext Markup Language"/>
+					<map from="HTML Strict" to="Hypertext Markup Language"/>
+					<map from="XHTML" to="Hypertext Markup Language"/>
+				</attribute>
+			</element>
 		</mime>
 	</tool>
+
 
 	<tool name="exiftool" version="7.74">
 		<mime type="all">
