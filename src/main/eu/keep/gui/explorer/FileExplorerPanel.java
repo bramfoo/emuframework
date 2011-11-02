@@ -112,11 +112,11 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
             FileNode node = rootsVector.get(0);
 
-            for(FileNode fn : rootsVector) {
-                // Grab the first root that does not start with "A:" or "B:",
-                // so "C:" is okay, and any Mac/*nix drive is also accepted
-                if(!fn.toString().matches("(?i)[AB]:")) {
+            for(int i = 1; i < rootsVector.size(); i++) {
+                FileNode fn = rootsVector.get(i);
+                if(!(fn.toString().toUpperCase().startsWith("A:") || fn.toString().toUpperCase().startsWith("B:"))) {
                     node = fn;
+                    rootsCombo.setSelectedItem(node);
                     break;
                 }
             }
