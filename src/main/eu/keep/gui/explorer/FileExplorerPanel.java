@@ -40,6 +40,7 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
@@ -53,13 +54,14 @@ import java.util.*;
 
 public class FileExplorerPanel extends JPanel implements ActionListener {
 
-    public File selectedFile = null;
+    public File selectedFile;
     private GUI parent;
     private JButton autoStart;
     private JButton characterize;
     private JButton info;
 
     public FileExplorerPanel(GUI p) {
+        selectedFile = null;
         parent = p;
         initGUI();
     }
@@ -87,16 +89,31 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         buttonPanel.add(characterize);
         buttonPanel.add(info);
 
-        FileNode dummyRoot = new FileNode(new File(""));
-        File[] roots = File.listRoots();
+        final FileNode dummyRoot = new FileNode(new File(""));
+        final File[] roots = File.listRoots();
+
+        final Vector<FileNode> rootsVector = new Vector<FileNode>();
 
         for (File f : roots) {
             FileNode node = new FileNode(f);
-            node.discover(2);
+            rootsVector.add(node);
+        }
+
+        final JComboBox rootsCombo = new JComboBox(rootsVector);
+
+        if(rootsVector.size() == 0) {
+            rootsCombo.setEnabled(false);
+        }
+        else {
+            FileNode node = (FileNode)rootsCombo.getSelectedItem();
+            if(node.toString().matches("(?i)[ab]:") && rootsVector.size() >= 2) {
+                node = (FileNode)rootsCombo.getItemAt(1);
+            }
+            node.discover(1);
             dummyRoot.add(node);
         }
 
-        JTree tree = new JTree(dummyRoot);
+        final JTree tree = new JTree(dummyRoot);
         tree.setCellRenderer(new ExplorerTreeCellRenderer());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setRootVisible(false);
@@ -118,6 +135,18 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 /* ignored */
+            }
+        });
+
+        rootsCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileNode node = (FileNode)rootsCombo.getSelectedItem();
+                node.discover(1);
+                dummyRoot.removeAllChildren();
+                dummyRoot.add(node);
+                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+                model.setRoot(dummyRoot);
             }
         });
 
@@ -160,6 +189,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         });
 
         super.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 6) - 30, GUI.HEIGHT));
+        super.add(rootsCombo, BorderLayout.NORTH);
         super.add(new JScrollPane(tree), BorderLayout.CENTER);
         super.add(buttonPanel, BorderLayout.SOUTH);
     }
