@@ -106,10 +106,11 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         if(rootsVector.size() == 0) {
             rootsCombo.setEnabled(false);
+            logger.warn("Did not find a drive/mapping to search for files!");
         }
         else {
 
-            FileNode node = null;
+            FileNode node = rootsVector.get(0);
 
             for(FileNode fn : rootsVector) {
                 // Grab the first root that does not start with "A:" or "B:",
@@ -120,13 +121,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                 }
             }
 
-            if(node != null) {
-                node.discover(1);
-                dummyRoot.add(node);
-            }
-            else {
-                logger.warn("Did not find a drive/mapping to search for files!");
-            }
+            node.discover(1);
+            dummyRoot.add(node);
         }
 
         final JTree tree = new JTree(dummyRoot);
