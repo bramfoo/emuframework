@@ -217,6 +217,7 @@ public class GUI extends JFrame {
         file.add(exit);
 
         JMenu settings = new JMenu("Settings");
+        settings.setMnemonic(KeyEvent.VK_S);
         JMenu language = new JMenu("Language");
         language.setMnemonic(KeyEvent.VK_L);
         ButtonGroup group = new ButtonGroup();

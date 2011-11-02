@@ -38,13 +38,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
-public class InfoTableDialog extends JDialog {
+public class InfoTableDialog extends JFrame {
 
     private GUI parent;
 
     public InfoTableDialog(GUI gui, File file, Object[] colNames, Object[][] data) {
-
-        super(gui);
 
         if(data.length == 0) {
             colNames = new String[]{""};
@@ -73,7 +71,7 @@ public class InfoTableDialog extends JDialog {
         super.setLocation(parentX + (parentW / 2) - (getWidth() / 2),
                 parentY + (parentH / 2) - (getHeight() / 2));
 
-        super.setTitle(file.getName());
+        super.setTitle("file: " + file.getName());
         super.setResizable(false);
         super.setVisible(true);
     }
@@ -85,12 +83,9 @@ public class InfoTableDialog extends JDialog {
     }
 
     private void initGUI(Object[] colNames, Object[][] data) {
-        JPanel panel = new JPanel(new BorderLayout(5, 5));
-        panel.setPreferredSize(new Dimension(500, 350));
         JTable table = new JTable(data, colNames);
         super.setSize(new Dimension(500, 400));
         super.setLayout(new BorderLayout(5, 5));
-        panel.add(new JScrollPane(table), BorderLayout.NORTH);
-        super.add(panel, BorderLayout.CENTER);
+        super.add(new JScrollPane(table), BorderLayout.CENTER);
     }
 }
