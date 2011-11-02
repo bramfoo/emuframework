@@ -34,6 +34,7 @@ import eu.keep.characteriser.Format;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.gui.config.ConfigPanel;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -53,6 +54,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class FileExplorerPanel extends JPanel implements ActionListener {
+
+    private static final Logger logger = Logger.getLogger(FileExplorerPanel.class.getName());
 
     public File selectedFile;
     private GUI parent;
@@ -105,12 +108,25 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             rootsCombo.setEnabled(false);
         }
         else {
-            FileNode node = (FileNode)rootsCombo.getSelectedItem();
-            if(node.toString().matches("(?i)[ab]:") && rootsVector.size() >= 2) {
-                node = (FileNode)rootsCombo.getItemAt(1);
+
+            FileNode node = null;
+
+            for(FileNode fn : rootsVector) {
+                // Grab the first root that does not start with "A:" or "B:",
+                // so "C:" is okay, and any Mac/*nix drive is also accepted
+                if(!fn.toString().matches("(?i)[AB]:")) {
+                    node = fn;
+                    break;
+                }
             }
-            node.discover(1);
-            dummyRoot.add(node);
+
+            if(node != null) {
+                node.discover(1);
+                dummyRoot.add(node);
+            }
+            else {
+                logger.warn("Did not find a drive/mapping to search for files!");
+            }
         }
 
         final JTree tree = new JTree(dummyRoot);
