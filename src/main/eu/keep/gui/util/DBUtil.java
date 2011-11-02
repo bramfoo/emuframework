@@ -39,7 +39,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.*;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public final class DBUtil {
 
@@ -95,7 +95,7 @@ public final class DBUtil {
                 c = DriverManager.getConnection(url, usr, pwd);
             } catch (SQLException e) {
                 c = null;
-                logger.warning("Could not connect to the database: " + e.getMessage());
+                logger.warn("Could not connect to the database: " + e.getMessage());
             }
             conn = c;
         }
@@ -252,7 +252,7 @@ public final class DBUtil {
             }
 
         } catch (Exception e) {
-            logger.warning("Could not execute query: " + sql + ", " + e.getMessage());
+            logger.warn("Could not execute query: " + sql + ", " + e.getMessage());
         }
 
         return data;

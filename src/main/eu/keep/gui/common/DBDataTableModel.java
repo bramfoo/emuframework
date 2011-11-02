@@ -31,16 +31,16 @@
 package eu.keep.gui.common;
 
 import eu.keep.gui.*;
+import org.apache.log4j.Logger;
+
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.*;
-import java.util.logging.Logger;
 
 @SuppressWarnings("unchecked")
 public class DBDataTableModel extends DefaultTableModel implements TableModelListener {
@@ -126,7 +126,7 @@ public class DBDataTableModel extends DefaultTableModel implements TableModelLis
             }
 
         } catch (Exception e) {
-            logger.warning("Could not execute query: " + query + ", " + e.getMessage());
+            logger.warn("Could not execute query: " + query + ", " + e.getMessage());
         }
 
         return data;
@@ -183,7 +183,7 @@ public class DBDataTableModel extends DefaultTableModel implements TableModelLis
                 super.addRow(row);
             }
         } else {
-            logger.warning("Could not get any data from " + table);
+            logger.warn("Could not get any data from " + table);
         }
 
         // Only add the table model listener when al data has been loaded.

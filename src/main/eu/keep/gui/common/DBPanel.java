@@ -37,7 +37,7 @@ import java.awt.event.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class DBPanel extends JPanel {
 
@@ -62,7 +62,7 @@ public class DBPanel extends JPanel {
             conn = DriverManager.getConnection(dbUrl, dbUsr, dbPwd);
         } catch (SQLException e) {
             conn = null;
-            logger.warning("Could not connect to the database: " + e.getMessage());
+            logger.warn("Could not connect to the database: " + e.getMessage());
         }
 
         dataModel = new DBDataTableModel(parent, conn);
@@ -93,7 +93,7 @@ public class DBPanel extends JPanel {
                 list.add(tableName);
             }
         } catch (Exception e) {
-            logger.warning(e.getMessage());
+            logger.warn(e.getMessage());
         }
         return list.toArray(new String[list.size()]);
     }

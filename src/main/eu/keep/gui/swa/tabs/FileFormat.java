@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Vector;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 public class FileFormat extends JPanel {
 
@@ -251,7 +251,7 @@ public class FileFormat extends JPanel {
                     parent.enableTabIndex(1);
                 }
                 else {
-                    logger.severe(String.format("formatIDCef=%s, formatName=%s, formatIDSwa=%s",
+                    logger.fatal(String.format("formatIDCef=%s, formatName=%s, formatIDSwa=%s",
                             formatIDCef, formatName, formatIDSwa));
                 }
             }
@@ -272,16 +272,16 @@ public class FileFormat extends JPanel {
         String fitsHome = "eu/keep/resources/fits";
         String fitsHomePath = "";
         URL url = null;
-        logger.log(Level.WARNING, "Attempting to read FITShome from file...");
+        logger.warn("Attempting to read FITShome from file...");
 		try {
 			File fitsLoc = new File(fitsHome);
-			logger.log(Level.FINE, "Using FITShome file location: " + fitsLoc);
+			logger.info("Using FITShome file location: " + fitsLoc);
 			if (fitsLoc.exists())
 				url = fitsLoc.toURI().toURL();
 		}
 		catch (MalformedURLException me)
 		{
-			logger.log(Level.FINE, "Invalid URL created for FITShome (file): " + me);
+			logger.info("Invalid URL created for FITShome (file): " + me);
 		}
         // If it's not found, try as resource
         if (url == null) {
@@ -290,7 +290,7 @@ public class FileFormat extends JPanel {
         }
         if (url == null)
         {
-        	logger.log(Level.WARNING, "No valid FITS home file found (as resource or file)");
+        	logger.warn("No valid FITS home file found (as resource or file)");
         	throw new IOException("No valid FITS home file found (as resource or file)");
         }
         try {

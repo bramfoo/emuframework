@@ -43,7 +43,7 @@ import java.io.*;
 import java.util.List;
 import java.util.Properties;
 import java.util.TreeSet;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * The main GUI of the emulation framework.
@@ -123,7 +123,7 @@ public class GUI extends JFrame {
             GUI.this.dispose();
             System.exit(0);
         } catch (Exception e) {
-            logger.warning("Something went wrong while exiting the model:");
+            logger.warn("Something went wrong while exiting the model:");
             e.printStackTrace();
             System.exit(1);
         }
@@ -340,7 +340,7 @@ public class GUI extends JFrame {
         try {
             UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
-            logger.warning(e.getMessage());
+            logger.warn(e.getMessage());
         }
 
         // create the core engine model
@@ -350,7 +350,7 @@ public class GUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
             model = null;
-            logger.severe("Could not recover from failed CoreEngineModel.init()");
+            logger.fatal("Could not recover from failed CoreEngineModel.init()");
             System.exit(1);
         }
 
@@ -373,7 +373,7 @@ public class GUI extends JFrame {
                     gui.setVisible(true);
                     logger.info("Started the GUI successfully.");
                 } catch (IOException e) {
-                    logger.severe(e.getMessage());
+                    logger.fatal(e.getMessage());
                 }
             }
         });
