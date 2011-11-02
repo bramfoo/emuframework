@@ -33,6 +33,7 @@ package eu.keep.gui.explorer;
 import eu.keep.characteriser.Format;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
+import eu.keep.gui.config.ConfigPanel;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
@@ -44,6 +45,8 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -115,6 +118,32 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             @Override
             public void treeCollapsed(TreeExpansionEvent event) {
                 /* ignored */
+            }
+        });
+
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(e.getClickCount() >= 2) {
+                    if(selectedFile != null) {
+                        parent.clear();
+                        parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
+                        (new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    boolean success = parent.model.start(selectedFile);
+                                    if(success) {
+                                        // TODO descriptive meta data in a new tab
+                                    }
+                                    parent.unlock("Done.");
+                                } catch (IOException ex) {
+                                    parent.unlock("ERROR: " + ex.getMessage());
+                                }
+                            }
+                        })).start();
+                    }
+                }
             }
         });
 

@@ -41,14 +41,15 @@ import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 import javax.swing.*;
+import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -259,7 +260,7 @@ public class ConfigPanel extends JPanel {
                             parent.unlock("Emulation process started.");
 
                             // TODO refactor: quick-and-dirty hack ahead!
-                            List<List<String>> dataList = new ArrayList <List<String>>();
+                            List<List<String>> dataList = new ArrayList<List<String>>();
 
                             List<String> row = new ArrayList<String>();
 
@@ -295,7 +296,7 @@ public class ConfigPanel extends JPanel {
                             row.add(e.getUserInstructions());
                             dataList.add(row);
 
-                            for(ApplicationType app : sw.getApp()) {
+                            for (ApplicationType app : sw.getApp()) {
 
                                 row = new ArrayList<String>();
                                 row.add("");
@@ -351,13 +352,13 @@ public class ConfigPanel extends JPanel {
                             // load meta data
                             String[][] data = new String[dataList.size()][];
                             int index = 0;
-                            for(List<String> rw: dataList) {
+                            for (List<String> rw : dataList) {
                                 data[index] = rw.toArray(new String[rw.size()]);
                                 index++;
                             }
 
                             new InfoTableDialog(ConfigPanel.this.parent, ConfigPanel.this.explorerPanel.selectedFile,
-                                    new String[]{"key","value"}, data);
+                                    new String[]{"key", "value"}, data);
                         } catch (Exception ex) {
                             parent.unlock("ERROR: " + ex.getMessage());
                         }
