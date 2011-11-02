@@ -259,106 +259,13 @@ public class ConfigPanel extends JPanel {
                             parent.model.runEmulationProcess(lastConfiguredID);
                             parent.unlock("Emulation process started.");
 
-                            // TODO refactor: quick-and-dirty hack ahead!
-                            List<List<String>> dataList = new ArrayList<List<String>>();
+                            new InfoTableDialog(
+                                    ConfigPanel.this.parent,
+                                    ConfigPanel.this.explorerPanel.selectedFile,
+                                    emu,
+                                    sw
+                            );
 
-                            List<String> row = new ArrayList<String>();
-
-                            EmulatorPackage.Emulator e = emu.getEmulator();
-
-                            row = new ArrayList<String>();
-                            row.add("Emulator");
-                            row.add("");
-                            dataList.add(row);
-
-                            row = new ArrayList<String>();
-                            row.add("Name");
-                            row.add(e.getName());
-                            dataList.add(row);
-
-                            row = new ArrayList<String>();
-                            row.add("Version");
-                            row.add(e.getVersion());
-                            dataList.add(row);
-
-                            row = new ArrayList<String>();
-                            row.add("Description");
-                            row.add(e.getDescription());
-                            dataList.add(row);
-
-                            row = new ArrayList<String>();
-                            row.add("Exe Type");
-                            row.add(e.getExecutable().getType());
-                            dataList.add(row);
-
-                            row = new ArrayList<String>();
-                            row.add("User instructions");
-                            row.add(e.getUserInstructions());
-                            dataList.add(row);
-
-                            for (ApplicationType app : sw.getApp()) {
-
-                                row = new ArrayList<String>();
-                                row.add("");
-                                row.add("");
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add(app.getName());
-                                row.add("");
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("Version");
-                                row.add(app.getVersion());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("Description");
-                                row.add(app.getDescription());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("Creator");
-                                row.add(app.getCreator());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("Language");
-                                row.add(app.getLanguage());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("License");
-                                row.add(app.getLicense());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("Release Date");
-                                row.add(app.getReleaseDate());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("Reference(s)");
-                                row.add(app.getReference());
-                                dataList.add(row);
-
-                                row = new ArrayList<String>();
-                                row.add("User instructions");
-                                row.add(app.getUserInstructions());
-                                dataList.add(row);
-                            }
-
-                            // load meta data
-                            String[][] data = new String[dataList.size()][];
-                            int index = 0;
-                            for (List<String> rw : dataList) {
-                                data[index] = rw.toArray(new String[rw.size()]);
-                                index++;
-                            }
-
-                            new InfoTableDialog(ConfigPanel.this.parent, ConfigPanel.this.explorerPanel.selectedFile,
-                                    new String[]{"key", "value"}, data);
                         } catch (Exception ex) {
                             parent.unlock("ERROR: " + ex.getMessage());
                         }
