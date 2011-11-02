@@ -119,7 +119,7 @@ public class EFCliAutoComp implements CoreObserver {
 			model = new Kernel(PROP_FILE_NAME);
 		} catch (IOException e) {
 			e.printStackTrace();
-			throw new RuntimeException("Error initailising Kernel: " + e.toString());
+			throw new RuntimeException("Error initialising Kernel: " + e.toString());
 		}
         console = getConsole();
         out = stream;
