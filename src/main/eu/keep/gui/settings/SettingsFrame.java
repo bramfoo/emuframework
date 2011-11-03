@@ -52,7 +52,7 @@ public class SettingsFrame extends JFrame {
     private final String fileName;
     private final Map<String, JTextField> valueMap;
 
-    public SettingsFrame(GUI p, String fn, String instructions, String[] keys) {
+    public SettingsFrame(GUI p, String fn, String instructions, String[][] keys) {
         super("settings");
 
         parent = p;
@@ -98,7 +98,7 @@ public class SettingsFrame extends JFrame {
         this.dispose();
     }
 
-    private void initGUI(String instructions, String[] keys) {
+    private void initGUI(String instructions, String[][] keys) {
         super.setSize(new Dimension(500, 400));
         super.setLayout(new BorderLayout(5, 5));
         super.add(new JLabel("  "), BorderLayout.NORTH);
@@ -110,9 +110,11 @@ public class SettingsFrame extends JFrame {
         JPanel settingsPanel = new JPanel(new GridLayout(0, 2));
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        for(String key : keys) {
+        for(String[] keyArray : keys) {
+            String keyFriendly = keyArray[0];
+            String key = keyArray[1];
             JTextField txt = new JTextField(properties.getProperty(key));
-            settingsPanel.add(new JLabel(key));
+            settingsPanel.add(new JLabel(keyFriendly));
             settingsPanel.add(txt);
             valueMap.put(key, txt);
         }

@@ -264,7 +264,10 @@ public class GUI extends JFrame {
                         "Examples: <ul><li><b>http://services.kb.nl:1234/softwarearchive</b></li>" +
                         "<li><b>http://123.45.67.89:1234/softwarearchive</b></li></ul>" +
                         "</html>",
-                        new String[]{"software.archive.url", "emulator.archive.url"}
+                        new String[][]{
+                                {"Software archive address:", "software.archive.url"},
+                                {"Emulator archive address:", "emulator.archive.url"}
+                        }
                 );
             }
         });
