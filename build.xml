@@ -242,6 +242,8 @@ $
         <delete dir="${h2.db.url}.lobs.db"/>
 	</target>   
     
+	<target name="db.reset" description="Resets the database" depends="db.drop, db.create, db.populate"/>
+	
     <!-- H2 RunScript: executes H2's RunScript tool with parameters -->
 	<macrodef name="H2RunScript">
 		<attribute name="url" default="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}${h2.db.softwarearchiveschema}"/>
