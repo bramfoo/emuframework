@@ -37,7 +37,6 @@ import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -184,7 +183,7 @@ public class InfoTableDialog extends JFrame {
 
         if (data.length == 0) {
             colNames = new String[]{""};
-            data = new String[][]{{""}, {"No additional information about the file(s) available."}, {""}};
+            data = new String[][]{{"No additional information about the file(s) available."}};
         }
 
         parent = gui;

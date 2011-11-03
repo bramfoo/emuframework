@@ -32,6 +32,7 @@ package eu.keep.gui;
 
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
+import eu.keep.gui.settings.SettingsFrame;
 import eu.keep.kernel.CoreEngineModel;
 import eu.keep.kernel.Kernel;
 import eu.keep.util.FileUtilities;
@@ -248,6 +249,27 @@ public class GUI extends JFrame {
 
         settings.add(language);
 
+        JMenuItem addresses = new JMenuItem("web-service addresses");
+        addresses.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new SettingsFrame(GUI.this,
+                        "eu/keep/" + PROP_FILE_NAME_KERNEL,
+                        "<html>" +
+                        "Edit the addresses of the emulator- and software-archive. <br><br>" +
+                        "They're supposed to be entered as follows: <b>http://ADDRESS:PORT/ARCHIVE</b>, " +
+                        "where <b>ADDRESS</b> is the name of the server running the webservice(s) (this " +
+                        "could also be an IP address!), <b>PORT</b> is the port number the service is " +
+                        "listening on, and <b>ARCHIVE</b> the name of the service.<br><br>" +
+                        "Examples: <ul><li><b>http://services.kb.nl:1234/softwarearchive</b></li>" +
+                        "<li><b>http://123.45.67.89:1234/softwarearchive</b></li></ul>" +
+                        "</html>",
+                        new String[]{"software.archive.url", "emulator.archive.url"}
+                );
+            }
+        });
+        settings.add(addresses);
+
         JMenu help = new JMenu("Help");
         help.setMnemonic(KeyEvent.VK_H);
 
@@ -269,8 +291,8 @@ public class GUI extends JFrame {
                         model.getTitle() + " " + model.getVersion() + " - Copyright (c) 2009-2011 Tessella plc.\n" +
                         "GUI - Copyright (c) 2011 National Library of the Netherlands\n" +
                         "\n" +
-                        "Software Archive version 0.2.0\n" +
-                        "Emulator Archive version 0.1.4\n" +
+                        "Software Archive version 0.2.0\n" + // TODO get version from SWA
+                        "Emulator Archive version 0.1.4\n" + // TODO get version from EA
                         "\n" +
                         "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
                         "you may not use this software except in compliance with the License.\n" +
