@@ -112,7 +112,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
             FileNode node = rootsVector.get(0);
 
-            for(int i = 1; i < rootsVector.size(); i++) {
+            for(int i = 0; i < rootsVector.size(); i++) {
                 FileNode fn = rootsVector.get(i);
                 if(!(fn.toString().toUpperCase().startsWith("A:") || fn.toString().toUpperCase().startsWith("B:"))) {
                     node = fn;
@@ -274,7 +274,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                             data[index++] = new String[]{key, value.substring(1, value.length()-1)};
                         }
 
-                        new InfoTableDialog(parent, selectedFile, new String[]{"key", "value"}, data);
+                        new InfoTableDialog(parent, selectedFile, data);
                         parent.unlock("Done.");
                     } catch (IOException ex) {
                          parent.unlock("ERROR :: " + ex.getMessage());

@@ -47,11 +47,12 @@ public class InfoTableDialog extends JFrame {
 
     private GUI parent;
 
-    public InfoTableDialog(GUI gui, File file, Object[] colNames, Object[][] data) {
+    public InfoTableDialog(GUI gui, File file, Object[][] data) {
+        String[] colNames = {"attribute", "value"};
 
         if (data.length == 0) {
             colNames = new String[]{""};
-            data = new String[][]{{""}, {"No additional information about the file(s) available."}, {""}};
+            data = new String[][]{{"No additional information about the file(s) available."}};
         }
 
         parent = gui;
