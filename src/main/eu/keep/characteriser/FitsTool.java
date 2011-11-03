@@ -147,7 +147,7 @@ public class FitsTool {
     	List<FitsMetadataElement> fitsFileStatus = fitsOut.getFileStatusElements();
         Map<String, List<String>> fileInfo = new HashMap<String, List<String>>();
 
-        if (fitsFileInfo == null && fitsFileStatus == null )
+        if ((fitsFileInfo == null || fitsFileInfo.size() == 0) && (fitsFileStatus == null ||fitsFileStatus.size() == 0))
         {
         	logger.info("No file info available");
         	return fileInfo;
