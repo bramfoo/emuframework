@@ -33,9 +33,14 @@ package eu.keep.gui.common;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.softwarearchive.pathway.ApplicationType;
+import eu.keep.gui.config.ConfigPanel;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 import javax.swing.*;
+import javax.swing.table.TableModel;
+
+import org.apache.log4j.Logger;
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -44,9 +49,11 @@ import java.util.*;
 
 public class InfoTableDialog extends JFrame {
 
+    private static Logger logger = Logger.getLogger(ConfigPanel.class.getName());
+
     private GUI parent;
 
-    public InfoTableDialog(GUI gui, File file, Object[][] data) {
+    public InfoTableDialog(GUI gui, File file, String[][] data) {
         String[] colNames = {"attribute", "value"};
 
         if (data.length == 0) {
@@ -220,8 +227,35 @@ public class InfoTableDialog extends JFrame {
     }
 
     private void initGUI(Object[] colNames, Object[][] data) {
-        JTable table = new JTable(data, colNames);
-        super.setSize(new Dimension(500, 400));
+        TableModel model = new InfoTableModel(colNames, data);
+    	JTable table = new JTable(model);
+        table.setDefaultRenderer(Object.class, new LineWrapCellRenderer());
+        table.setIntercellSpacing(new Dimension(0, 0));
+        
+        // Set row height, depending on amount of text in 2nd column
+        int numberOfDataRows = data.length;
+        
+        int totalHeight = 57; // minimum height, when there are no data rows
+        for (int i=0; i<numberOfDataRows; i++) {   	
+        	int lines = 0;
+        	if (data[i].length > 1 && (String)data[i][1] != null) {
+        		        		
+        		logger.info("i = " + i + ": (String)data[i][1] = " + (String)data[i][1]);
+        		
+
+            	String[] textLines = ((String)data[i][1]).split("\n"); // Individual new-line-separated lines in the cell's text
+        		for (int j=0; j<textLines.length; j++) {
+                 	// 62 is nominal number of characters that will fit on one row 
+                    int linesForTextLine = Math.max((int)Math.ceil((double)(textLines[j].length()) / new Double(62)), 1);   
+        			lines = lines + linesForTextLine;        			
+        		}
+        	}
+        	int rowHeight = 16*lines + 9;
+        	totalHeight = totalHeight + rowHeight;
+        	table.setRowHeight(i, rowHeight);
+        }
+        
+        super.setSize(new Dimension(750, Math.min(totalHeight, 600)));
         super.setLayout(new BorderLayout(5, 5));
         super.add(new JScrollPane(table), BorderLayout.CENTER);
     }

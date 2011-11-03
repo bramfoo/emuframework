@@ -43,7 +43,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
-import java.util.TreeSet;
 import org.apache.log4j.Logger;
 
 /**
@@ -57,7 +56,7 @@ public class GUI extends JFrame {
     public static final int HEIGHT = 650;
     public static final String PROP_FILE_NAME = "gui.properties";
     public static final String PROP_FILE_NAME_KERNEL = "user.properties";
-    private static Logger logger = Logger.getLogger(GUI.class.getName());
+    private static final Logger logger = Logger.getLogger(GUI.class.getName());
 
     public CoreEngineModel model;
     public final Properties guiProps;
