@@ -59,7 +59,7 @@ public class GUI extends JFrame {
     public static final String PROP_FILE_NAME_KERNEL = "user.properties";
     private static Logger logger = Logger.getLogger(GUI.class.getName());
 
-    public final CoreEngineModel model;
+    public CoreEngineModel model;
     public final Properties guiProps;
 
     private MainPanel tabPanel;
@@ -347,6 +347,16 @@ public class GUI extends JFrame {
         logLabel.setText(message);
         super.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         tabPanel.setEnabled(false);
+    }
+
+    public void reloadModel() {
+        try {
+            model = new Kernel(PROP_FILE_NAME_KERNEL);
+        } catch (IOException e) {
+            e.printStackTrace();
+            model = null;
+            logger.fatal("Could not recover from failed CoreEngineModel.init()");
+        }
     }
 
     /**

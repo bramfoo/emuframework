@@ -134,10 +134,18 @@ public class SettingsFrame extends JFrame {
                         properties.setProperty(key, valueMap.get(key).getText());
                     }
                     properties.store(new FileOutputStream(fileName), null);
+                    parent.lock("Saving the new settings...");
+                    (new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            parent.reloadModel();
+                        }
+                    })).start();
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                 }
                 SettingsFrame.this.close();
+                parent.unlock("Successfully saved the new settings.");
             }
         });
 
