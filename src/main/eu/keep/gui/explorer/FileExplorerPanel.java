@@ -31,9 +31,11 @@
 package eu.keep.gui.explorer;
 
 import eu.keep.characteriser.Format;
+import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
-import eu.keep.gui.config.ConfigPanel;
+import eu.keep.softwarearchive.pathway.Pathway;
+import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -52,6 +54,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class FileExplorerPanel extends JPanel implements ActionListener {
 
@@ -60,7 +63,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     public File selectedFile;
     private GUI parent;
     private JButton autoStart;
-    private JButton characterize;
+    private JButton checkEnvironment;
     private JButton info;
 
     public FileExplorerPanel(GUI p) {
@@ -77,19 +80,19 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
 
         autoStart = new JButton("auto start");
-        characterize = new JButton("check environment");
+        checkEnvironment = new JButton("check environment");
         info = new JButton("info");
 
         autoStart.setEnabled(false);
-        characterize.setEnabled(false);
+        checkEnvironment.setEnabled(false);
         info.setEnabled(false);
 
         autoStart.addActionListener(this);
-        characterize.addActionListener(this);
+        checkEnvironment.addActionListener(this);
         info.addActionListener(this);
 
         buttonPanel.add(autoStart);
-        buttonPanel.add(characterize);
+        buttonPanel.add(checkEnvironment);
         buttonPanel.add(info);
 
         final FileNode dummyRoot = new FileNode(new File(""));
@@ -211,24 +214,101 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         if (e.getSource() == autoStart) {
             parent.clear();
+            checkEnvironment.setEnabled(false);
+            info.setEnabled(false);
+
             parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
             (new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        boolean success = parent.model.start(selectedFile);
-                        if(success) {
-                            // TODO descriptive meta data in a new tab
+                        java.util.List<Format> formats = parent.model.characterise(selectedFile);
+
+                        if (formats.isEmpty()) {
+                            parent.unlock("Could not determine the format of file: " + selectedFile);
                         }
-                        parent.unlock("Done.");
+                        else {
+                            parent.loadFormats(formats);
+                            parent.getConfigPanel().enableOptions(false);
+                            Format frmt = formats.get(0);
+
+                            // find dependencies
+                            java.util.List<Pathway> paths = parent.model.getPathways(frmt);
+                            parent.getConfigPanel().enableOptions(false);
+
+                            if (paths.isEmpty()) {
+                                parent.unlock("Didn't find any suitable dependency for format: " + frmt);
+                            }
+                            else {
+                                parent.getConfigPanel().loadPathways(paths);
+                                parent.getConfigPanel().enableOptions(false);
+
+                                // find emus
+                                Pathway path = paths.get(0);
+                                if (!parent.model.isPathwaySatisfiable(path)) {
+                                    parent.unlock("Sorry, " + path + " is not satisfiable");
+                                }
+                                else {
+                                    Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
+                                    if (emuMap.isEmpty()) {
+                                        parent.unlock("Didn't find an emulator for dependency: " + paths);
+                                    }
+                                    else {
+                                        parent.getConfigPanel().loadEmus(emuMap);
+                                        parent.getConfigPanel().enableOptions(false);
+
+                                        // find software
+                                        List<SoftwarePackage> swList = null;
+                                        EmulatorPackage emu = null;
+
+                                        for(Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
+                                            emu = entry.getKey();
+                                            swList = entry.getValue();
+                                            if(!swList.isEmpty()) {
+                                                break;
+                                            }
+                                        }
+
+                                        if (swList == null || swList.isEmpty()) {
+                                            parent.unlock("Sorry, could not find a software package for: " + path);
+                                        }
+                                        else {
+                                            parent.getConfigPanel().loadSoftware(swList);
+                                            parent.getConfigPanel().enableOptions(false);
+
+                                            // prepare config
+                                            SoftwarePackage swPack = swList.get(0);
+                                            int lastConfiguredID = parent.model.prepareConfiguration(selectedFile, emu, swPack, path);
+
+                                            Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
+
+                                            if (configMap.isEmpty()) {
+                                                parent.unlock("Sorry, could not find a configuration for: " + swPack.getDescription());
+                                            } else {
+                                                parent.getConfigPanel().loadConfiguration(configMap);
+                                                parent.getConfigPanel().enableOptions(false);
+
+                                                // run
+                                                parent.model.setEmuConfig(configMap, lastConfiguredID);
+                                                parent.model.runEmulationProcess(lastConfiguredID);
+                                                parent.unlock("Emulation process started.");
+
+                                                new InfoTableDialog(parent, selectedFile, emu, swPack);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     } catch (IOException ex) {
-                        parent.unlock("ERROR: " + ex.getMessage());
+                        parent.unlock("ERROR :: " + ex.getMessage());
                     }
+                    parent.getConfigPanel().enableOptions(true);
                 }
             })).start();
         }
 
-        if (e.getSource() == characterize) {
+        if (e.getSource() == checkEnvironment) {
             parent.clear();
             parent.lock("Characterizing file: " + selectedFile + ", please wait...");
             (new Thread(new Runnable() {
@@ -287,7 +367,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     void select(File file) {
         boolean isFile = file.isFile();
         autoStart.setEnabled(isFile);
-        characterize.setEnabled(isFile);
+        checkEnvironment.setEnabled(isFile);
         info.setEnabled(isFile);
         selectedFile = isFile ? file : null;
     }

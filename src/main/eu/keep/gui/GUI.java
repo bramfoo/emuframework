@@ -112,6 +112,10 @@ public class GUI extends JFrame {
         tabPanel.clear();
     }
 
+    public eu.keep.gui.config.ConfigPanel getConfigPanel() {
+        return tabPanel.configPanel;
+    }
+
     /**
      * Tries to stop the application gracefully and cleaning up the mess it left behind :)
      */

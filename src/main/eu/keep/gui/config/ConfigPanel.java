@@ -35,13 +35,11 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.gui.explorer.FileExplorerPanel;
-import eu.keep.softwarearchive.pathway.ApplicationType;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 import javax.swing.*;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -49,9 +47,7 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +58,7 @@ public class ConfigPanel extends JPanel {
 
     // drop down #1
     private JComboBox formatsDropDown;
-    private JButton findPathways;
+    public JButton findDependencies;
 
     // drop down #2
     private JComboBox pathwaysDropDown;
@@ -106,7 +102,7 @@ public class ConfigPanel extends JPanel {
         //TODO final int rememberedID;
 
         // find pathways button
-        findPathways.addActionListener(new ActionListener() {
+        findDependencies.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final Format frmt = (Format) formatsDropDown.getSelectedItem();
@@ -275,13 +271,13 @@ public class ConfigPanel extends JPanel {
         });
     }
 
-    private void loadConfiguration(Map<String, List<Map<String, String>>> map) {
+    public void loadConfiguration(Map<String, List<Map<String, String>>> map) {
         setEnableConfig(true);
         configModel.load(map);
         configTree.expandRow(0);
     }
 
-    private void loadEmus(Map<EmulatorPackage, List<SoftwarePackage>> emuMap) {
+    public void loadEmus(Map<EmulatorPackage, List<SoftwarePackage>> emuMap) {
         setEnableEmus(true);
         emulatorsDropDown.removeAllItems();
         for (Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
@@ -307,7 +303,7 @@ public class ConfigPanel extends JPanel {
         }
     }
 
-    private void loadSoftware(List<SoftwarePackage> swList) {
+    public void loadSoftware(List<SoftwarePackage> swList) {
         setEnableSoftware(true);
         softwareDropDown.removeAllItems();
         for (SoftwarePackage s : swList) {
@@ -326,7 +322,7 @@ public class ConfigPanel extends JPanel {
         // reset and enable or disable components
         formatsDropDown.removeAllItems();
         formatsDropDown.setEnabled(enable);
-        findPathways.setEnabled(enable);
+        findDependencies.setEnabled(enable);
     }
 
     // drop down #2
@@ -393,13 +389,13 @@ public class ConfigPanel extends JPanel {
         formatsPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         JLabel formatsLabel = new JLabel("Found formats:");
         formatsDropDown = new JComboBox();
-        findPathways = new JButton("Find dependencies");
+        findDependencies = new JButton("Find dependencies");
         formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
         formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        findPathways.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        findDependencies.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
         formatsPanel.add(formatsLabel);
         formatsPanel.add(formatsDropDown);
-        formatsPanel.add(findPathways);
+        formatsPanel.add(findDependencies);
         topRightPanel.add(formatsPanel);
 
         // the 'pathway' components
@@ -471,6 +467,21 @@ public class ConfigPanel extends JPanel {
         rightMainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         super.add(rightMainPanel, BorderLayout.EAST);
+    }
+
+    public void enableOptions(boolean enabled) {
+        formatsDropDown.setEnabled(enabled);
+        findDependencies.setEnabled(enabled);
+        pathwaysDropDown.setEnabled(enabled);
+        findEmus.setEnabled(enabled);
+        emulatorsDropDown.setEnabled(enabled);
+        findSoftware.setEnabled(enabled);
+        softwareDropDown.setEnabled(enabled);
+        prepareConfig.setEnabled(enabled);
+        configTree.setEnabled(enabled);
+        configTxt.setEnabled(enabled);
+        startConfig.setEnabled(enabled);
+        saveConfig.setEnabled(enabled);
     }
 
     class EmulatorPackageWrapper {
