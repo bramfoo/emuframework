@@ -36,16 +36,19 @@ import org.apache.log4j.Logger;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.*;
+import org.apache.log4j.Logger;
 
 @SuppressWarnings("unchecked")
 public class DBDataTableModel extends DefaultTableModel implements TableModelListener {
 
-    private static Logger logger = Logger.getLogger(DBDataTableModel.class.getName());
+    private static final Logger logger = Logger.getLogger(DBDataTableModel.class.getName());
 
     private static final String BLOB_LABEL = "<<<BLOB>>>";
 
@@ -99,13 +102,9 @@ public class DBDataTableModel extends DefaultTableModel implements TableModelLis
             for (int i = 1; i <= numberOfColumns; i++) {
                 String columnName = rsmd.getColumnName(i);
                 row.add(columnName);
-            }
-
-            for (int i = 1; i <= numberOfColumns; i++) {
                 int type = rsmd.getColumnType(i);
                 columnTypes.add(type);
             }
-
             data.add(row);
 
             while (rs.next()) {
@@ -115,11 +114,28 @@ public class DBDataTableModel extends DefaultTableModel implements TableModelLis
 
                     int type = columnTypes.get(i-1);
 
-                    if (type != java.sql.Types.BLOB) {
-                        row.add(rs.getString(i));
+                    if (type == java.sql.Types.BLOB) {
+                        row.add(rs.getBlob(i) == null ? null : BLOB_LABEL);
+                    }
+                    else if (type == java.sql.Types.CLOB) {
+                    	Clob clob = rs.getClob(i);
+                    	if (clob == null) {
+                    		row.add("<null>");
+                    	} else {
+                    		StringBuffer str = new StringBuffer();
+                    		String strng;                    
+                    		BufferedReader bufferRead = new BufferedReader(clob.getCharacterStream());
+                    		while ((strng=bufferRead.readLine())!=null) {
+                    			logger.debug("read line from clob: " + strng);
+                    			str.append("\n");
+                    			str.append(strng);
+                    		}
+                    		logger.debug("converted clob to string: " + str.toString());
+                    		row.add(str.toString());
+                    	}
                     }
                     else {
-                        row.add(rs.getBlob(i) == null ? null : BLOB_LABEL);
+                        row.add(rs.getString(i));
                     }
                 }
                 data.add(row);
