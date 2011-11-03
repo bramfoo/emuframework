@@ -61,7 +61,7 @@ CREATE TABLE apps
   license VARCHAR2(500),
   language VARCHAR2(500),
   reference VARCHAR2(500),
-  user_instructions VARCHAR2(2000)
+  user_instructions CLOB
 );
 
 -- Table for operating systems
