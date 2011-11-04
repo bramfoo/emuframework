@@ -151,15 +151,15 @@ $
     <target name="release" description="creates a release package" depends="jar, runServer.scripts, packages.All, db.drop, db.create, db.populate" >	   	    
 	    <property name="release.name"  value="ea-${server.version}.zip"/>
         <mkdir dir="${release.dir}"/>
-        <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" includes="${server.script}.*, *.jar, lib/*.jar, database/db/**, user.properties, logging.properties" excludes="lib/junit-4.7.jar">
+        <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" includes="${server.script}.*, *.jar, lib/*.jar, database/db/**, user.properties, log4j.properties" excludes="lib/junit-4.7.jar">
         </zip>
         <echo message="${release.name} has been created in ${release.dir}" />  
     </target>
 	
     <!-- Generate runServer scripts for Linux (.sh) and Windows (.bat) -->
 	<target name="runServer.scripts">    
-	    <echo file="${server.script}.sh" append="false" message='#!/bin/bash${line.separator}java -Xmx256M -Djava.util.logging.config.file=logging.properties -jar ${server.name}-${server.version}.jar'/>
-	    <echo file="${server.script}.bat" append="false" message='@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Djava.util.logging.config.file=logging.properties -jar ${server.name}-${server.version}.jar'/>        
+	    <echo file="${server.script}.sh" append="false" message='#!/bin/bash${line.separator}java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>
+	    <echo file="${server.script}.bat" append="false" message='@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>        
     </target>
 
     <!-- unit test -->

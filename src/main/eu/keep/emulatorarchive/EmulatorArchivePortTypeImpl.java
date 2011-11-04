@@ -42,7 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 
@@ -82,7 +82,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
             return emuPack;
         }
         catch (Exception ex) {
-        	LOGGER.severe("Error generating emulator package: " + ex);
+        	LOGGER.fatal("Error generating emulator package: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error generating emulator package: " + ex);
         }
@@ -106,14 +106,14 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
             for (Integer i : ids) {
 
             	EmulatorPackage emuPack = createEmuPack(i);
-            	LOGGER.fine("Adding emulator package ID " + i);
+            	LOGGER.debug("Adding emulator package ID " + i);
             	emuPackList.getEmulatorPackage().add(emuPack);
             }
             LOGGER.info("Returning list of Emulator Packages");
             return emuPackList;
         }
         catch (Exception ex) {
-        	LOGGER.severe("Error generating emulator package list: " + ex);
+        	LOGGER.fatal("Error generating emulator package list: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error generating emulator package list: " + ex);
         }
@@ -130,7 +130,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
 
             InputStream is = epDAO.getEmulatorPackage(id);
 
-            LOGGER.fine("Converting InputStream to DataHandler");
+            LOGGER.debug("Converting InputStream to DataHandler");
             DataSource ds = new InputStreamDataSource(is);
             DataHandler dh = new DataHandler(ds);
 
@@ -138,7 +138,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
             return dh;
             
         } catch (Exception ex) {
-        	LOGGER.severe("Error getting DataHandler for binary: " + ex);
+        	LOGGER.fatal("Error getting DataHandler for binary: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error getting DataHandler for binary: " + ex);
         }
@@ -153,7 +153,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
         LOGGER.info("Retrieving list of supported hardware from database...");
         try {
             Set<String> hwNames = epDAO.getHardwareNames();
-            LOGGER.fine("Supported hardware: " + hwNames.toString());
+            LOGGER.debug("Supported hardware: " + hwNames.toString());
             
             HardwareIDs hwids = new HardwareIDs();
             hwids.getId().clear();
@@ -162,7 +162,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
             return hwids;
         }
         catch (Exception ex) {
-        	LOGGER.severe("Error getting hardware list from database: " + ex);
+        	LOGGER.fatal("Error getting hardware list from database: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error getting hardware list from database: " + ex);
         }
@@ -180,19 +180,19 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
 
         try {
             List<Integer> emus = epDAO.getEmuID(hw);
-            LOGGER.fine("Supported emulator IDs: " + emus.toString());
+            LOGGER.debug("Supported emulator IDs: " + emus.toString());
 
             for (Integer i : emus) {
             	EmulatorPackage emuPack = createEmuPack(i);
                 emuPackList.getEmulatorPackage().add(emuPack);
-            	LOGGER.fine("Adding emulator package ID: " + i);
+            	LOGGER.debug("Adding emulator package ID: " + i);
             }
 
             LOGGER.info("Returning list of emulators supporting hardware " + hw);
             return emuPackList;
         }
         catch (Exception ex) {
-        	LOGGER.severe("Error getting list of emulators supporting hardware " + hw + ": " + ex);
+        	LOGGER.fatal("Error getting list of emulators supporting hardware " + hw + ": " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error getting list of emulators supporting hardware " + hw + ": " + ex);
         }
@@ -205,7 +205,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
      */
     private EmulatorPackage createEmuPack(int id)
     {
-    	LOGGER.finer("Creating Emulator Package for emulator ID: " + id);
+    	LOGGER.trace("Creating Emulator Package for emulator ID: " + id);
         EmulatorPackage emuPack = new EmulatorPackage();
         EmulatorPackage.Emulator emu = new EmulatorPackage.Emulator();
         EmulatorPackage.Emulator.Executable exec = new EmulatorPackage.Emulator.Executable();
@@ -234,7 +234,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
 
         emuPack.setEmulator(emu);
         emuPack.setPackage(pack);
-        LOGGER.finer("Created Emulator Package for emulator ID: " + id + " (" + emuPack.getEmulator().getName() + " ver " + emuPack.getEmulator().getVersion());
+        LOGGER.trace("Created Emulator Package for emulator ID: " + id + " (" + emuPack.getEmulator().getName() + " ver " + emuPack.getEmulator().getVersion());
         return emuPack;
 
     }

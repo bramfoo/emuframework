@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import eu.keep.emulatorarchive.EmulatorPackageDAO;
 
@@ -202,7 +202,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while getting version for emulator ID= "
+             logger.warn("Database: error while getting version for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -237,7 +237,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: Cannot get list of emulator IDs: " +
+             logger.warn("Database: Cannot get list of emulator IDs: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -276,7 +276,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: Cannot get emulator count: " +
+             logger.warn("Database: Cannot get emulator count: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -314,7 +314,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: Cannot get emulator IDs: " +
+             logger.warn("Database: Cannot get emulator IDs: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -352,7 +352,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: Cannot get hardware IDs: " +
+             logger.warn("Database: Cannot get hardware IDs: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -381,7 +381,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
                 stmt.close();
         }
         catch (SQLException e) {
-             logger.warning("Database: Cannot get hardware names: " +
+             logger.warn("Database: Cannot get hardware names: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -421,7 +421,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
             }
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving binary for emulator ID= "
+             logger.warn("Database: error while retrieving binary for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             return is;
@@ -465,7 +465,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving package name for emulator ID= "
+             logger.warn("Database: error while retrieving package name for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -509,7 +509,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving name for emulator ID= "
+             logger.warn("Database: error while retrieving name for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -553,7 +553,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving version for emulator ID= "
+             logger.warn("Database: error while retrieving version for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -597,7 +597,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving description for emulator ID= "
+             logger.warn("Database: error while retrieving description for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -641,7 +641,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving executable type for emulator ID= "
+             logger.warn("Database: error while retrieving executable type for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -685,7 +685,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: error while retrieving user instructions for emulator ID= "
+             logger.warn("Database: error while retrieving user instructions for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -729,7 +729,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (Exception e) {
-             logger.warning("Database: Cannot get package type for emulator " +
+             logger.warn("Database: Cannot get package type for emulator " +
              emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -773,7 +773,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (SQLException e) {
-             logger.warning("Database: Cannot get executable name for emulator ID= "
+             logger.warn("Database: Cannot get executable name for emulator ID= "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -816,7 +816,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (Exception e) {
-             logger.warning("Database: Cannot get executable directory for emulator "
+             logger.warn("Database: Cannot get executable directory for emulator "
              + emuID + ": " + e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -849,7 +849,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
             }
             catch (SQLException sqle) {
-                 logger.warning(sqle.toString());
+                 logger.warn(sqle.toString());
                 sqle.printStackTrace();
             }
             finally {
@@ -859,7 +859,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (Exception e) {
-             logger.warning("Database: Cannot get image format names: " +
+             logger.warn("Database: Cannot get image format names: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -893,7 +893,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
             }
             catch (SQLException sqle) {
-                 logger.warning(sqle.toString());
+                 logger.warn(sqle.toString());
                 sqle.printStackTrace();
             }
             finally {
@@ -903,7 +903,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
         }
         catch (Exception e) {
-             logger.warning("Database: Cannot get hardware names: " +
+             logger.warn("Database: Cannot get hardware names: " +
              e.toString());
             e.printStackTrace();
             throw new RuntimeException(e);

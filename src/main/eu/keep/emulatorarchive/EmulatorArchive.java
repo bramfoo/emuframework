@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -93,7 +93,7 @@ public class EmulatorArchive {
         emulatorDatabaseConnection = establishConnection(pv.get("driver"), pv.get("urlPref") + pv.get("url") + pv.get("urlExist") + pv.get("urlSchema"), pv.get("user"),
         		pv.get("pw"), connectionAttempts);
 
-        System.out.println("Setting up web services port...");
+        LOGGER.info("Setting up web services port...");
         emulatorPackageDAO = new H2EmulatorPackageDAO(emulatorDatabaseConnection);
         Object implementor = new EmulatorArchivePortTypeImpl(emulatorPackageDAO);
         String address = props.getProperty("server.soap.address");
@@ -109,14 +109,14 @@ public class EmulatorArchive {
 
         EmulatorArchive ea = null;
 
-        System.out.println("Starting server...");
+        LOGGER.info("Starting server...");
 
         try {
 
             // Read the properties file
             props = getProperties(propertiesFile);
             ea = new EmulatorArchive(props);
-            System.out.println("Server ready...");
+            LOGGER.info("Server ready...");
 
             // Infinite loop
             while (true){
@@ -124,7 +124,7 @@ public class EmulatorArchive {
             }
         }
         catch (IOException e) {
-            LOGGER.severe("Error occurred while setting up emulator archive: " + e.toString());
+            LOGGER.fatal("Error occurred while setting up emulator archive: " + e.toString());
             throw new RuntimeException("Error occurred while setting up emulator archive: " + e.toString());
         } finally {
             if(ea != null) {
@@ -150,13 +150,13 @@ public class EmulatorArchive {
             props.load(fis);
         }
         catch (FileNotFoundException e) {
-            LOGGER.severe("Failed to read properties file [" + userPropertiesFileName + "]: "
+            LOGGER.fatal("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
             throw new IOException("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
         }
         catch (IOException e) {
-            LOGGER.severe("Failed to read properties file [" + userPropertiesFileName + "]: "
+            LOGGER.fatal("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
             throw new IOException("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
@@ -196,7 +196,7 @@ public class EmulatorArchive {
 
         Connection conn = null;
     	
-    	System.out.println("Setting up connection to archive database...");
+    	LOGGER.info("Setting up connection to archive database...");
 
         // Set up the db connection
         // Register the JDBC driver
@@ -204,7 +204,7 @@ public class EmulatorArchive {
             Class.forName(driver);
         }
         catch (ClassNotFoundException e) {
-             LOGGER.severe("Database driver not found: " + driver);
+             LOGGER.fatal("Database driver not found: " + driver);
             throw new IOException("Database driver not found: " + e);
         }
 
@@ -221,7 +221,7 @@ public class EmulatorArchive {
         }
 
         if (iAttempt >= nAttempt) {
-             LOGGER.severe("Failed to connect to database: " + dbUrl);
+             LOGGER.fatal("Failed to connect to database: " + dbUrl);
             throw new IOException("Failed to connect to database: " + dbUrl);
         }
 
@@ -237,7 +237,7 @@ public class EmulatorArchive {
             emulatorDatabaseConnection.close();
         }
         catch (SQLException e) {
-            LOGGER.severe("Failed to close connection to database");
+            LOGGER.fatal("Failed to close connection to database");
             throw new IOException("Failed to close connection to database: " + e.toString());
         }
     }
