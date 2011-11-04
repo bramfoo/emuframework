@@ -61,7 +61,7 @@ public abstract class FileUtilities {
     private static final int COPY_BUFFER_SIZE = 8192;
 
     static {
-        logger = Logger.getLogger("eu.keep.util.FileUtilities");
+        logger = Logger.getLogger(FileUtilities.class.getName());
     }
 
     /**

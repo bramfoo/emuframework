@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 public class DiskUtilities {
 	
-	private static final Logger logger = Logger.getLogger("eu.keep.util.DiskUtilities");
+	private static final Logger logger = Logger.getLogger(DiskUtilities.class.getName());
 	
     static byte[]    sectorsPerTrack = new byte[2];
     static byte[]    numHeads = new byte[2];

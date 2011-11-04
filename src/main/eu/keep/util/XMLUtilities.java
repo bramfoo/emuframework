@@ -55,7 +55,7 @@ import org.xml.sax.SAXException;
  */
 public class XMLUtilities {
 
-    private static final Logger logger       = Logger.getLogger("FileUtilities");
+    private static final Logger logger       = Logger.getLogger(XMLUtilities.class.getName());
 
     private static JAXBContext  jc           = null;
     public static String        JAXB_PATHS = "eu.keep.softwarearchive.pathway";

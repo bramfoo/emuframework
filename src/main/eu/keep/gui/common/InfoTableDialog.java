@@ -49,7 +49,7 @@ import java.util.*;
 
 public class InfoTableDialog extends JFrame {
 
-    private static Logger logger = Logger.getLogger(ConfigPanel.class.getName());
+    private static Logger logger = Logger.getLogger(InfoTableDialog.class.getName());
 
     private GUI parent;
 
@@ -239,10 +239,6 @@ public class InfoTableDialog extends JFrame {
         for (int i=0; i<numberOfDataRows; i++) {   	
         	int lines = 0;
         	if (data[i].length > 1 && (String)data[i][1] != null) {
-        		        		
-        		logger.info("i = " + i + ": (String)data[i][1] = " + (String)data[i][1]);
-        		
-
             	String[] textLines = ((String)data[i][1]).split("\n"); // Individual new-line-separated lines in the cell's text
         		for (int j=0; j<textLines.length; j++) {
                  	// 62 is nominal number of characters that will fit on one row 
