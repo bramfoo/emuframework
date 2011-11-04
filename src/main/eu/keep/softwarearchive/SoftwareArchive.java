@@ -38,7 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -95,7 +95,7 @@ public class SoftwareArchive {
         softwareDatabaseConnection = establishConnection(pv.get("driver"), pv.get("urlPref") + pv.get("url") + pv.get("urlExist") + pv.get("urlSchema"), pv.get("user"),
         		pv.get("pw"), connectionAttempts);
 
-        System.out.println("Setting up web services port...");
+        LOG.info("Setting up web services port...");
         softwarePackDAO = new H2SoftwarePackageDAO(softwareDatabaseConnection);
         Object implementor = new SoftwareArchivePortTypeImpl(softwarePackDAO);
         String address = props.getProperty("server.soap.address");
@@ -114,14 +114,14 @@ public class SoftwareArchive {
 
         SoftwareArchive sa = null;
 
-        System.out.println("Starting server...");
+        LOG.info("Starting server...");
 
         try {
 
             // Read the properties file
             props = getProperties(propertiesFile);
             sa = new SoftwareArchive(props);
-            System.out.println("Server ready...");
+            LOG.info("Server ready...");
 
             // Infinite loop
             while (true){
@@ -129,7 +129,7 @@ public class SoftwareArchive {
             }
         }
         catch (IOException e) {
-            LOG.severe("Error occurred while setting up software archive: " + e.toString());
+            LOG.fatal("Error occurred while setting up software archive: " + e.toString());
             throw new RuntimeException("Error occurred while setting up software archive: " + e.toString());
         } finally {
             if(sa != null) {
@@ -156,13 +156,13 @@ public class SoftwareArchive {
             props.load(fis);
         }
         catch (FileNotFoundException e) {
-            LOG.severe("Failed to read properties file [" + userPropertiesFileName + "]: "
+            LOG.fatal("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
             throw new IOException("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
         }
         catch (IOException e) {
-            LOG.severe("Failed to read properties file [" + userPropertiesFileName + "]: "
+            LOG.fatal("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
             throw new IOException("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
@@ -203,7 +203,7 @@ public class SoftwareArchive {
 
         Connection conn = null;
     	
-    	System.out.println("Setting up connection to archive database...");
+        LOG.info("Setting up connection to archive database...");
 
         // Set up the db connection
         // Register the JDBC driver
@@ -211,7 +211,7 @@ public class SoftwareArchive {
             Class.forName(driver);
         }
         catch (ClassNotFoundException e) {
-             LOG.severe("Database driver not found: " + driver);
+             LOG.fatal("Database driver not found: " + driver);
             throw new IOException("Database driver not found: " + e);
         }
 
@@ -228,7 +228,7 @@ public class SoftwareArchive {
         }
 
         if (iAttempt >= nAttempt) {
-             LOG.severe("Failed to connect to database: " + dbUrl);
+             LOG.fatal("Failed to connect to database: " + dbUrl);
             throw new IOException("Failed to connect to database: " + dbUrl);
         }
 
@@ -244,7 +244,7 @@ public class SoftwareArchive {
             softwareDatabaseConnection.close();
         }
         catch (SQLException e) {
-            LOG.severe("Failed to close connection to database");
+            LOG.fatal("Failed to close connection to database");
             throw new IOException("Failed to close connection to database: " + e.toString());
         }
     }

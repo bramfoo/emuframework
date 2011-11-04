@@ -37,7 +37,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -99,7 +99,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
             return swPack;
         }
         catch (Exception ex) {
-        	LOG.severe("Error generating software package: " + ex);
+        	LOG.fatal("Error generating software package: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error generating software package: " + ex);
         }
@@ -123,14 +123,14 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
             for (String i : ids) {
             	SoftwarePackage swPack = createSoftwarePack(i);
-            	LOG.fine("Adding software package ID " + i);
+            	LOG.debug("Adding software package ID " + i);
             	swPackList.getSoftwarePackage().add(swPack);
             }
             LOG.info("Returning list of Software Packages");
             return swPackList;
         }
         catch (Exception ex) {
-        	LOG.severe("Error generating software package list: " + ex);
+        	LOG.fatal("Error generating software package list: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error generating software package list: " + ex);
         }
@@ -157,7 +157,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         columnNames.add("OS_ID");
         columnNames.add("PLATFORM_ID");
         List<List<String>> pathways = spDAO.getPathwaysView(fileFormat, columnNames);
-        LOG.fine("Pathways found: " + pathways);
+        LOG.debug("Pathways found: " + pathways);
         
         if (pathways.size() == 0)
         	return pwList;
@@ -190,7 +190,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         	
         	pw.setHardwarePlatform(createHardwarePlatformType(it.next()));
 
-            LOG.fine("Pathway added: [" + pathwayToString(pw) + "]");
+            LOG.debug("Pathway added: [" + pathwayToString(pw) + "]");
             pwList.getPathway().add(pw);
         }
         LOG.info("Returning " + pwList.getPathway().size() + " pathway(s) for file format: " + fileFormat);
@@ -229,14 +229,14 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
             for (String i : ids)
             {
-            	LOG.fine("Adding package ID " + i + " to list");
+            	LOG.debug("Adding package ID " + i + " to list");
             	spl.getSoftwarePackage().add(createSoftwarePack(i));
             }
             LOG.info("Returning software packages matching pathway " + pathwayToString(pathway) + ": " + ids);
             return spl;
         }
         catch (Exception ex) {
-        	LOG.severe("Error retrieving software packages that match pathway: " + pathwayToString(pathway) + ": " + ex);
+        	LOG.fatal("Error retrieving software packages that match pathway: " + pathwayToString(pathway) + ": " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error retrieving software packages that match pathway: " + pathwayToString(pathway) + ": " + ex);
         }
@@ -261,7 +261,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         try {
             InputStream is = spDAO.getImageFile(id);
 
-            LOG.fine("Converting InputStream to DataHandler");
+            LOG.debug("Converting InputStream to DataHandler");
             DataSource ds = new InputStreamDataSource(is);
             DataHandler dh = new DataHandler(ds);
 
@@ -269,7 +269,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
             return dh;
             
         } catch (Exception ex) {
-        	LOG.severe("Error getting DataHandler for binary: " + ex);
+        	LOG.fatal("Error getting DataHandler for binary: " + ex);
             ex.printStackTrace();
             throw new RuntimeException("Error getting DataHandler for binary: " + ex);
         }
@@ -324,7 +324,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
      */
     private SoftwarePackage createSoftwarePack(String id)
     {
-    	LOG.finer("Creating Software Package for software ID: " + id);
+    	LOG.trace("Creating Software Package for software ID: " + id);
     	
     	List<List<String>> results;
         List<String> columnNames = new ArrayList<String>();
@@ -347,7 +347,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
        	softPack.getOs().addAll(createOSType(id, true));
         softPack.getApp().addAll(createAppType(id, true));
         
-        LOG.finer("Created Software Package for emulator ID: " + id + " (" + softPack.toString() + ")");
+        LOG.trace("Created Software Package for emulator ID: " + id + " (" + softPack.toString() + ")");
         return softPack;
     }
     

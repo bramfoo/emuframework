@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.apache.log4j.Logger;
 
 /**
  * H2 database implementation of the EmuPackageDAO interface.
@@ -151,7 +151,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
         else
         	throw new RuntimeException("Unsupported view name specified: " + viewName);
 
-        LOGGER.fine("Querying view: " + viewName + " for columns " + columnNames + " on ID: " + imageID);
+        LOGGER.debug("Querying view: " + viewName + " for columns " + columnNames + " on ID: " + imageID);
         List<List<String>> viewInfo = new ArrayList<List<String>>();
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -160,7 +160,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
             try {
                 pstmt = conn.prepareStatement(query);
                 pstmt.setString(1, imageID);
-                LOGGER.finer("Using query: " + pstmt.toString());
+                LOGGER.trace("Using query: " + pstmt.toString());
                 
                 rs = pstmt.executeQuery();
 
@@ -170,7 +170,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	                {
 	                	row.add(rs.getString(name));
 	                }
-	                LOGGER.fine("Added row: " + row);
+	                LOGGER.debug("Added row: " + row);
 	                viewInfo.add(row);
                 }
             }
@@ -206,7 +206,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
             throw new IllegalArgumentException("Invalid file format");
         }
 
-        LOGGER.fine("Retrieving pathways for file format '" + fileFormat + "'");
+        LOGGER.debug("Retrieving pathways for file format '" + fileFormat + "'");
         List<List<String>> pathways = new ArrayList<List<String>>();
         try {
             PreparedStatement pstmt = null;
@@ -222,7 +222,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	                	pathway.add(rs.getString(name));
 	                }
 	                pathways.add(pathway);
-	                LOGGER.fine("Added pathway for '" + fileFormat + "': " + pathway);
+	                LOGGER.debug("Added pathway for '" + fileFormat + "': " + pathway);
 	            }
             }
             finally {
@@ -235,7 +235,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        LOGGER.fine("Found " + pathways.size() + " pathways for file format '" + fileFormat + "'");
+        LOGGER.debug("Found " + pathways.size() + " pathways for file format '" + fileFormat + "'");
         return pathways;
     }
     
@@ -305,7 +305,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        LOGGER.fine("Querying images for [" + appName +"|" + osName + "]");
+        LOGGER.debug("Querying images for [" + appName +"|" + osName + "]");
         try {
             pstmt = conn.prepareStatement(SELECT_IMG_ON_APP_OS);
             pstmt.setString(1, appName);
@@ -324,7 +324,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        LOGGER.fine("Found images for [" + appName +"|" + osName + "]: " + imageID);
+        LOGGER.debug("Found images for [" + appName +"|" + osName + "]: " + imageID);
         return imageID;
     }
 
@@ -334,7 +334,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        LOGGER.fine("Quering file format table for " + fileFormatID);
+        LOGGER.debug("Quering file format table for " + fileFormatID);
         try {
             pstmt = conn.prepareStatement(SELECT_ALL_FILEFORMATS_ON_FF);
             pstmt.setString(1, fileFormatID);
@@ -355,7 +355,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        LOGGER.fine("Found information on fileformat [" + fileFormatID + "]: " + fileFormatInfo);
+        LOGGER.debug("Found information on fileformat [" + fileFormatID + "]: " + fileFormatInfo);
         return fileFormatInfo;
 	}
 
@@ -365,7 +365,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
-        LOGGER.fine("Quering platform table for " + hardwarePlatformID);
+        LOGGER.debug("Quering platform table for " + hardwarePlatformID);
         try {
             pstmt = conn.prepareStatement(SELECT_ALL_PLATFORMS_ON_PF);
             pstmt.setString(1, hardwarePlatformID);
@@ -388,7 +388,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-        LOGGER.fine("Found information on platform [" + hardwarePlatformID + "]: " + platformInfo);
+        LOGGER.debug("Found information on platform [" + hardwarePlatformID + "]: " + platformInfo);
         return platformInfo;
 	}
 }
