@@ -1,1 +1,3 @@
-Blocek
+To start Blocek, type 'C:\BLOCEK\BLOCEK' at the DOS command prompt.
+In Blocek, use the menu-bars at the top to open/close files.
+To exit Blocek, select Exit from the file-menu, or press Esc.

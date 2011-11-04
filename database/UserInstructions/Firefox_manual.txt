@@ -1,1 +1,4 @@
-Firefox
+To start Firefox, type 'firefox' at the command line.
+In Firefox, use the menu-bars at the top to open/close files, copy/paste, etc. Use the 'address bar' to manually enter a URL, and use the back- and forward-buttons to navigate through the browser history.
+Commonly visited websites can be 'bookmarked' for later re-use. To do this, open the 'Bookmarks' menu and select 'Bookmark this page'. Saving a bookmark in the 'Bookmarks Toolbar folder' means the bookmark will appear in the 'Bookmarks toolbar' at the top of the window. This bookmark can now simply be clicked for quick access to the stored URL.
+To exit Firefox, select Quit from the file-menu.

@@ -1,1 +1,3 @@
-Beaver
+To start Beaver, type 'beaver' at the command line.
+In Beaver, use the menu-bars at the top to open/close files, copy/paste, etc.
+To exit Beaver, select Exit from the file-menu, or press Ctrl-Q.

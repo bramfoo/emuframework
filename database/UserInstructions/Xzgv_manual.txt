@@ -1,1 +1,4 @@
-Xzgv
+To start Xzgv, type 'xzgv' at the command line.
+In Xzgv, use the 'Selector' panel to navigate to your file (use single-clicks with your mouse). 
+Right-clicking the mouse will show a menu with options (different options for the 'Selector' and main panels).
+To exit Xzgv, select Exit from the right-click menu in the 'Selector' panel, or press Ctrl-Q.
