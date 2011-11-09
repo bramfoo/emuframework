@@ -275,6 +275,18 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     }
 
     /**
+     * Generate a list of all software languages in the database
+     * @param dummy Dummy parameter (unused) required by CXF
+     * @return LanguageList List of languages
+     */
+    @Override
+    public SwLanguageList getLanguageList(String dummy) {
+    	LOG.info("Generating list of Languages...");
+    	SwLanguageList languages = spDAO.getLanguages();
+    	return languages;
+    }
+
+    /**
      * Create an empty Pathway object (@code PathwaySchema.xsd) with all
      * items initialised
      * @return Pathway empty pathway object
@@ -523,17 +535,5 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         public String getContentType() {return null;}
     }
 
-
-    /**
-     * Generate a list of all software languages in the database
-     * @param dummy Dummy parameter (unused) required by CXF
-     * @return LanguageList List of languages
-     */
-    @Override
-    public SwLanguageList getLanguageList(String dummy) {
-    	LOG.info("Generating list of Languages...");
-    	SwLanguageList languages = spDAO.getLanguages();
-    	return languages;
-    }
 
 }
