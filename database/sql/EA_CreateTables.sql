@@ -38,6 +38,13 @@
 --
 
 
+-- Table for software languages
+CREATE TABLE languages
+(
+  language_id varchar2(2) NOT NULL PRIMARY KEY, 
+  language_name varchar2(250) UNIQUE
+);
+
 -- Table for emulators
 CREATE TABLE emulators
 (
@@ -48,11 +55,13 @@ CREATE TABLE emulators
   exec_name VARCHAR2(250),
   exec_dir VARCHAR2(250),
   description VARCHAR2(500),
+  language_id VARCHAR2(2),
   package_name VARCHAR2(250),
   package_type VARCHAR2(250),
   package_version VARCHAR2(250),
   package BLOB,
-  user_instructions VARCHAR2(2000)
+  user_instructions VARCHAR2(2000),
+  FOREIGN KEY (language_id) REFERENCES languages (language_id)
 );
 
 -- Table for hardware types

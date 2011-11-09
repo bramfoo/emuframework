@@ -199,6 +199,18 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
     }
     
     /**
+     * Generate a list of all software languages in the database
+     * @param dummy Dummy parameter (unused) required by CXF
+     * @return LanguageList List of languages
+     */
+    @Override
+    public LanguageList getLanguageList(int dummy) {
+    	LOGGER.info("Generating list of Languages...");
+    	LanguageList languages = epDAO.getLanguages();
+    	return languages;
+    }
+
+    /**
      * Create an Emulator Package (@code EmulatorPackageSchema.xsd) for an emulator in the database
      * @param id ID of the emulator
      * @return Emulator Package for the requested emulator

@@ -58,78 +58,80 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     private Connection          conn;
 
     // Emulator table
-    private static final String EMULATOR_TABLE_NAME                    = "emulators";
+    private static final String EMULATOR_TABLE_NAME                     = "emulators";
 
-    private static final String SELECT_EMULATOR_PACKAGE_WHERE          = "SELECT package_name, package FROM "
+    private static final String SELECT_EMULATOR_PACKAGE_WHERE           = "SELECT package_name, package FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_USER_INSTRUCTIONS_WHERE= "SELECT user_instructions FROM "
+    private static final String SELECT_EMULATOR_USER_INSTRUCTIONS_WHERE = "SELECT user_instructions FROM "
     																			+ EMULATOR_TABLE_NAME
     																			+ " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_IDS                    = "SELECT emulator_id FROM "
+    private static final String SELECT_EMULATOR_IDS                     = "SELECT emulator_id FROM "
                                                                                + EMULATOR_TABLE_NAME;
 
-    private static final String SELECT_EMULATOR_EXEC_TYPE_WHERE        = "SELECT exec_type FROM "
+    private static final String SELECT_EMULATOR_EXEC_TYPE_WHERE         = "SELECT exec_type FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_PACKAGE_TYPE_WHERE     = "SELECT package_type FROM "
+    private static final String SELECT_EMULATOR_PACKAGE_TYPE_WHERE      = "SELECT package_type FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_PACKAGE_FILENAME_WHERE = "SELECT package_name FROM "
+    private static final String SELECT_EMULATOR_PACKAGE_FILENAME_WHERE  = "SELECT package_name FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_PACKAGE_VERSION_WHERE  = "SELECT package_version FROM "
+    private static final String SELECT_EMULATOR_PACKAGE_VERSION_WHERE   = "SELECT package_version FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_NAME_WHERE             = "SELECT name FROM "
+    private static final String SELECT_EMULATOR_NAME_WHERE              = "SELECT name FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_VERSION_WHERE          = "SELECT version FROM "
+    private static final String SELECT_EMULATOR_VERSION_WHERE           = "SELECT version FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_DESCRIPTION_WHERE      = "SELECT description FROM "
+    private static final String SELECT_EMULATOR_DESCRIPTION_WHERE       = "SELECT description FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_EXEC_NAME_WHERE        = "SELECT exec_name FROM "
+    private static final String SELECT_EMULATOR_EXEC_NAME_WHERE         = "SELECT exec_name FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String SELECT_EMULATOR_EXEC_DIR_WHERE         = "SELECT exec_dir FROM "
+    private static final String SELECT_EMULATOR_EXEC_DIR_WHERE          = "SELECT exec_dir FROM "
                                                                                + EMULATOR_TABLE_NAME
                                                                                + " WHERE emulator_id=?";
 
-    private static final String COUNT_EMULATOR                         = "SELECT COUNT(*) FROM "
+    private static final String COUNT_EMULATOR                          = "SELECT COUNT(*) FROM "
                                                                                + EMULATOR_TABLE_NAME;
 
     // Hardware table
-    private static final String HARDWARE_TABLE_NAME                    = "hardware";
+    private static final String HARDWARE_TABLE_NAME                     = "hardware";
 
-    private static final String SELECT_HARDWARE_IDS                    = "SELECT hardware_id FROM "
-                                                                               + HARDWARE_TABLE_NAME;
+    private static final String SELECT_HARDWARE_IDS                     = "SELECT hardware_id FROM " + HARDWARE_TABLE_NAME;
 
-    private static final String SELECT_HARDWARE_NAMES                    = "SELECT name FROM "
-        + HARDWARE_TABLE_NAME;
+    private static final String SELECT_HARDWARE_NAMES                   = "SELECT name FROM " + HARDWARE_TABLE_NAME;
 
     // Image format table
-    private static final String IMAGEFORMAT_TABLE_NAME                 = "imageformats";
+    private static final String IMAGEFORMAT_TABLE_NAME                  = "imageformats";
+
+    // Languages table
+    private static final String LANGUAGE_TABLE_NAME           			= "languages";
+    private static final String SELECT_LANGUAGES                		= "SELECT * FROM " + LANGUAGE_TABLE_NAME;
 
     // Emulator-Hardware Junction Table
-    private static final String EMULATOR_HARDWARE_JCT_TABLE_NAME       = "emus_hardware";
+    private static final String EMULATOR_HARDWARE_JCT_TABLE_NAME        = "emus_hardware";
 
     // Emulator-imageFormat Junction Table
-    private static final String EMULATOR_IMAGEFORMAT_JCT_TABLE_NAME    = "emus_imageformats";
+    private static final String EMULATOR_IMAGEFORMAT_JCT_TABLE_NAME     = "emus_imageformats";
 
     // Joins
-    private static final String EMUID_FROM_HWNAME                      = "SELECT emulator_id FROM "
+    private static final String EMUID_FROM_HWNAME                       = "SELECT emulator_id FROM "
                                                                                + EMULATOR_HARDWARE_JCT_TABLE_NAME
                                                                                + " INNER JOIN "
                                                                                + HARDWARE_TABLE_NAME
@@ -142,7 +144,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
                                                                                + HARDWARE_TABLE_NAME
                                                                                + ".name=? ORDER BY emulator_id desc ";
 
-    private static final String SELECT_EMULATOR_IMAGEFORMATS           = "SELECT e_if.name FROM "
+    private static final String SELECT_EMULATOR_IMAGEFORMATS            = "SELECT e_if.name FROM "
                                                                                + IMAGEFORMAT_TABLE_NAME
                                                                                + " e_if "
                                                                                + " INNER JOIN "
@@ -151,7 +153,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
                                                                                + " ON e_eif.imageformat_id=e_if.imageformat_id "
                                                                                + " WHERE e_eif.emulator_id=?";
 
-    private static final String SELECT_EMULATOR_HARDWARE               = "SELECT e_hw.name FROM "
+    private static final String SELECT_EMULATOR_HARDWARE                = "SELECT e_hw.name FROM "
                                                                                + HARDWARE_TABLE_NAME
                                                                                + " e_hw "
                                                                                + " INNER JOIN "
@@ -912,5 +914,39 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
         return list;
 
     }
+
+	@Override
+	public LanguageList getLanguages() {
+		logger.debug("Querying available languages");
+
+        LanguageList languages = new LanguageList();
+
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			try {
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(SELECT_LANGUAGES);
+				while (rs.next()) {
+					Language language = new Language();
+					language.setLanguageId(rs.getString("language_id"));
+					language.setLanguageName(rs.getString("language_name"));
+					languages.getLanguages().add(language);
+					logger.debug("Found language: " + language.getLanguageName());
+				}
+			}
+			finally {
+				rs.close();
+				stmt.close();
+			}
+		}
+		catch (SQLException e) {
+			logger.error("Database: Error while retrieving data from languages table: " + e);
+            e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return languages;
+	}    
+
 
 }

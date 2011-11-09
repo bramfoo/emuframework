@@ -80,6 +80,20 @@ $
             <xs:element name="packageFile" type="xs:base64Binary" 
 					   xmime:expectedContentTypes="application/octet-stream"/>
 
+           	<xs:complexType name="language">
+				<xs:all>
+					<xs:element name="language_id" type="xs:string"/>
+					<xs:element name="language_name" type="xs:string"/>
+				</xs:all>      	
+           	</xs:complexType>            
+            <xs:element name="language_list">
+            	<xs:complexType>
+            		<xs:sequence>
+            			<xs:element name="languages" type="tns:language" minOccurs="0" maxOccurs="unbounded"/>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            
             <!--
             Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)
             Apparently not supported by CXF (?)
@@ -91,6 +105,7 @@ $
             See forum discussion here: http://old.nabble.com/%22Non-unique-body-parts%22-error-when-trying-to-use-same-input-message-for-2-different-operations-ts28387764.html          
             -->
             <xs:element name="dummyElement_2" type="xs:int"/>
+            <xs:element name="dummyElement_3" type="xs:int"/>
 
         </xs:schema>
         
@@ -104,30 +119,41 @@ $
     <wsdl:message name="GetEmulatorPackageOutput">
         <wsdl:part name="emulatorPackage" element="tns:emuPackage"/>    
     </wsdl:message>
+    
     <wsdl:message name="GetEmulatorPackageListInput">
         <wsdl:part name="parameters" element="tns:dummyElement"/>
     </wsdl:message>     
     <wsdl:message name="GetEmulatorPackageListOutput">
         <wsdl:part name="emulatorPackageList" element="tns:emulatorPackageList"/>    
     </wsdl:message>
+    
     <wsdl:message name="DownloadEmulatorInput">
         <wsdl:part name="parameters" element="tns:emulatorID_2"/>
     </wsdl:message>   
     <wsdl:message name="DownloadEmulatorOutput">
         <wsdl:part name="parameters" element="tns:packageFile"/>
     </wsdl:message>
+    
     <wsdl:message name="GetSupportedHardwareInput">
 		<wsdl:part name="parameters" element="tns:dummyElement_2"/>
 	</wsdl:message>
     <wsdl:message name="GetSupportedHardwareOutput">
         <wsdl:part name="parameters" element="tns:hardwareIDs"/>
-    </wsdl:message>      
+    </wsdl:message>  
+        
     <wsdl:message name="GetEmusByHardwareInput">
 		<wsdl:part name="parameters" element="tns:hardwareID"/>
 	</wsdl:message>
     <wsdl:message name="GetEmusByHardwareOutput">
         <wsdl:part name="parameters" element="tns:emulatorPackageList"/>
     </wsdl:message>      
+    
+    <wsdl:message name="GetLanguageListInput">
+        <wsdl:part name="parameters" element="tns:dummyElement_3"/>
+    </wsdl:message>   
+    <wsdl:message name="GetLanguageListOutput">
+        <wsdl:part name="parameters" element="tns:language_list"/>
+    </wsdl:message>   
     
     
     <!-- portType definition -->
@@ -136,27 +162,37 @@ $
            <wsdl:input message="tns:DownloadEmulatorInput"/>
            <wsdl:output message="tns:DownloadEmulatorOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetEmulatorPackage">
            <wsdl:input message="tns:GetEmulatorPackageInput"/>
            <wsdl:output message="tns:GetEmulatorPackageOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetEmulatorPackageList">
            <wsdl:input message="tns:GetEmulatorPackageListInput"/>
            <wsdl:output message="tns:GetEmulatorPackageListOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetSupportedHardware">
            <wsdl:input message="tns:GetSupportedHardwareInput"/>
            <wsdl:output message="tns:GetSupportedHardwareOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetEmusByHardware">
            <wsdl:input message="tns:GetEmusByHardwareInput"/>
            <wsdl:output message="tns:GetEmusByHardwareOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetLanguageList">
+           <wsdl:input message="tns:GetLanguageListInput"/>
+           <wsdl:output message="tns:GetLanguageListOutput"/>
         </wsdl:operation>
     </wsdl:portType>
     
     <!-- binding definition -->    
     <wsdl:binding name="EmulatorArchiveBinding" type="tns:EmulatorArchivePortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
         <wsdl:operation name="DownloadEmulator">
             <soap:operation soapAction="http://emulatorarchive.keep.eu/DownloadEmulator" style="document"/>
             <wsdl:input>
@@ -166,6 +202,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="GetEmulatorPackage">
             <soap:operation soapAction="http://emulatorarchive.keep.eu/GetEmulatorPackage" style="document"/>
             <wsdl:input>
@@ -175,6 +212,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="GetEmulatorPackageList">
             <soap:operation soapAction="http://emulatorarchive.keep.eu/GetEmulatorPackageList" style="document"/>
             <wsdl:input>
@@ -184,6 +222,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="GetSupportedHardware">
             <soap:operation soapAction="http://emulatorarchive.keep.eu/GetSupportedHardware" style="document"/>
             <wsdl:input>
@@ -193,6 +232,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="GetEmusByHardware">
             <soap:operation soapAction="http://emulatorarchive.keep.eu/GetEmusByHardware" style="document"/>
             <wsdl:input>
@@ -202,13 +242,22 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
-                         
+        
+        <wsdl:operation name="GetLanguageList">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetLanguageList" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>                                      
     </wsdl:binding>
     
     <!-- service definition -->
     <wsdl:service name="EmulatorArchiveService">
         <wsdl:port name="EmulatorArchivePort" binding="tns:EmulatorArchiveBinding">
-           <soap:address location="http://localhost:9001/emulatorArchive/"/>
+           <soap:address location="http://localhost:9001/emulatorarchive/"/>
         </wsdl:port>
     </wsdl:service>
     
