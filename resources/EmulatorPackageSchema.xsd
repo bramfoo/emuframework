@@ -62,6 +62,7 @@ $header:
 	        <xs:sequence>
 		        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
 		        <xs:element name="version" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		        <xs:element name="language" type="xs:string" minOccurs="1" maxOccurs="1"/>
 		        <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>				
 		        <xs:element name="hardware" minOccurs="1" maxOccurs="unbounded" >
 			        <xs:simpleType>

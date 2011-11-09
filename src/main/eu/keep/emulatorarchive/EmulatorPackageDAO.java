@@ -101,6 +101,13 @@ public interface EmulatorPackageDAO {
     public String getEmulatorVersion(Integer emuID);
 
     /**
+     * Returns the emulator language name
+     * @param emuID emulator ID
+     * @return String the name of the language associated with this emulator
+     */
+    public String getEmulatorLanguage(Integer emuID);
+
+    /**
      * Returns the emulator description
      * @param emuID emulator ID
      * @return String the emulator description
