@@ -236,6 +236,8 @@ $
 		<delete dir="${h2.db.url}.lobs.db"/>
 	</target>
 
+	<target name="db.reset" description="Resets the database" depends="db.drop, db.create, db.populate"/>
+	
     <!-- emulator packages -->
 	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, packages.Dioscuri, package.JavaCPC-Win6.7, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
 	</target>
