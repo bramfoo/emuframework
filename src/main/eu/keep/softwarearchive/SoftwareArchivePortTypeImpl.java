@@ -93,7 +93,6 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     	}
 
         try {
-
            	SoftwarePackage swPack = createSoftwarePack(id);
             LOG.info("Returning software package " + id);
             return swPack;
@@ -523,4 +522,18 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         @Override
         public String getContentType() {return null;}
     }
+
+
+    /**
+     * Generate a list of all software languages in the database
+     * @param dummy Dummy parameter (unused) required by CXF
+     * @return LanguageList List of languages
+     */
+    @Override
+    public LanguageList getLanguageList(String dummy) {
+    	LOG.info("Generating list of Languages...");
+    	LanguageList languages = spDAO.getLanguages();
+    	return languages;
+    }
+
 }

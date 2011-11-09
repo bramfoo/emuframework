@@ -92,3 +92,10 @@ INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VA
 INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1003','HPF-1002');
 INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1004','HPF-1003');
 INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1005','HPF-1003');
+
+-- Languages table
+-- Contains the language id (locale code) and language name of known languages
+INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('nl','Nederlands');
+INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('fr','Français');
+INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('de','Deutsch');
+INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('en','English');

@@ -57,6 +57,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
     private static final String OS_PACK_VIEW                  = "os_package";
     private static final String APP_PACK_VIEW                 = "app_package";
     private static final String PATHWAY_VIEW                  = "pathways";
+    private static final String LANGUAGE_TABLE_NAME           = "languages";
 
     // Simple selection
     private static final String SELECT_ALL_FILEFORMATS_ON_FF   = "SELECT * FROM " + FILEFORMAT_NAME + " WHERE fileformat_id=?";
@@ -75,12 +76,12 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
     																" ON os_package.image_id = app_package.image_id " +
     																"WHERE app_name=? AND os_name=?";
     
-    private static final String SELECT_IMAGE_IDS                 = "SELECT image_id FROM "
-                                                                     + IMAGE_TABLE_NAME;
+    private static final String SELECT_IMAGE_IDS                = "SELECT image_id FROM " + IMAGE_TABLE_NAME;
 
-    private static final String SELECT_IMAGEBLOB_WHERE             = "SELECT image FROM "
-                                                                     + BLOB_TABLE_NAME
-                                                                     + " WHERE image_id=?";
+    private static final String SELECT_IMAGEBLOB_WHERE          = "SELECT image FROM " + BLOB_TABLE_NAME + " WHERE image_id=?";
+
+    private static final String SELECT_LANGUAGES                = "SELECT * FROM " + LANGUAGE_TABLE_NAME;
+
 
     /**
      * Constructor
@@ -391,4 +392,38 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
         LOGGER.debug("Found information on platform [" + hardwarePlatformID + "]: " + platformInfo);
         return platformInfo;
 	}
+
+	@Override
+	public LanguageList getLanguages() {
+        LOGGER.debug("Querying available languages");
+
+        LanguageList languages = new LanguageList();
+
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			try {
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(SELECT_LANGUAGES);
+				while (rs.next()) {
+					Language language = new Language();
+					language.setLanguageId(rs.getString("language_id"));
+					language.setLanguageName(rs.getString("language_name"));
+					languages.getLanguages().add(language);
+			        LOGGER.debug("Found language: " + language.getLanguageName());
+				}
+			}
+			finally {
+				rs.close();
+				stmt.close();
+			}
+		}
+		catch (SQLException e) {
+            LOGGER.error("Database: Error while retrieving data from languages table: " + e);
+            e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		return languages;
+	}    
+
 }

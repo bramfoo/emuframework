@@ -89,40 +89,59 @@ $
 
             <xs:element name="fileFormat"        type="xs:string"/>
             
+           	<xs:complexType name="language">
+				<xs:all>
+					<xs:element name="language_id" type="xs:string"/>
+					<xs:element name="language_name" type="xs:string"/>
+				</xs:all>      	
+           	</xs:complexType>            
+            <xs:element name="language_list">
+            	<xs:complexType>
+            		<xs:sequence>
+            			<xs:element name="languages" type="tns:language" minOccurs="0" maxOccurs="unbounded"/>
+            		</xs:sequence>
+            	</xs:complexType>
+            </xs:element>
+            
             <!--
             Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)
             Apparently not supported by CXF (?)
             -->
             <xs:element name="dummyElement_1" type="xs:string"/>
+            <xs:element name="dummyElement_2" type="xs:string"/>
        </xs:schema>
     </wsdl:types>
     
 
     <!-- message definition -->
-        <wsdl:message name="GetSoftwarePackageInfoInput">
+    <wsdl:message name="GetSoftwarePackageInfoInput">
         <wsdl:part name="parameters" element="tns:softwareID_1"/>
     </wsdl:message>     
     <wsdl:message name="GetSoftwarePackageInfoOutput">
         <wsdl:part name="emulatorPackage" element="tns:softwarePackage"/>    
     </wsdl:message>
+    
     <wsdl:message name="GetAllSoftwarePackagesInfoInput">
         <wsdl:part name="parameters" element="tns:dummyElement_1"/>
     </wsdl:message>     
     <wsdl:message name="GetAllSoftwarePackagesInfoOutput">
         <wsdl:part name="softwarePackageList" element="tns:softwarePackageList"/>    
-    </wsdl:message>    
+    </wsdl:message>   
+     
     <wsdl:message name="GetPathwaysByFileFormatInput">
         <wsdl:part name="parameters1" element="tns:fileFormat"/>
     </wsdl:message>
     <wsdl:message name="GetPathwaysByFileFormatOutput">
         <wsdl:part name="parameters" element="tns:pathwayList"/>
     </wsdl:message>      
+
     <wsdl:message name="GetSoftwarePackagesByPathwayInput">
         <wsdl:part name="parameters1" element="pw:pathway"/>
     </wsdl:message>
     <wsdl:message name="GetSoftwarePackagesByPathwayOutput">
         <wsdl:part name="parameters" element="tns:softwarePackageList"/>
     </wsdl:message>      
+
     <wsdl:message name="DownloadSoftwareInput">
         <wsdl:part name="parameters" element="tns:softwareID_2"/>
     </wsdl:message>   
@@ -130,33 +149,52 @@ $
         <wsdl:part name="parameters" element="tns:softwareFile"/>
     </wsdl:message>   
     
+    <wsdl:message name="GetLanguageListInput">
+        <wsdl:part name="parameters" element="tns:dummyElement_2"/>
+    </wsdl:message>   
+    <wsdl:message name="GetLanguageListOutput">
+        <wsdl:part name="parameters" element="tns:language_list"/>
+    </wsdl:message>   
+    
+    
     <!-- portType definition -->
     <wsdl:portType name="SoftwareArchivePortType">
         <wsdl:operation name="GetSoftwarePackageInfo">
            <wsdl:input message="tns:GetSoftwarePackageInfoInput"/>
            <wsdl:output message="tns:GetSoftwarePackageInfoOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetAllSoftwarePackagesInfo">
            <wsdl:input message="tns:GetAllSoftwarePackagesInfoInput"/>
            <wsdl:output message="tns:GetAllSoftwarePackagesInfoOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetPathwaysByFileFormat">
            <wsdl:input message="tns:GetPathwaysByFileFormatInput"/>
            <wsdl:output message="tns:GetPathwaysByFileFormatOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="GetSoftwarePackagesByPathway">
            <wsdl:input message="tns:GetSoftwarePackagesByPathwayInput"/>
            <wsdl:output message="tns:GetSoftwarePackagesByPathwayOutput"/>
         </wsdl:operation>
+        
         <wsdl:operation name="DownloadSoftware">
            <wsdl:input message="tns:DownloadSoftwareInput"/>
            <wsdl:output message="tns:DownloadSoftwareOutput"/>
         </wsdl:operation>
+        
+        <wsdl:operation name="GetLanguageList">
+           <wsdl:input message="tns:GetLanguageListInput"/>
+           <wsdl:output message="tns:GetLanguageListOutput"/>
+        </wsdl:operation>
     </wsdl:portType>
+    
     
     <!-- binding definition -->    
     <wsdl:binding name="SoftwareArchiveBinding" type="tns:SoftwareArchivePortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
         <wsdl:operation name="GetSoftwarePackageInfo">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackageInfo" style="document"/>
             <wsdl:input>
@@ -166,6 +204,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="GetAllSoftwarePackagesInfo">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetAllSoftwarePackagesInfo" style="document"/>
             <wsdl:input>
@@ -174,7 +213,8 @@ $
            <wsdl:output>
                <soap:body use="literal"/>
            </wsdl:output>
-        </wsdl:operation>                
+        </wsdl:operation>  
+                      
         <wsdl:operation name="GetPathwaysByFileFormat">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetPathwaysByFileFormat" style="document"/>
             <wsdl:input>
@@ -184,6 +224,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="GetSoftwarePackagesByPathway">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackagesByPathway" style="document"/>
             <wsdl:input>
@@ -193,6 +234,7 @@ $
                <soap:body use="literal"/>
            </wsdl:output>
         </wsdl:operation>
+        
         <wsdl:operation name="DownloadSoftware">
             <soap:operation soapAction="http://softwarearchive.keep.eu/DownloadSoftware" style="document"/>
             <wsdl:input>
@@ -201,7 +243,17 @@ $
            <wsdl:output>
                <soap:body use="literal"/>
            </wsdl:output>
-        </wsdl:operation>                 
+        </wsdl:operation>             
+        
+        <wsdl:operation name="GetLanguageList">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetLanguageList" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>             
     </wsdl:binding>
     
     <!-- service definition -->

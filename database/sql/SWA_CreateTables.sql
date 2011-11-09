@@ -49,6 +49,13 @@ CREATE TABLE fileformats
   reference VARCHAR2(500)
 );
 
+-- Table for software languages
+CREATE TABLE languages
+(
+  language_id varchar2(2) NOT NULL PRIMARY KEY, 
+  language_name varchar2(250) UNIQUE
+);
+
 -- Table for applications
 CREATE TABLE apps
 (
@@ -59,9 +66,10 @@ CREATE TABLE apps
   creator VARCHAR2(500),
   release_date VARCHAR2(500),
   license VARCHAR2(500),
-  language VARCHAR2(500),
+  language_id VARCHAR2(2),
   reference VARCHAR2(500),
-  user_instructions CLOB
+  user_instructions CLOB,
+  FOREIGN KEY (language_id) REFERENCES languages (language_id),
 );
 
 -- Table for operating systems
@@ -74,8 +82,9 @@ CREATE TABLE opsys
   creator VARCHAR2(500),
   release_date VARCHAR2(500),
   license VARCHAR2(500),
-  language VARCHAR2(500),
-  reference VARCHAR2(500)
+  language_id VARCHAR2(2),
+  reference VARCHAR2(500),
+  FOREIGN KEY (language_id) REFERENCES languages (language_id), 
 );
 
 -- Table for platforms
@@ -209,12 +218,13 @@ SELECT imgs.image_id,
        ops.creator as "OS_CREATOR",
        ops.release_date as "OS_RELEASE_DATE",
        ops.license as "OS_LICENSE",
-       ops.language as "OS_LANGUAGE",
+       lang.language_name as "OS_LANGUAGE",
        ops.reference as "OS_REFERENCE"
-FROM images imgs
+FROM images imgs, languages lang
 INNER JOIN opsys_images ops_img
 ON imgs.image_id = ops_img.image_id JOIN opsys ops
-ON ops_img.opsys_id = ops.opsys_id;
+ON ops_img.opsys_id = ops.opsys_id
+WHERE lang.language_id = ops.language_id;
 
 CREATE VIEW app_package AS
 SELECT imgs.image_id,
@@ -225,13 +235,14 @@ SELECT imgs.image_id,
        apps.creator as "APP_CREATOR",
        apps.release_date as "APP_RELEASE_DATE",
        apps.license as "APP_LICENSE",
-       apps.language as "APP_LANGUAGE",
+       lang.language_name as "APP_LANGUAGE",
        apps.reference as "APP_REFERENCE",
        apps.user_instructions as "APP_USER_INSTRUCTIONS"
-FROM images imgs
+FROM images imgs, languages lang
 INNER JOIN apps_images app_img
 ON imgs.image_id = app_img.image_id JOIN apps
 ON app_img.app_id = apps.app_id
+WHERE lang.language_id = apps.language_id
 ORDER BY imgs.image_id ASC;
 
 CREATE VIEW ff_pf_pathway AS

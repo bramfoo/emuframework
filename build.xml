@@ -230,6 +230,12 @@ $
 				 script="${sqlscript.dir}/SWA_PopulateTablesFree.sql"
 				 failonerror="true">
 		</H2RunScript>
+		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
+			     user="${h2.db.user}"
+				 password="${h2.db.userpassw}"
+				 script="${sqlscript.dir}/SWA_PopulateTablesProprietary.sql"
+				 failonerror="true">
+		</H2RunScript>
 	</target>	
 	
 	<target name="db.drop" description="Drops the database users/schemas/tables" depends="check.user.properties" if="user.properties.present">

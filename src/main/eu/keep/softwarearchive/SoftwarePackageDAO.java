@@ -100,4 +100,10 @@ public interface SoftwarePackageDAO {
      */
     public List<String> getHardwarePlatformInfo(String hardwarePlatformID);
 
+    /**
+     * Returns the languages from the Languages table
+     * @return List of values from the table
+     */
+    public LanguageList getLanguages();
+    
 }
