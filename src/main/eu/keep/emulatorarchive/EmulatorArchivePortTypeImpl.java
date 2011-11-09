@@ -204,9 +204,9 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
      * @return LanguageList List of languages
      */
     @Override
-    public LanguageList getLanguageList(int dummy) {
+    public EmuLanguageList getLanguageList(int dummy) {
     	LOGGER.info("Generating list of Languages...");
-    	LanguageList languages = epDAO.getLanguages();
+    	EmuLanguageList languages = epDAO.getLanguages();
     	return languages;
     }
 

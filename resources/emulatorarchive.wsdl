@@ -80,16 +80,16 @@ $
             <xs:element name="packageFile" type="xs:base64Binary" 
 					   xmime:expectedContentTypes="application/octet-stream"/>
 
-           	<xs:complexType name="language">
+           	<xs:complexType name="emuLanguage">
 				<xs:all>
 					<xs:element name="language_id" type="xs:string"/>
 					<xs:element name="language_name" type="xs:string"/>
 				</xs:all>      	
            	</xs:complexType>            
-            <xs:element name="language_list">
+            <xs:element name="emuLanguage_list">
             	<xs:complexType>
             		<xs:sequence>
-            			<xs:element name="languages" type="tns:language" minOccurs="0" maxOccurs="unbounded"/>
+            			<xs:element name="languages" type="tns:emuLanguage" minOccurs="0" maxOccurs="unbounded"/>
             		</xs:sequence>
             	</xs:complexType>
             </xs:element>
@@ -152,7 +152,7 @@ $
         <wsdl:part name="parameters" element="tns:dummyElement_3"/>
     </wsdl:message>   
     <wsdl:message name="GetLanguageListOutput">
-        <wsdl:part name="parameters" element="tns:language_list"/>
+        <wsdl:part name="parameters" element="tns:emuLanguage_list"/>
     </wsdl:message>   
     
     

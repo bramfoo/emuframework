@@ -916,10 +916,10 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     }
 
 	@Override
-	public LanguageList getLanguages() {
+	public EmuLanguageList getLanguages() {
 		logger.debug("Querying available languages");
 
-        LanguageList languages = new LanguageList();
+		EmuLanguageList languages = new EmuLanguageList();
 
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -928,7 +928,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 				stmt = conn.createStatement();
 				rs = stmt.executeQuery(SELECT_LANGUAGES);
 				while (rs.next()) {
-					Language language = new Language();
+					EmuLanguage language = new EmuLanguage();
 					language.setLanguageId(rs.getString("language_id"));
 					language.setLanguageName(rs.getString("language_name"));
 					languages.getLanguages().add(language);
