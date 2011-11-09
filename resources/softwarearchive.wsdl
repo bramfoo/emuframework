@@ -89,16 +89,16 @@ $
 
             <xs:element name="fileFormat"        type="xs:string"/>
             
-           	<xs:complexType name="language">
+           	<xs:complexType name="swLanguage">
 				<xs:all>
 					<xs:element name="language_id" type="xs:string"/>
 					<xs:element name="language_name" type="xs:string"/>
 				</xs:all>      	
            	</xs:complexType>            
-            <xs:element name="language_list">
+            <xs:element name="swLanguage_list">
             	<xs:complexType>
             		<xs:sequence>
-            			<xs:element name="languages" type="tns:language" minOccurs="0" maxOccurs="unbounded"/>
+            			<xs:element name="languages" type="tns:swLanguage" minOccurs="0" maxOccurs="unbounded"/>
             		</xs:sequence>
             	</xs:complexType>
             </xs:element>
@@ -153,7 +153,7 @@ $
         <wsdl:part name="parameters" element="tns:dummyElement_2"/>
     </wsdl:message>   
     <wsdl:message name="GetLanguageListOutput">
-        <wsdl:part name="parameters" element="tns:language_list"/>
+        <wsdl:part name="parameters" element="tns:swLanguage_list"/>
     </wsdl:message>   
     
     

@@ -530,9 +530,9 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
      * @return LanguageList List of languages
      */
     @Override
-    public LanguageList getLanguageList(String dummy) {
+    public SwLanguageList getLanguageList(String dummy) {
     	LOG.info("Generating list of Languages...");
-    	LanguageList languages = spDAO.getLanguages();
+    	SwLanguageList languages = spDAO.getLanguages();
     	return languages;
     }
 

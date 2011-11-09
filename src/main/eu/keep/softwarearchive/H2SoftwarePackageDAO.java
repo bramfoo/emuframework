@@ -394,10 +394,10 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	}
 
 	@Override
-	public LanguageList getLanguages() {
+	public SwLanguageList getLanguages() {
         LOGGER.debug("Querying available languages");
 
-        LanguageList languages = new LanguageList();
+        SwLanguageList languages = new SwLanguageList();
 
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -406,7 +406,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 				stmt = conn.createStatement();
 				rs = stmt.executeQuery(SELECT_LANGUAGES);
 				while (rs.next()) {
-					Language language = new Language();
+					SwLanguage language = new SwLanguage();
 					language.setLanguageId(rs.getString("language_id"));
 					language.setLanguageName(rs.getString("language_name"));
 					languages.getLanguages().add(language);

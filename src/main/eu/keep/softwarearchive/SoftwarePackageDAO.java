@@ -104,6 +104,6 @@ public interface SoftwarePackageDAO {
      * Returns the languages from the Languages table
      * @return List of values from the table
      */
-    public LanguageList getLanguages();
+    public SwLanguageList getLanguages();
     
 }
