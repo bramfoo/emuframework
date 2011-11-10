@@ -149,10 +149,24 @@ $Revision$ $Date$ $Author$
 
 	<!-- check if test.properties file exists or not -->
 	<target name="check.test.properties">
+		<condition property="test.properties.present">
+		  <and> 
+		    <available file="test.properties"/>
+		    <available file="testKernel.properties"/>
+		  </and>
+		</condition>
+	    <fail message="test.properties or testKernel.properties file is missing. Please ensure these files are present" unless="test.properties.present"/>
+  	</target>
+
+<!--	<target name="check.test.properties">
 	    <available file="test.properties" property="test.properties.present"/>
 	    <fail message="test.properties file is missing. Please ensure this file is present" unless="test.properties.present"/>
+	    <available file="testKernel.properties" property="testKernel.properties.present"/>
+	    <fail message="testKernel.properties file is missing. Please ensure this file is present" unless="testKernel.properties.present"/>
 	</target>
-
+-->
+	
+	
 <!--
  ============ Clean targets ===================
 -->
@@ -187,15 +201,15 @@ $Revision$ $Date$ $Author$
             <path refid="dev-classpath"/>
           </classpath>
         </java>
-            <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
-              <arg value="-d"/>
-              <arg value="${gen-src.dir}"/>
-              <arg value="-xjc-Xts"/>
-              <arg value="eu/keep/resources/external/softwarearchive.wsdl"/>
-              <classpath>
-                <path refid="dev-classpath"/>
-              </classpath>
-            </java>
+        <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
+          <arg value="-d"/>
+          <arg value="${gen-src.dir}"/>
+          <arg value="-xjc-Xts"/>
+          <arg value="eu/keep/resources/external/softwarearchive.wsdl"/>
+          <classpath>
+            <path refid="dev-classpath"/>
+          </classpath>
+        </java>
     	<!-- clean up mockup classpath directory -->        
 		<delete dir="eu"/>
     </target>
@@ -374,6 +388,7 @@ $Revision$ $Date$ $Author$
             <batchtest fork="yes" todir="${test.report.dir}" >
                 <fileset dir="${classes.dir}">
                   <include name="**/Test*.class" />
+               	  <exclude name="**/*$*.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml" />

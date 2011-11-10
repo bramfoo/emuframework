@@ -53,6 +53,7 @@ import org.junit.Test;
 import eu.keep.characteriser.Format;
 import eu.keep.downloader.Downloader;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
+import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage.Emulator.Executable;
 import eu.keep.softwarearchive.pathway.ApplicationType;
 import eu.keep.softwarearchive.pathway.HardwarePlatformType;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
@@ -110,11 +111,14 @@ public class TestKernel {
     	emp1 = mock(EmulatorPackage.class);
     	EmulatorPackage.Package pck = mock(EmulatorPackage.Package.class);
     	EmulatorPackage.Emulator em = mock(EmulatorPackage.Emulator.class);
+    	Executable exec = mock(Executable.class);
     	when(emp1.getPackage()).thenReturn(pck);
     	when(emp1.getEmulator()).thenReturn(em);
     	when(pck.getId()).thenReturn(100);
     	when(em.getName()).thenReturn("mockEmu");
     	when(em.getVersion()).thenReturn("0.99");
+    	when(em.getExecutable()).thenReturn(exec);
+    	when(exec.getType()).thenReturn("exe");
     	empList = new ArrayList<EmulatorPackage>();
     	empList.add(emp1);
     	
@@ -126,7 +130,7 @@ public class TestKernel {
     	when(mockDL.unListEmulator(2)).thenReturn(true);
     	
     	// Kernel
-            kernel = new Kernel("test.properties"){
+            kernel = new Kernel("testKernel.properties"){
                 protected Downloader createDownloader(Properties props, Connection conn) {
                 	return mockDL;
                 }
@@ -139,9 +143,9 @@ public class TestKernel {
     @Test
     public void testGetCoreSettings() {
     	Properties props = kernel.getCoreSettings();
-    	assertEquals("Wrong test URL", "./testData/database/db/EF_Test", props.getProperty("test.h2.db.url"));
-    	assertEquals("Wrong db options", ";AUTO_SERVER=TRUE;IFEXISTS=FALSE", props.getProperty("test.h2.db.server") + props.getProperty("test.h2.db.exists"));
-    	assertEquals("Wrong test user", "test", props.getProperty("test.h2.db.user"));
+    	assertEquals("Wrong test URL", "./testData/database/db/EF_Test", props.getProperty("h2.db.url"));
+    	assertEquals("Wrong db options", ";AUTO_SERVER=TRUE;IFEXISTS=FALSE", props.getProperty("h2.db.server") + props.getProperty("h2.db.exists"));
+    	assertEquals("Wrong test user", "test", props.getProperty("h2.db.user"));
     }
 
     @Test
