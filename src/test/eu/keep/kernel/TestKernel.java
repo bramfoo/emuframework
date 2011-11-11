@@ -143,9 +143,9 @@ public class TestKernel {
     @Test
     public void testGetCoreSettings() {
     	Properties props = kernel.getCoreSettings();
-    	assertEquals("Wrong test URL", "./testData/database/db/EF_Test", props.getProperty("h2.db.url"));
-    	assertEquals("Wrong db options", ";AUTO_SERVER=TRUE;IFEXISTS=FALSE", props.getProperty("h2.db.server") + props.getProperty("h2.db.exists"));
-    	assertEquals("Wrong test user", "test", props.getProperty("h2.db.user"));
+    	assertEquals("Wrong test URL.", "./testData/database/db/EF_Test", props.getProperty("h2.db.url"));
+    	assertEquals("Wrong db options.", ";AUTO_SERVER=TRUE;IFEXISTS=FALSE", props.getProperty("h2.db.server") + props.getProperty("h2.db.exists"));
+    	assertEquals("Wrong test user.", "test", props.getProperty("h2.db.user"));
     }
 
     @Test
@@ -163,37 +163,37 @@ public class TestKernel {
     	List<Format> f = kernel.characterise(digObj);
     	System.out.println("Forms: " + f);
     	
-    	assertFalse("Format list not right size", f.isEmpty());
-    	assertEquals("Format list not right size", 1, f.size());
-    	assertEquals("Format not plain text", "Plain text", f.get(0).getName());
-    	assertEquals("Format mime not text", "text/plain", f.get(0).getMimeType());
-    	assertFalse("Reporting tool list not right size", f.get(0).getReportingTools().isEmpty());
-    	assertEquals("Reporting tool list not right size", 1, f.get(0).getReportingTools().size());
-    	assertEquals("Reporting tool not Jhove", "Jhove 1.5", f.get(0).getReportingTools().get(0));
+    	assertFalse("Format list not right size.", f.isEmpty());
+    	assertEquals("Format list not right size.", 1, f.size());
+    	assertEquals("Format not plain text", "Plain text.", f.get(0).getName());
+    	assertEquals("Format mime not text", "text/plain.", f.get(0).getMimeType());
+    	assertFalse("Reporting tool list not right size.", f.get(0).getReportingTools().isEmpty());
+    	assertEquals("Reporting tool list not right size.", 1, f.get(0).getReportingTools().size());
+    	assertEquals("Reporting tool not Jhove.", "Jhove 1.5", f.get(0).getReportingTools().get(0));
     }
 
     @Test
     public void testGetTechMD() throws IOException {
     	Map<String, List<String>> md = kernel.getTechMetadata(digObj);
     	
-    	assertFalse("Metadata list not right size", md.isEmpty());
-    	assertEquals("Metadata list not right size", 2, md.size());
-    	assertTrue("Metadata doesn't contain linebreak", md.containsKey("linebreak"));
-    	assertFalse("Linebreak list not right size", md.get("linebreak").isEmpty());
-    	assertEquals("Linebreak list not right size", 1, md.get("linebreak").size());
-    	assertEquals("Linebreak contents not correct", "LF", md.get("linebreak").get(0));
+    	assertFalse("Metadata list not right size.", md.isEmpty());
+    	assertEquals("Metadata list not right size.", 2, md.size());
+    	assertTrue("Metadata doesn't contain linebreak.", md.containsKey("linebreak"));
+    	assertFalse("Linebreak list not right size.", md.get("linebreak").isEmpty());
+    	assertEquals("Linebreak list not right size.", 1, md.get("linebreak").size());
+    	assertEquals("Linebreak contents not correct.", "LF", md.get("linebreak").get(0));
     }
 
     @Test
     public void testGetFileInfo() throws IOException {
     	Map<String, List<String>> md = kernel.getFileInfo(digObj);
     	
-    	assertFalse("Metadata list not right size", md.isEmpty());
-    	assertEquals("Metadata list not right size", 3, md.size());
-    	assertTrue("Metadata doesn't contain linebreak", md.containsKey("size"));
-    	assertFalse("Size list not right size", md.get("size").isEmpty());
-    	assertEquals("Size list not right size", 1, md.get("size").size());
-    	assertEquals("Size contents not correct", "1254", md.get("size").get(0));
+    	assertFalse("Metadata list not right size.", md.isEmpty());
+    	assertEquals("Metadata list not right size.", 3, md.size());
+    	assertTrue("Metadata doesn't contain linebreak.", md.containsKey("size"));
+    	assertFalse("Size list not right size.", md.get("size").isEmpty());
+    	assertEquals("Size list not right size.", 1, md.get("size").size());
+    	assertEquals("Size contents not correct.", "1254", md.get("size").get(0));
     }
 
     @Test
@@ -205,12 +205,12 @@ public class TestKernel {
     	frms.add(mockFrm);
     	frms.add(mockForm2);
 
-    	assertEquals("First in list not returned", mockFrm, kernel.autoSelectFormat(frms));
+    	assertEquals("First in list not returned.", mockFrm, kernel.autoSelectFormat(frms));
     }
 
     @Test
     public void testGetPathways() throws IOException {
-    	assertEquals("Expected pathway list not returned", pwList, kernel.getPathways(mockFrm));
+    	assertEquals("Expected pathway list not returned.", pwList, kernel.getPathways(mockFrm));
     }
 
     
@@ -256,8 +256,8 @@ public class TestKernel {
             Pathway selection = kernel.autoSelectPathway(pathways);
 
             // assert selection
-            assertTrue("selection unexpected", selection.equals(pw1));
-            assertTrue("auto-selected pathway must be satisfiable",kernel.isPathwaySatisfiable(selection));
+            assertTrue("selection unexpected.", selection.equals(pw1));
+            assertTrue("auto-selected pathway must be satisfiable.",kernel.isPathwaySatisfiable(selection));
     }
 
     @Test
@@ -286,14 +286,14 @@ public class TestKernel {
         p1.getHardwarePlatform().setId("HPF-1004");
         p1.getHardwarePlatform().setName("x86");
 
-        assertEquals("Pathway identifier not the same", p1.getObjectFormat().getId(), pathway.getObjectFormat().getId());
-        assertEquals("Pathway identifier not the same", p1.getApplication().getId(), pathway.getApplication().getId());
-        assertEquals("Pathway identifier not the same", p1.getOperatingSystem().getId(), pathway.getOperatingSystem().getId());
-        assertEquals("Pathway identifier not the same", p1.getHardwarePlatform().getId(), pathway.getHardwarePlatform().getId());
-        assertEquals("Pathway name not the same", p1.getObjectFormat().getName(), pathway.getObjectFormat().getName());
-        assertEquals("Pathway name not the same", p1.getApplication().getName(), pathway.getApplication().getName());
-        assertEquals("Pathway name not the same", p1.getOperatingSystem().getName(), pathway.getOperatingSystem().getName());
-        assertEquals("Pathway name not the same", p1.getHardwarePlatform().getName(), pathway.getHardwarePlatform().getName());
+        assertEquals("Pathway identifier not the same.", p1.getObjectFormat().getId(), pathway.getObjectFormat().getId());
+        assertEquals("Pathway identifier not the same.", p1.getApplication().getId(), pathway.getApplication().getId());
+        assertEquals("Pathway identifier not the same.", p1.getOperatingSystem().getId(), pathway.getOperatingSystem().getId());
+        assertEquals("Pathway identifier not the same.", p1.getHardwarePlatform().getId(), pathway.getHardwarePlatform().getId());
+        assertEquals("Pathway name not the same.", p1.getObjectFormat().getName(), pathway.getObjectFormat().getName());
+        assertEquals("Pathway name not the same.", p1.getApplication().getName(), pathway.getApplication().getName());
+        assertEquals("Pathway name not the same.", p1.getOperatingSystem().getName(), pathway.getOperatingSystem().getName());
+        assertEquals("Pathway name not the same.", p1.getHardwarePlatform().getName(), pathway.getHardwarePlatform().getName());
     }
 
     @Test
@@ -304,35 +304,35 @@ public class TestKernel {
 
         logger.info("Pathway loaded from file: " + pathway);
 
-        assertTrue("Pathway identifier not empty", pathway.getObjectFormat().getId().isEmpty());
-        assertTrue("Pathway identifier not empty", pathway.getApplication().getId().isEmpty());
-        assertTrue("Pathway identifier not empty", pathway.getOperatingSystem().getId().isEmpty());
-        assertTrue("Pathway identifier not empty", pathway.getHardwarePlatform().getId().isEmpty());        
-        assertTrue("Pathway name not empty", pathway.getObjectFormat().getId().isEmpty());        
-        assertTrue("Pathway name not empty", pathway.getApplication().getId().isEmpty());
-        assertTrue("Pathway name not empty", pathway.getOperatingSystem().getId().isEmpty());
-        assertTrue("Pathway name not empty", pathway.getHardwarePlatform().getId().isEmpty());        
+        assertTrue("Pathway identifier not empty.", pathway.getObjectFormat().getId().isEmpty());
+        assertTrue("Pathway identifier not empty.", pathway.getApplication().getId().isEmpty());
+        assertTrue("Pathway identifier not empty.", pathway.getOperatingSystem().getId().isEmpty());
+        assertTrue("Pathway identifier not empty.", pathway.getHardwarePlatform().getId().isEmpty());        
+        assertTrue("Pathway name not empty.", pathway.getObjectFormat().getId().isEmpty());        
+        assertTrue("Pathway name not empty.", pathway.getApplication().getId().isEmpty());
+        assertTrue("Pathway name not empty.", pathway.getOperatingSystem().getId().isEmpty());
+        assertTrue("Pathway name not empty.", pathway.getHardwarePlatform().getId().isEmpty());        
     }
     
     
     @Test
     public void testGetEmulatorsByPathway() throws IOException {
     	List<EmulatorPackage> l = kernel.getEmulatorsByPathway(pw1);
-    	assertEquals("List not correct", empList, l);
+    	assertEquals("List not correct.", empList, l);
     }
     
     @Test
     public void testWhiteListedEmus() throws IOException {
-    	assertEquals("Expected packages not returned", empList, kernel.getWhitelistedEmus());
+    	assertEquals("Expected packages not returned.", empList, kernel.getWhitelistedEmus());
     }
         
     @Test
     public void testWhitelistEmulator() throws IOException {
-    	assertTrue("Whitelisting not succesfull", kernel.whiteListEmulator(2));
+    	assertTrue("Whitelisting not succesfull.", kernel.whiteListEmulator(2));
     }
 
     @Test
     public void testunListEmulator() throws IOException {
-    	assertTrue("Unlisting not succesfull", kernel.unListEmulator(2));
+    	assertTrue("Unlisting not succesfull.", kernel.unListEmulator(2));
     }
 }
