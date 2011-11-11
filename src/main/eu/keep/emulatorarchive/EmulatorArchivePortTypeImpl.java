@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 
 import javax.activation.DataHandler;

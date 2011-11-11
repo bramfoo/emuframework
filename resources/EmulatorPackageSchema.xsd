@@ -32,7 +32,9 @@ $header:
 * Project Title: Emulator Archive (EA)$
 -->
 
-<xs:schema targetNamespace="http://emulatorarchive.keep.eu/EmulatorPackage" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema xmlns:ea="http://emulatorarchive.keep.eu/EmulatorPackage" 
+		   targetNamespace="http://emulatorarchive.keep.eu/EmulatorPackage" 
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema">
 		<xs:complexType name="emulatorPackage">
 	    <xs:all>
             <xs:element name="package" minOccurs="1" maxOccurs="1" >
@@ -62,7 +64,7 @@ $header:
 	        <xs:sequence>
 		        <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
 		        <xs:element name="version" type="xs:string" minOccurs="1" maxOccurs="1"/>
-		        <xs:element name="language" type="xs:string" minOccurs="1" maxOccurs="1"/>
+		        <xs:element name="language" type="ea:emuLanguage" minOccurs="1" maxOccurs="1"/>
 		        <xs:element name="description" type="xs:string" minOccurs="1" maxOccurs="1"/>				
 		        <xs:element name="hardware" minOccurs="1" maxOccurs="unbounded" >
 			        <xs:simpleType>
@@ -114,4 +116,15 @@ $header:
 	        </xs:element>
 	    </xs:all>
 		</xs:complexType>
+        <xs:complexType name="emuLanguage">
+			<xs:all>
+				<xs:element name="language_id" type="xs:string"/>
+				<xs:element name="language_name" type="xs:string"/>
+			</xs:all>      	
+        </xs:complexType>            
+        <xs:complexType name="emuLanguage_list">
+      		<xs:sequence>
+      			<xs:element name="languages" type="ea:emuLanguage" minOccurs="0" maxOccurs="unbounded"/>
+      		</xs:sequence>
+        </xs:complexType>
 </xs:schema>

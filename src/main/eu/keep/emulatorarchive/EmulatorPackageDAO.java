@@ -35,6 +35,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
+
 /**
  * Interface definition for DAOs for emulator packages.
  * @author David Michel
@@ -103,9 +106,9 @@ public interface EmulatorPackageDAO {
     /**
      * Returns the emulator language name
      * @param emuID emulator ID
-     * @return String the name of the language associated with this emulator
+     * @return EmulatorLanguage the language object associated with this emulator
      */
-    public String getEmulatorLanguage(Integer emuID);
+    public EmuLanguage getEmulatorLanguage(Integer emuID);
 
     /**
      * Returns the emulator description

@@ -45,6 +45,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.keep.emulatorarchive.EmulatorPackageDAO;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 
 /**
  * H2 database implementation of the EmuPackageDAO interface.
@@ -103,7 +105,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
                                                                                " INNER JOIN " + EMULATOR_HARDWARE_JCT_TABLE_NAME + " e_ehw " + 
                                                                                " ON e_ehw.hardware_id=e_hw.hardware_id " + 
                                                                                " WHERE e_ehw.emulator_id=?";
-    private static final String SELECT_LANGUAGE_NAME                    = "SELECT lang.language_name FROM " + LANGUAGE_TABLE_NAME + " lang" + 
+    private static final String SELECT_LANGUAGE		                    = "SELECT * FROM " + LANGUAGE_TABLE_NAME + " lang" + 
 			   																   " INNER JOIN " + EMULATOR_TABLE_NAME + " em" + 
 			   																   " ON em.language_id=lang.language_id " + 
 			   																   " WHERE em.emulator_id=?";
@@ -515,24 +517,26 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     /**
      * {@inheritDoc}
      */
-    public String getEmulatorLanguage(Integer emuID) {
+    public EmuLanguage getEmulatorLanguage(Integer emuID) {
 
     	// sanity check
     	if (emuID == null || emuID.compareTo(0) <= 0) {
     		throw new IllegalArgumentException("Invalid emulator ID");
     	}
 
-    	String emuLanguage = "";
+    	EmuLanguage emuLanguage = null;
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
 
     	try {
     		try {
-    			pstmt = conn.prepareStatement(SELECT_LANGUAGE_NAME);
+    			pstmt = conn.prepareStatement(SELECT_LANGUAGE);
     			pstmt.setLong(1, emuID);
     			rs = pstmt.executeQuery();
     			while (rs.next()) {
-    				emuLanguage = rs.getString("language_name");
+    				emuLanguage = new EmuLanguage();
+    				emuLanguage.setLanguageName(rs.getString("language_name"));
+    				emuLanguage.setLanguageId(rs.getString("language_id"));
     			}
     		}
     		finally {

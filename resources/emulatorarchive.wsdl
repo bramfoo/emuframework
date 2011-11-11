@@ -79,21 +79,9 @@ $
 			
             <xs:element name="packageFile" type="xs:base64Binary" 
 					   xmime:expectedContentTypes="application/octet-stream"/>
-
-           	<xs:complexType name="emuLanguage">
-				<xs:all>
-					<xs:element name="language_id" type="xs:string"/>
-					<xs:element name="language_name" type="xs:string"/>
-				</xs:all>      	
-           	</xs:complexType>            
-            <xs:element name="emuLanguage_list">
-            	<xs:complexType>
-            		<xs:sequence>
-            			<xs:element name="languages" type="tns:emuLanguage" minOccurs="0" maxOccurs="unbounded"/>
-            		</xs:sequence>
-            	</xs:complexType>
-            </xs:element>
             
+			<xs:element name="emuLanguage_list" type="ea:emuLanguage_list"/>
+
             <!--
             Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)
             Apparently not supported by CXF (?)
