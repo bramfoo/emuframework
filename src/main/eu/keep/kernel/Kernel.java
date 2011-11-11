@@ -40,6 +40,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -59,6 +60,7 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;
+import eu.keep.util.Language;
 
 /**
  * Main class of the Core Emulation Framework. Implements the API.
@@ -81,6 +83,8 @@ public class Kernel implements CoreEngineModel {
     private final Controller            controller;
     private final Downloader		    downloader;
 
+    private Set<Language> 				blockedLanguages; 
+    
     /**
      * Constructor
      * @param propFileName The properties file name
@@ -99,6 +103,8 @@ public class Kernel implements CoreEngineModel {
         characteriser = new Characteriser(localDBConnection);
         controller = new Controller();
         downloader = createDownloader(props, localDBConnection);
+        
+        blockedLanguages = new HashSet<Language>();
     }
     
 	// Support for mocking
@@ -188,7 +194,7 @@ public class Kernel implements CoreEngineModel {
 
         InputStream is = null;
     	try {
-    		logger.info("Attempting to read user.properties from file...");
+    		logger.info("Attempting to read " + PROP_FILE_NAME + " from file...");
             is = new FileInputStream(PROP_FILE_NAME);
     	}
     	catch (FileNotFoundException fe)
@@ -207,7 +213,7 @@ public class Kernel implements CoreEngineModel {
         	throw new IOException("No valid user.properties file found (as resource or file)");
         }
                 
-        logger.info("user.properties succesfully read");
+        logger.info(PROP_FILE_NAME + " succesfully read");
         props = FileUtilities.getProperties(is);
         result &= props != null;
 
@@ -218,7 +224,7 @@ public class Kernel implements CoreEngineModel {
         String dbUrlEngine = dbUrl + props.getProperty("h2.db.schema");
         String dbUser = props.getProperty("h2.db.user");
         String dbPasswd = props.getProperty("h2.db.userpassw");
-
+        
         int connectionAttempts = 5;
 
         localDBConnection = DBUtil.establishConnection(driverName, dbUrlEngine, dbUser,
@@ -354,7 +360,7 @@ public class Kernel implements CoreEngineModel {
 		if(emuPacks.isEmpty() || emuPacks == null) {
 			logger.info("No emulators found, matching required hardware");
 			return false;
-			}
+		}
 
 		// check if software image is required
 		if(pathway.getApplication().getId().equalsIgnoreCase("-1") && pathway.getOperatingSystem().getId().equalsIgnoreCase("-1")) {
@@ -362,15 +368,15 @@ public class Kernel implements CoreEngineModel {
 			return true;
 		}
 		else {
-		    // Perform matching between emulators and software images
-		    // as some images may not be compatible with certain emulators
+			// Perform matching between emulators and software images
+			// as some images may not be compatible with certain emulators
 			logger.info("Attempting to match emulators and software images...");
 			Map<EmulatorPackage, List<SoftwarePackage>> emuSwPacks = matchEmulatorWithSoftware(pathway);
-		    if (emuSwPacks.isEmpty()) {
-		        return false;
-		    }
+			if (emuSwPacks.isEmpty()) {
+				return false;
+			}
 		}
-        return true;
+		return true;
     }
 
     /**
@@ -392,7 +398,7 @@ public class Kernel implements CoreEngineModel {
                     return emuPacks;
                 }
 
-        logger.info("Found emulators matching hardware '" + hw + "': " + emuPacks);
+        logger.info("Found " + emuPacks.size() + " emulators matching hardware '" + hw + "': " + emuPacks);
         
         
         // Detect current host operating system
@@ -437,7 +443,7 @@ public class Kernel implements CoreEngineModel {
         	}
         }
 
-        logger.info("Final list of emulators matching hardware '" + hw + "' after removing non-whitelised emulators: " + finalPacks);
+        logger.info("Final list of " + finalPacks.size() + " emulators matching hardware '" + hw + "' after removing non-whitelised emulators: " + finalPacks);
         return new ArrayList<EmulatorPackage>(finalPacks);
     }
 
@@ -470,17 +476,11 @@ public class Kernel implements CoreEngineModel {
 
         // If software archive is empty, return empty list
         if (swPacks.isEmpty()) {
-            logger.warn("Empty software image archive database");
-            return swPacks;
-        }
-        
-        // Logging
-        if (swPacks.isEmpty()) {
             logger.warn("No software images found matching os='" + os + "' and app='" + app +"'");
             return swPacks;
         }
         else {
-            logger.info("Found software images matching os='" + os + "' and app='" + app +"': "
+            logger.info("Found " + swPacks.size() + " software images matching os='" + os + "' and app='" + app +"': "
                     + swPacks.toString());
         }
 
@@ -507,49 +507,62 @@ public class Kernel implements CoreEngineModel {
             throw e;
         }
 
+        
         Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = new HashMap<EmulatorPackage, List<SoftwarePackage>>();
         List<String> formats_emu;
         
         try {
-        	logger.debug("Starting emulator hardware/software image matching (" + emuPacks.size() +"/" + swPacks.size() +")");
-            // Get a Map of emulators (as keys) and a list of image IDs (as value)
-            for (EmulatorPackage emuPack : emuPacks) {
+        	logger.info("Starting emulator hardware/software image matching " +
+        			"(" + emuPacks.size() +"/" + swPacks.size() +") and language filtering");
+        	// Get a Map of emulators (as keys) and a list of image IDs (as value)
+        	for (EmulatorPackage emuPack : emuPacks) {
 
-                // Get the list of formats supported by that emulator
-                formats_emu = emuPack.getEmulator().getImageFormat();
-                logger.debug("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + "supports formats " + formats_emu);
+        		// Check if the user accepts the language of that emulator
+        		if (!this.blockedLanguages.contains(new Language(emuPack.getEmulator().getLanguage()))) {
 
-                if (!formats_emu.isEmpty()) {
+        			// Get the list of formats supported by that emulator
+        			formats_emu = emuPack.getEmulator().getImageFormat();
+        			logger.debug("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " supports formats " + formats_emu);
 
-                    // loop over format supported by this emulator
-                    ArrayList<SoftwarePackage> swPackList = new ArrayList<SoftwarePackage>();
-                    for (String format_emu : formats_emu) {
+        			if (!formats_emu.isEmpty()) {
+        				// loop over format supported by this emulator
+        				ArrayList<SoftwarePackage> swPackList = new ArrayList<SoftwarePackage>();
+        				for (String format_emu : formats_emu) {
 
-                        // get all images whose format is compatible
-                        for (SoftwarePackage swPack : swPacks) {
+        					// get all images whose format is compatible
+        					for (SoftwarePackage swPack : swPacks) {
 
-                            String format = "";
-                            format = downloader.getSoftwarePackageFormat(swPack.getId());
-
-                            if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
-                                swPackList.add(swPack);
-                            }
-                        }
-                    }
-                    // Store the emulator - list of compatible software image IDs
-                    if(!swPackList.isEmpty()) {
-                        emuSwMap.put(emuPack, swPackList);
-                    }
-                }
-                else {
-                    logger.warn("The emulator id=" + emuPack
-                            + " does not support any image formats");
-                }
-            }
+        						String format = downloader.getSoftwarePackageFormat(swPack.getId());
+        						//swPack.
+        						
+        						if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
+        							swPackList.add(swPack);
+        						}
+        					}
+        				}
+        				// Store the emulator - list of compatible software image IDs
+        				if(!swPackList.isEmpty()) {
+        					emuSwMap.put(emuPack, swPackList);
+        				}
+        			}
+        			
+        			else {
+        				logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
+        					" does not support any image formats");
+        			}	
+        		}
+        		
+        		else {
+    				logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
+    						" has a language that is not selected in the EF settings: " + emuPack.getEmulator().getLanguage().getLanguageId() + 
+    						" - " + emuPack.getEmulator().getLanguage().getLanguageName());
+        		}
+        		
+        	}
         }
         catch (IllegalArgumentException e) {
-            logger.error("Inappropriate ID requested: " + e.getMessage());
-            throw new IOException("Inappropriate ID requested: " + e.getMessage());
+        	logger.error("Inappropriate ID requested: " + e.getMessage());
+        	throw new IOException("Inappropriate ID requested: " + e.getMessage());
         }
 
         logger.info("Found compatible emulator-images pairs: " + emuSwMap);
@@ -1043,4 +1056,27 @@ public class Kernel implements CoreEngineModel {
 	public boolean unListEmulator(Integer i) throws IOException {
 		return downloader.unListEmulator(i);
 		}
+
+	@Override
+	public void setBlockedLanguages(Set<Language> blockedLanguages) {
+		this.blockedLanguages = blockedLanguages;
+	}
+
+	@Override
+	public void addBlockedLanguage(Language language) {
+		// The Java.util.Set interface guarantees that if the existing Set already contains
+		// the same Language, it will not be added as duplicate. 
+		// (see the Language.equals() method on how Language objects are compared for equality).
+		logger.info("adding language: id = " + language.getLanguageId() + "; name = " + language.getLanguageName());
+		this.blockedLanguages.add(language);
+		logger.info("number of blocked languages now: " + this.blockedLanguages.size());
+	}
+
+	@Override
+	public void removeBlockedLanguage(Language language) {
+		// The Java.util.Set interface guarantees that if the Set does not contain
+		// the Language, it will be left intact. 
+		// (see the Language.equals() method on how Language objects are compared for equality).
+		this.blockedLanguages.remove(language);
+	}
 }

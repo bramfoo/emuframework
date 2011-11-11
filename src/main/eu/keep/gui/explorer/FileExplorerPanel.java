@@ -36,6 +36,7 @@ import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -245,6 +246,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
                                 // find emus
                                 Pathway path = paths.get(0);
+
                                 if (!parent.model.isPathwaySatisfiable(path)) {
                                     parent.unlock("Sorry, " + path + " is not satisfiable");
                                 }

@@ -31,6 +31,7 @@
 package eu.keep.gui.config;
 
 import eu.keep.characteriser.Format;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
@@ -38,6 +39,7 @@ import eu.keep.gui.explorer.FileExplorerPanel;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
+import eu.keep.util.Language;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -48,8 +50,10 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ConfigPanel extends JPanel {
 
@@ -139,7 +143,7 @@ public class ConfigPanel extends JPanel {
                         try {
                             if (!parent.model.isPathwaySatisfiable(path)) {
                                 parent.unlock("Sorry, " + path + " is not satisfiable");
-                            } else {
+                            } else {                            	
                                 Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
                                 if (emuMap.isEmpty()) {
                                     parent.unlock("Didn't find an emulator for dependency: " + new PathwayWrapper(path).toString());
