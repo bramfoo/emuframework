@@ -43,7 +43,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.*;
-import org.apache.log4j.Logger;
 
 @SuppressWarnings("unchecked")
 public class DBDataTableModel extends DefaultTableModel implements TableModelListener {

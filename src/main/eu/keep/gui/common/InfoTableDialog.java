@@ -33,7 +33,6 @@ package eu.keep.gui.common;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.softwarearchive.pathway.ApplicationType;
-import eu.keep.gui.config.ConfigPanel;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 import javax.swing.*;

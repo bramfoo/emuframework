@@ -35,7 +35,6 @@ import eu.keep.gui.common.DBPanel;
 import eu.keep.gui.config.ConfigPanel;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 

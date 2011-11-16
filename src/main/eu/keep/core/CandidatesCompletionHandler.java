@@ -16,7 +16,6 @@ import jline.ConsoleReader;
 import jline.CursorBuffer;
 
 import java.io.*;
-import java.text.MessageFormat;
 import java.util.*;
 
 // @author Marc Prud'hommeaux

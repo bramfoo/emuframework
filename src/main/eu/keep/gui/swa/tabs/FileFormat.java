@@ -17,7 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Vector;
-import java.util.logging.Level;
 import org.apache.log4j.Logger;
 
 public class FileFormat extends JPanel {
