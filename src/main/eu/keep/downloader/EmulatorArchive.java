@@ -39,6 +39,7 @@ import java.util.Set;
 
 import javax.xml.ws.WebServiceException;
 
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 
 /**
@@ -99,4 +100,13 @@ public interface EmulatorArchive {
      */
     public abstract List<EmulatorPackage> getEmulatorsByHardware(String hardwareName) throws ConnectException, SocketTimeoutException, WebServiceException;
 
+    /**
+     * Get the list of emulator languages
+     * @return List of all languages used by emulators
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
+     */
+    public abstract EmuLanguageList getEmulatorLanguages() throws ConnectException, SocketTimeoutException, WebServiceException;
+    
 }

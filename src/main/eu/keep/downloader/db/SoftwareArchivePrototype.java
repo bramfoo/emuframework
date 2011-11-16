@@ -56,6 +56,7 @@ import org.apache.log4j.Logger;
 import eu.keep.softwarearchive.PathwayList;
 import eu.keep.softwarearchive.SoftwareArchivePortType;
 import eu.keep.softwarearchive.SoftwareArchiveService;
+import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -391,4 +392,42 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
         logger.info("Retrieved sw package for ID " + imageID + ": " + swPack.getDescription());
         return swPack;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	public SwLanguageList getSoftwareLanguages() throws ConnectException, SocketTimeoutException, WebServiceException {
+
+		SwLanguageList languageList = null;
+		
+		// Request a timer to display progress
+        Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+        String dummy = "dummy";
+        try {
+        	languageList = port.getLanguageList(dummy);
+            logger.debug("Downloaded " + languageList.getLanguages().size() + " languages referenced in Software Archive.");
+        }
+        catch (WebServiceException e) {
+            if (e.getCause() instanceof SocketTimeoutException)
+            {
+                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
+                throw se;
+            }
+            else if (e.getCause() instanceof ConnectException)
+            {
+                ConnectException ce = (ConnectException) e.getCause();
+                throw ce;
+            }
+            else
+                throw e;
+        }
+        finally
+        {
+            // Stop the timer
+            t.cancel();
+        }
+
+        return languageList;
+	}
 }

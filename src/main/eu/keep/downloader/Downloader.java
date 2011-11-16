@@ -56,7 +56,9 @@ import org.apache.log4j.Logger;
 import eu.keep.downloader.db.EmulatorArchivePrototype;
 import eu.keep.downloader.db.H2DataAccessObject;
 import eu.keep.downloader.db.SoftwareArchivePrototype;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
+import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;
@@ -122,16 +124,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to emulator archive!");
-            throw new IOException("Cannot connect to emulator archive!");
+            throw new IOException("Cannot connect to emulator archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to emulator archive timed out!");
-            throw new IOException("Connection to emulator archive timed out!");
+            throw new IOException("Connection to emulator archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Emulator archive failed (unknown error) "  + we.toString());
-            throw new IOException("Emulator archive failed (unknown error) "  + we.toString());
+            throw new IOException("Emulator archive failed (unknown error) "  + we.toString(), we);
         }
         
     }
@@ -148,16 +150,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to emulator archive!");
-            throw new IOException("Cannot connect to emulator archive!");
+            throw new IOException("Cannot connect to emulator archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to emulator archive timed out!");
-            throw new IOException("Connection to emulator archive timed out!");
+            throw new IOException("Connection to emulator archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Emulator archive failed (unknown error) "  + we.toString());
-            throw new IOException("Emulator archive failed (unknown error) "  + we.toString());
+            throw new IOException("Emulator archive failed (unknown error) "  + we.toString(), we);
         }
 
     }
@@ -173,16 +175,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to emulator archive!");
-            throw new IOException("Cannot connect to emulator archive!");
+            throw new IOException("Cannot connect to emulator archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to emulator archive timed out!");
-            throw new IOException("Connection to emulator archive timed out!");
+            throw new IOException("Connection to emulator archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Emulator archive failed (unknown error) "  + we.toString());
-            throw new IOException("Emulator archive failed (unknown error) "  + we.toString());
+            throw new IOException("Emulator archive failed (unknown error) "  + we.toString(), we);
         }
 
     }
@@ -308,7 +310,7 @@ public class Downloader {
     	try {
 			emuIDs = dao.getWhitelistedEmus();
 		} catch (SQLException e) {
-			throw new IOException("Error retrieving whitelisted emulator IDs: " + e);
+			throw new IOException("Error retrieving whitelisted emulator IDs: " + e, e);
 		}
 		logger.debug("Whitelisted emulators: " + emuIDs);
 		
@@ -336,7 +338,7 @@ public class Downloader {
     	try {
 			return dao.whiteListEmulator(i, descr);
 		} catch (SQLException e) {
-			throw new IOException("Error whitelisting emulator ID [" + i +"]: " + e);
+			throw new IOException("Error whitelisting emulator ID [" + i +"]: " + e, e);
 		}
     }
 
@@ -351,8 +353,33 @@ public class Downloader {
     	try {
 			return dao.unListEmulator(i);
 		} catch (SQLException e) {
-			throw new IOException("Error unlisting emulator ID [" + i +"]: " + e);
+			throw new IOException("Error unlisting emulator ID [" + i +"]: " + e, e);
 		}
+    }
+    
+    /**
+     * Gets all emulator languages from the emulator archive
+     * @return List of all languages used by emulators
+     * @throws IOException If a connection error occurs when contacting the Emulator Archive
+     */
+    public EmuLanguageList getEmulatorLanguages() throws IOException {
+        try {
+            return emulatorArchive.getEmulatorLanguages();
+        }
+        catch (ConnectException ce) {
+            logger.error("Cannot connect to emulator archive!");
+            throw new IOException("Cannot connect to emulator archive!", ce);
+        }
+        catch (SocketTimeoutException se) {
+            logger.error("Connection to emulator archive timed out!");
+            throw new IOException("Connection to emulator archive timed out!", se);
+        }
+        catch (WebServiceException we)
+        {
+            logger.error("Emulator archive failed (unknown error) "  + we.toString());
+            throw new IOException("Emulator archive failed (unknown error) "  + we.toString(), we);
+        }
+    	
     }
     
     ////////////////////////
@@ -371,16 +398,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to software archive!");
-            throw new IOException("Cannot connect to software archive!");
+            throw new IOException("Cannot connect to software archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to software archive timed out!");
-            throw new IOException("Connection to software archive timed out!");
+            throw new IOException("Connection to software archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Software archive failed (unknown error) "  + we.toString());
-            throw new IOException("Software archive failed (unknown error) "  + we.toString());
+            throw new IOException("Software archive failed (unknown error) "  + we.toString(), we);
         }
     }
 
@@ -396,16 +423,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to software archive!");
-            throw new IOException("Cannot connect to software archive!");
+            throw new IOException("Cannot connect to software archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to software archive timed out!");
-            throw new IOException("Connection to software archive timed out!");
+            throw new IOException("Connection to software archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Software archive failed (unknown error) "  + we.toString());
-            throw new IOException("Software archive failed (unknown error) "  + we.toString());
+            throw new IOException("Software archive failed (unknown error) "  + we.toString(), we);
         }
     }
 
@@ -425,16 +452,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to software archive!");
-            throw new IOException("Cannot connect to software archive!");
+            throw new IOException("Cannot connect to software archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to software archive timed out!");
-            throw new IOException("Connection to software archive timed out!");
+            throw new IOException("Connection to software archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Software archive failed (unknown error) "  + we.toString());
-            throw new IOException("Software archive failed (unknown error) "  + we.toString());
+            throw new IOException("Software archive failed (unknown error) "  + we.toString(), we);
         }
     }
 
@@ -451,16 +478,16 @@ public class Downloader {
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to software archive!");
-            throw new IOException("Cannot connect to software archive!");
+            throw new IOException("Cannot connect to software archive!", ce);
         }
         catch (SocketTimeoutException se) {
             logger.error("Connection to software archive timed out!");
-            throw new IOException("Connection to software archive timed out!");
+            throw new IOException("Connection to software archive timed out!", se);
         }
         catch (WebServiceException we)
         {
             logger.error("Software archive failed (unknown error) "  + we.toString());
-            throw new IOException("Software archive failed (unknown error) "  + we.toString());
+            throw new IOException("Software archive failed (unknown error) "  + we.toString(), we);
         }
     }
 
@@ -520,4 +547,30 @@ public class Downloader {
         }
         return softPackFile;
     }
+    
+    /**
+     * Gets all software languages from the software archive
+     * @return List of all languages used by software in the archive
+     * @throws IOException If a connection error occurs when contacting the Software Archive
+     */
+    public SwLanguageList getSoftwareLanguages() throws IOException {
+        try {
+            return softwareArchive.getSoftwareLanguages();
+        }
+        catch (ConnectException ce) {
+            logger.error("Cannot connect to software archive!");
+            throw new IOException("Cannot connect to software archive!", ce);
+        }
+        catch (SocketTimeoutException se) {
+            logger.error("Connection to software archive timed out!");
+            throw new IOException("Connection to software archive timed out!", se);
+        }
+        catch (WebServiceException we)
+        {
+            logger.error("Software archive failed (unknown error) "  + we.toString());
+            throw new IOException("Software archive failed (unknown error): "  + we.toString(), we);
+        }
+    	
+    }
+    
 }

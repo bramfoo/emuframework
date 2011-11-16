@@ -59,6 +59,7 @@ import eu.keep.emulatorarchive.EmulatorArchivePortType;
 import eu.keep.emulatorarchive.EmulatorArchiveService;
 import eu.keep.emulatorarchive.EmulatorPackageList;
 import eu.keep.emulatorarchive.HardwareIDs;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.util.FileUtilities;
 
@@ -313,4 +314,42 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
         logger.debug("Found " + emuPacks.size() + " emulators supporting hardware '" + hardwareName +"'");
         return emuPacks;
         }
+
+    /**
+     * {@inheritDoc}
+     */
+	public EmuLanguageList getEmulatorLanguages() throws ConnectException, SocketTimeoutException, WebServiceException {
+
+		EmuLanguageList languageList = null;
+		
+		// Request a timer to display progress
+        Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+        int dummy = 0;
+        try {
+        	languageList = port.getLanguageList(dummy);
+            logger.debug("Downloaded " + languageList.getLanguages().size() + " languages referenced in Emulator Archive.");
+        }
+        catch (WebServiceException e) {
+            if (e.getCause() instanceof SocketTimeoutException)
+            {
+                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
+                throw se;
+            }
+            else if (e.getCause() instanceof ConnectException)
+            {
+                ConnectException ce = (ConnectException) e.getCause();
+                throw ce;
+            }
+            else
+                throw e;
+        }
+        finally
+        {
+            // Stop the timer
+            t.cancel();
+        }
+
+        return languageList;
+	}
 }

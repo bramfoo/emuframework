@@ -31,8 +31,6 @@
 */
 package eu.keep.util;
 
-import org.apache.log4j.Logger;
-
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
 import eu.keep.softwarearchive.SwLanguage;
 
@@ -47,6 +45,15 @@ public class Language {
     private final String languageId;
 	private final String languageName;
 
+	/**
+	 * Construct a basic Language object with a languageId only
+	 * @param languageId the languageId
+	 */
+	public Language(String languageId) {
+		this.languageId = languageId;
+		this.languageName = null;
+	}
+	
 	/**
 	 * Construct a Language object from an EmuLanguage object
 	 * @param emuLanguage

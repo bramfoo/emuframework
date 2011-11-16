@@ -40,7 +40,9 @@ import java.util.Set;
 
 import eu.keep.characteriser.Format;
 import eu.keep.downloader.db.DBRegistry;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
+import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.Language;
@@ -112,25 +114,32 @@ public interface CoreEngineModel {
     void removeObserver(CoreObserver coreObs);
 
     /**
+     * Get the set of languages to filter out Emulators or Software. 
+     * Emulators or Software using any of the languages in this set will not be selected/presented. 
+     * @return Set of languages to filter out.
+     */
+	Set<Language> getAcceptedLanguages();
+
+    /**
      * Define the set of languages to filter out Emulators or Software. 
      * Emulators or Software using any of the languages in this set will not be selected/presented. 
      * @param blockedLanguages Set of languages to filter out.
      */
-    void setBlockedLanguages(Set<Language> blockedLanguages);
+    void setAcceptedLanguages(Set<Language> blockedLanguages);
     
     /**
      * Add a language to filter out Emulators or Software. 
      * Emulators or Software using this language will not be selected/presented. 
      * @param language the language to filter out.
      */
-    void addBlockedLanguage(Language language);
+    void addAcceptedLanguage(Language language);
     
     /**
      * Remove a language to filter out Emulators or Software. 
      * Emulators or Software using this language will in future be selected/presented again. 
      * @param language the language to remove from the filter.
      */
-    void removeBlockedLanguage(Language language);
+    void removeAcceptedLanguage(Language language);
     
     /**
      * Stop the Core Emulator Framework engine
@@ -425,7 +434,13 @@ public interface CoreEngineModel {
      */
     public boolean unListEmulator(Integer i) throws IOException;
 
-    
+    /**
+     * Gets all emulator languages from the emulator archive
+     * @return List of all languages used by emulators
+     * @throws IOException If a database connection error occurs 
+     */
+    public EmuLanguageList getEmulatorLanguages() throws IOException;
+
     ////////////////////
     // Software database
     ////////////////////
@@ -448,7 +463,14 @@ public interface CoreEngineModel {
      */
    public List<SoftwarePackage> getSoftwareListFromArchive() throws IOException;
 
-    ////////////////////////
+   /**
+    * Gets all software languages from the software archive
+    * @return List of all languages used by software
+    * @throws IOException If a database connection error occurs 
+    */
+   public SwLanguageList getSoftwareLanguages() throws IOException;
+
+   ////////////////////////
     // Technical registries
     ///////////////////////
 

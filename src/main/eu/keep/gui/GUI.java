@@ -32,6 +32,7 @@ package eu.keep.gui;
 
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
+import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
 import eu.keep.kernel.CoreEngineModel;
 import eu.keep.kernel.Kernel;
@@ -187,8 +188,18 @@ public class GUI extends JFrame {
         super.add(logLabel, BorderLayout.SOUTH);
 
         // init menu bar
+        JMenuBar menuBar = initMenuBar();
+        this.setJMenuBar(menuBar);
+    }
+
+    /**
+     * Init menu bar
+     * @return
+     */
+    private JMenuBar initMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
+        // File menu option
         JMenu file = new JMenu("File");
         file.setMnemonic(KeyEvent.VK_F);
 
@@ -220,33 +231,18 @@ public class GUI extends JFrame {
         });
         file.add(exit);
 
+        // Settings menu option
         JMenu settings = new JMenu("Settings");
         settings.setMnemonic(KeyEvent.VK_S);
-        JMenu language = new JMenu("Language");
-        language.setMnemonic(KeyEvent.VK_L);
-        ButtonGroup group = new ButtonGroup();
-
-        JRadioButtonMenuItem english = new JRadioButtonMenuItem("English");
-        JRadioButtonMenuItem german = new JRadioButtonMenuItem("German");
-        JRadioButtonMenuItem french = new JRadioButtonMenuItem("French");
-        JRadioButtonMenuItem dutch = new JRadioButtonMenuItem("Dutch");
-
-        english.setSelected(true);
-        german.setEnabled(false);
-        french.setEnabled(false);
-        dutch.setEnabled(false);
-
-        group.add(english);
-        group.add(german);
-        group.add(french);
-        group.add(dutch);
-
-        language.add(english);
-        language.add(german);
-        language.add(french);
-        language.add(dutch);
-
-        settings.add(language);
+        
+        JMenuItem languages = new JMenuItem("languages");
+        languages.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new LanguageSettingsFrame(GUI.this, "eu/keep/" + PROP_FILE_NAME_KERNEL);
+            }
+        });
+        settings.add(languages);
 
         JMenuItem addresses = new JMenuItem("web-service addresses");
         addresses.addActionListener(new ActionListener() {
@@ -272,6 +268,7 @@ public class GUI extends JFrame {
         });
         settings.add(addresses);
 
+        // Help menu option
         JMenu help = new JMenu("Help");
         help.setMnemonic(KeyEvent.VK_H);
 
@@ -326,12 +323,12 @@ public class GUI extends JFrame {
         });
         help.add(aboutItem);
 
+        // Add everything together
         menuBar.add(file);
         menuBar.add(settings);
         menuBar.add(help);
-
-        this.setJMenuBar(menuBar);
-    }
+		return menuBar;
+	}
 
     public void loadFormats(List<Format> formats) {
         tabPanel.loadFormats(formats);

@@ -56,7 +56,11 @@ import eu.keep.controller.Controller;
 import eu.keep.downloader.Downloader;
 import eu.keep.downloader.db.DBRegistry;
 import eu.keep.downloader.db.DBUtil;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
+import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
+import eu.keep.softwarearchive.SwLanguage;
+import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;
@@ -83,7 +87,7 @@ public class Kernel implements CoreEngineModel {
     private final Controller            controller;
     private final Downloader		    downloader;
 
-    private Set<Language> 				blockedLanguages; 
+    private Set<Language> 				acceptedLanguages = new HashSet<Language>(); 
     
     /**
      * Constructor
@@ -104,7 +108,8 @@ public class Kernel implements CoreEngineModel {
         controller = new Controller();
         downloader = createDownloader(props, localDBConnection);
         
-        blockedLanguages = new HashSet<Language>();
+        // Now that downloader is set up, can initialise the accepted Languages
+        initAcceptedLanguages();
     }
     
 	// Support for mocking
@@ -226,7 +231,6 @@ public class Kernel implements CoreEngineModel {
         String dbPasswd = props.getProperty("h2.db.userpassw");
         
         int connectionAttempts = 5;
-
         localDBConnection = DBUtil.establishConnection(driverName, dbUrlEngine, dbUser,
                 dbPasswd, connectionAttempts);
         result &=  localDBConnection != null;
@@ -245,6 +249,50 @@ public class Kernel implements CoreEngineModel {
         logger.info(message);
         
         return result;
+    }
+
+    /**
+     * Initialize the set of accepted languages. Reads in property "accepted.languages".
+     * @throws IOException On initialization problems, such as database connection problems
+     */
+    private void initAcceptedLanguages() throws IOException {
+
+    	// Get the accepted Languages from properties
+    	logger.debug("Reading current acceptable languages from property accepted.languages");
+    	String acceptedLanguagesProp = props.getProperty("accepted.languages");
+    	if (acceptedLanguagesProp.equalsIgnoreCase("all")) {
+
+    		logger.debug("Marking all available languages as acceptable.");
+            
+    		// Get all available languages, from both EmulatorArchive and SoftwareArchive
+        	Set<Language> availableLanguages = new HashSet<Language>();
+        	
+        	EmuLanguageList emuLanguages = getEmulatorLanguages();
+        	for (EmuLanguage emuLanguage : emuLanguages.getLanguages()) {
+        		Language language = new Language(emuLanguage);
+        		// The Set interface of allLanguages will ensure that no duplicate Languages are added.
+        		// See the Language.equals() and Language.hashCode() methods on how equality is determined.
+        		availableLanguages.add(language);
+        	}
+
+        	SwLanguageList softwareLanguages = getSoftwareLanguages();
+        	for (SwLanguage swLanguage : softwareLanguages.getLanguages()) {
+        		Language language = new Language(swLanguage);
+        		// The Set interface of allLanguages will ensure that no duplicate Languages are added.
+        		// See the Language.equals() and Language.hashCode() methods on how equality is determined.
+        		availableLanguages.add(language);
+        	}        	
+        	logger.debug("Total of " + availableLanguages.size() + " languages available in Emulator and Software Archives.");
+
+    		acceptedLanguages.addAll(availableLanguages);
+    	} else {
+    		String[] acceptedLangIds = acceptedLanguagesProp.split(",");
+    		for (String acceptedLangId : acceptedLangIds) {
+    			Language acceptedLanguage = new Language(acceptedLangId);
+    			logger.debug("Marking language as acceptable: " + acceptedLanguage.getLanguageId());
+    			acceptedLanguages.add(acceptedLanguage);
+    		}
+    	}
     }
 
     /**
@@ -518,7 +566,7 @@ public class Kernel implements CoreEngineModel {
         	for (EmulatorPackage emuPack : emuPacks) {
 
         		// Check if the user accepts the language of that emulator
-        		if (!this.blockedLanguages.contains(new Language(emuPack.getEmulator().getLanguage()))) {
+        		if (this.acceptedLanguages.contains(new Language(emuPack.getEmulator().getLanguage()))) {
 
         			// Get the list of formats supported by that emulator
         			formats_emu = emuPack.getEmulator().getImageFormat();
@@ -990,6 +1038,14 @@ public class Kernel implements CoreEngineModel {
      * @inheritDoc
      */
     @Override
+    public SwLanguageList getSoftwareLanguages() throws IOException {
+        return downloader.getSoftwareLanguages();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
     public List<DBRegistry> setRegistries(List<DBRegistry> listReg) throws IOException {
 
         boolean result = true;
@@ -1032,51 +1088,100 @@ public class Kernel implements CoreEngineModel {
         return unzips.get(0);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public Set<String> getSupportedHardwareFromArchive() throws IOException {
         return downloader.getSupportedHardware();
     }
     
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<EmulatorPackage> getEmusByHWFromArchive(String hardwareName) throws IOException {
             return downloader.getEmulatorsByHardware(hardwareName);
     }
 
+    /**
+     * @inheritDoc
+     */
 	@Override
 	public boolean whiteListEmulator(Integer i) throws IOException {
 		return downloader.whiteListEmulator(i);
 	}
 
+    /**
+     * @inheritDoc
+     */
 	@Override
 	public List<EmulatorPackage> getWhitelistedEmus() throws IOException {
 		return downloader.getWhitelistedEmus();
 		}
 
+    /**
+     * @inheritDoc
+     */
 	@Override
 	public boolean unListEmulator(Integer i) throws IOException {
 		return downloader.unListEmulator(i);
 		}
 
+    /**
+     * @inheritDoc
+     */
 	@Override
-	public void setBlockedLanguages(Set<Language> blockedLanguages) {
-		this.blockedLanguages = blockedLanguages;
+	public EmuLanguageList getEmulatorLanguages() throws IOException {
+		return downloader.getEmulatorLanguages();
+		}
+
+    /**
+     * @inheritDoc
+     */
+	@Override
+	public void setAcceptedLanguages(Set<Language> acceptedLanguages) {
+		for (Language language : acceptedLanguages) {
+			logger.info("adding language to list of accepted languages: id = " + language.getLanguageId() + 
+					"; name = " + language.getLanguageName());			
+		}
+		this.acceptedLanguages = acceptedLanguages;
+		logger.debug("number of accepted languages now: " + this.acceptedLanguages.size());
 	}
 
+    /**
+     * @inheritDoc
+     */
 	@Override
-	public void addBlockedLanguage(Language language) {
+	public void addAcceptedLanguage(Language language) {
 		// The Java.util.Set interface guarantees that if the existing Set already contains
 		// the same Language, it will not be added as duplicate. 
 		// (see the Language.equals() method on how Language objects are compared for equality).
-		logger.info("adding language: id = " + language.getLanguageId() + "; name = " + language.getLanguageName());
-		this.blockedLanguages.add(language);
-		logger.info("number of blocked languages now: " + this.blockedLanguages.size());
+		logger.info("adding language to list of accepted languages: id = " + language.getLanguageId() + 
+				"; name = " + language.getLanguageName());
+		this.acceptedLanguages.add(language);
+		logger.debug("number of accepted languages now: " + this.acceptedLanguages.size());
 	}
 
+    /**
+     * @inheritDoc
+     */
 	@Override
-	public void removeBlockedLanguage(Language language) {
+	public void removeAcceptedLanguage(Language language) {
 		// The Java.util.Set interface guarantees that if the Set does not contain
 		// the Language, it will be left intact. 
 		// (see the Language.equals() method on how Language objects are compared for equality).
-		this.blockedLanguages.remove(language);
+		logger.info("removing language from list of accepted languages: id = " + language.getLanguageId() + 
+				"; name = " + language.getLanguageName());
+		this.acceptedLanguages.remove(language);
+		logger.debug("number of accepted languages now: " + this.acceptedLanguages.size());
+	}
+
+    /**
+     * @inheritDoc
+     */
+	@Override
+	public Set<Language> getAcceptedLanguages() {
+		return acceptedLanguages;
 	}
 }

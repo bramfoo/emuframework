@@ -30,6 +30,7 @@
 */
 package eu.keep.downloader;
 
+import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -112,4 +113,14 @@ public interface SoftwareArchive {
      */
     public abstract SoftwarePackage getSoftwarePackage(String softpackID) throws ConnectException,
             SocketTimeoutException, WebServiceException;
+
+    /**
+     * Get the list of software languages
+     * @return List of all languages used by software
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
+     */
+    public abstract SwLanguageList getSoftwareLanguages() throws ConnectException, SocketTimeoutException, WebServiceException;
+    
 }
