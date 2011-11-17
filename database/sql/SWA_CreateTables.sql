@@ -218,7 +218,8 @@ SELECT imgs.image_id,
        ops.creator as "OS_CREATOR",
        ops.release_date as "OS_RELEASE_DATE",
        ops.license as "OS_LICENSE",
-       lang.language_name as "OS_LANGUAGE",
+       lang.language_id as "OS_LANGUAGE_ID",
+       lang.language_name as "OS_LANGUAGE_NAME",
        ops.reference as "OS_REFERENCE"
 FROM images imgs, languages lang
 INNER JOIN opsys_images ops_img
@@ -235,7 +236,8 @@ SELECT imgs.image_id,
        apps.creator as "APP_CREATOR",
        apps.release_date as "APP_RELEASE_DATE",
        apps.license as "APP_LICENSE",
-       lang.language_name as "APP_LANGUAGE",
+       lang.language_id as "APP_LANGUAGE_ID",
+       lang.language_name as "APP_LANGUAGE_NAME",
        apps.reference as "APP_REFERENCE",
        apps.user_instructions as "APP_USER_INSTRUCTIONS"
 FROM images imgs, languages lang

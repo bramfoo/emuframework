@@ -89,19 +89,7 @@ $
 
             <xs:element name="fileFormat"        type="xs:string"/>
             
-           	<xs:complexType name="swLanguage">
-				<xs:all>
-					<xs:element name="language_id" type="xs:string"/>
-					<xs:element name="language_name" type="xs:string"/>
-				</xs:all>      	
-           	</xs:complexType>            
-            <xs:element name="swLanguage_list">
-            	<xs:complexType>
-            		<xs:sequence>
-            			<xs:element name="languages" type="tns:swLanguage" minOccurs="0" maxOccurs="unbounded"/>
-            		</xs:sequence>
-            	</xs:complexType>
-            </xs:element>
+			<xs:element name="swLanguage_list" type="pw:swLanguage_list"/>
             
             <!--
             Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)

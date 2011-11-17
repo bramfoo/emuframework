@@ -36,65 +36,77 @@ $header:
            xmlns:pw="http://softwarearchive.keep.eu/Pathway"
            targetNamespace="http://softwarearchive.keep.eu/Pathway">
 
-<xs:complexType name="objectFormatType">
-	<xs:all>
-		<xs:element name="name" type="xs:string"/>
-		<xs:element name="version" type="xs:string"/>
-		<xs:element name="description" type="xs:string" minOccurs="0"/>
-		<xs:element name="reference" type="xs:string" minOccurs="0"/>
-	</xs:all>
-	<xs:attribute name="id" type="xs:string" use="required"/>
-</xs:complexType>			
+		<xs:complexType name="objectFormatType">
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="version" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="reference" type="xs:string" minOccurs="0"/>
+			</xs:all>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>			
+		
+		<xs:complexType name="applicationType">
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="version" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="creator" type="xs:string" minOccurs="0"/>
+				<xs:element name="releaseDate" type="xs:string" minOccurs="0"/>
+				<xs:element name="license" type="xs:string" minOccurs="0"/>
+				<xs:element name="language" type="pw:swLanguage" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="reference" type="xs:string" minOccurs="0"/>
+				<xs:element name="userInstructions" type="xs:string" minOccurs="0"/>
+			</xs:all>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>			
+		
+		<xs:complexType name="operatingSystemType">
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="version" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="creator" type="xs:string" minOccurs="0"/>
+				<xs:element name="releaseDate" type="xs:string" minOccurs="0"/>
+				<xs:element name="license" type="xs:string" minOccurs="0"/>
+				<xs:element name="language" type="pw:swLanguage" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="reference" type="xs:string" minOccurs="0"/>
+			</xs:all>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>			
+		
+		<xs:complexType name="hardwarePlatformType">
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="description" type="xs:string" minOccurs="0"/>
+				<xs:element name="creator" type="xs:string" minOccurs="0"/>
+				<xs:element name="productionStart" type="xs:string" minOccurs="0"/>
+				<xs:element name="productionEnd" type="xs:string" minOccurs="0"/>
+				<xs:element name="reference" type="xs:string" minOccurs="0"/>
+			</xs:all>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+		</xs:complexType>			
+		
+		<xs:element name="pathway">
+			<xs:complexType>
+				<xs:sequence>
+					<xs:element name="objectFormat" type="pw:objectFormatType" />
+					<xs:element name="application" type="pw:applicationType" minOccurs="0"/>
+					<xs:element name="operatingSystem" type="pw:operatingSystemType" minOccurs="0"/>
+					<xs:element name="hardwarePlatform"  type="pw:hardwarePlatformType" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:element>
 
-<xs:complexType name="applicationType">
-	<xs:all>
-		<xs:element name="name" type="xs:string"/>
-		<xs:element name="version" type="xs:string"/>
-		<xs:element name="description" type="xs:string" minOccurs="0"/>
-		<xs:element name="creator" type="xs:string" minOccurs="0"/>
-		<xs:element name="releaseDate" type="xs:string" minOccurs="0"/>
-		<xs:element name="license" type="xs:string" minOccurs="0"/>
-		<xs:element name="language" type="xs:string" minOccurs="0"/>
-		<xs:element name="reference" type="xs:string" minOccurs="0"/>
-		<xs:element name="userInstructions" type="xs:string" minOccurs="0"/>
-	</xs:all>
-	<xs:attribute name="id" type="xs:string" use="required"/>
-</xs:complexType>			
-
-<xs:complexType name="operatingSystemType">
-	<xs:all>
-		<xs:element name="name" type="xs:string"/>
-		<xs:element name="version" type="xs:string"/>
-		<xs:element name="description" type="xs:string" minOccurs="0"/>
-		<xs:element name="creator" type="xs:string" minOccurs="0"/>
-		<xs:element name="releaseDate" type="xs:string" minOccurs="0"/>
-		<xs:element name="license" type="xs:string" minOccurs="0"/>
-		<xs:element name="language" type="xs:string" minOccurs="0"/>
-		<xs:element name="reference" type="xs:string" minOccurs="0"/>
-	</xs:all>
-	<xs:attribute name="id" type="xs:string" use="required"/>
-</xs:complexType>			
-
-<xs:complexType name="hardwarePlatformType">
-	<xs:all>
-		<xs:element name="name" type="xs:string"/>
-		<xs:element name="description" type="xs:string" minOccurs="0"/>
-		<xs:element name="creator" type="xs:string" minOccurs="0"/>
-		<xs:element name="productionStart" type="xs:string" minOccurs="0"/>
-		<xs:element name="productionEnd" type="xs:string" minOccurs="0"/>
-		<xs:element name="reference" type="xs:string" minOccurs="0"/>
-	</xs:all>
-	<xs:attribute name="id" type="xs:string" use="required"/>
-</xs:complexType>			
-
-<xs:element name="pathway">
-	<xs:complexType>
-		<xs:sequence>
-			<xs:element name="objectFormat" type="pw:objectFormatType" />
-			<xs:element name="application" type="pw:applicationType" minOccurs="0"/>
-			<xs:element name="operatingSystem" type="pw:operatingSystemType" minOccurs="0"/>
-			<xs:element name="hardwarePlatform"  type="pw:hardwarePlatformType" />
-		</xs:sequence>
-	</xs:complexType>
-</xs:element>
+        <xs:complexType name="swLanguage">
+			<xs:all>
+				<xs:element name="language_id" type="xs:string"/>
+				<xs:element name="language_name" type="xs:string"/>
+			</xs:all>      	
+        </xs:complexType>            
+        <xs:complexType name="swLanguage_list">
+      		<xs:sequence>
+      			<xs:element name="languages" type="pw:swLanguage" minOccurs="0" maxOccurs="unbounded"/>
+      		</xs:sequence>
+        </xs:complexType>
 </xs:schema>

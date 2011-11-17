@@ -34,6 +34,8 @@ package eu.keep.softwarearchive;
 import java.io.InputStream;
 import java.util.List;
 
+import eu.keep.softwarearchive.pathway.SwLanguageList;
+
 /**
  * Interface definition for DAOs for software packages.
  * @author David Michel
