@@ -56,7 +56,7 @@ import org.apache.log4j.Logger;
 import eu.keep.softwarearchive.PathwayList;
 import eu.keep.softwarearchive.SoftwareArchivePortType;
 import eu.keep.softwarearchive.SoftwareArchiveService;
-import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 

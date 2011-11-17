@@ -31,10 +31,9 @@
 package eu.keep.gui.util;
 
 import javax.swing.*;
-import javax.swing.border.*;
 
-import org.apache.log4j.Logger;
-
+//import org.apache.log4j.Logger;
+//
 import java.awt.*;
 import java.awt.event.*;
 
@@ -42,14 +41,27 @@ import java.awt.event.*;
  * Class to display a list of checkboxes
  * @author nooe
  */
-public class CheckBoxList extends JList {
+public class CheckBoxList<E extends JCheckBox> extends JList<JCheckBox> {
 	
-    private static final Logger logger = Logger.getLogger(CheckBoxList.class.getName());
-
-	protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
-
+//    private static final Logger logger = Logger.getLogger(CheckBoxList.class.getName());
+//
+//	protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
+//
 	public CheckBoxList() {
-		setCellRenderer(new CheckBoxCellRenderer());
+		// Use standard background color
+		setBackground(new Color(UIManager.getColor("background").getRGB()));
+
+		// Use custom cell renderer, to display checkboxes.
+		setCellRenderer(new ListCellRenderer<JCheckBox>() {
+			@Override
+			public Component getListCellRendererComponent(
+					JList<? extends JCheckBox> list, JCheckBox value, int index,
+					boolean isSelected, boolean cellHasFocus) {
+				return value;
+			}
+		});
+
+		// Add MouseListener, to detect mouse-clicks on checkboxes.
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				int index = locationToIndex(e.getPoint());
@@ -62,23 +74,23 @@ public class CheckBoxList extends JList {
 		});
 	}
 
-	private class CheckBoxCellRenderer implements ListCellRenderer {
-		
-		public Component getListCellRendererComponent(JList list, 
-				Object value, int index, boolean isSelected, boolean cellHasFocus) {
-			JCheckBox checkbox = (JCheckBox) value;
-			checkbox.setBackground(isSelected ? getSelectionBackground() : getBackground());
-			checkbox.setForeground(isSelected ? getSelectionForeground() : getForeground());
-//			checkbox.setEnabled(isEnabled());
-//			checkbox.setFont(getFont());
-//			checkbox.setFocusPainted(false);
-			checkbox.setBorderPainted(true);
-//			checkbox.setBorder(isSelected ?
-//					UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
-			return checkbox;
-		}
-
-	}
+//	private class CheckBoxCellRenderer implements ListCellRenderer {
+//		
+//		public Component getListCellRendererComponent(JList list, 
+//				Object value, int index, boolean isSelected, boolean cellHasFocus) {
+//			JCheckBox checkbox = (JCheckBox) value;
+////			checkbox.setBackground(isSelected ? getSelectionBackground() : getBackground());
+////			checkbox.setForeground(isSelected ? getSelectionForeground() : getForeground());
+////			checkbox.setEnabled(isEnabled());
+////			checkbox.setFont(getFont());
+////			checkbox.setFocusPainted(false);
+////			checkbox.setBorderPainted(true);
+////			checkbox.setBorder(isSelected ?
+////					UIManager.getBorder("List.focusCellHighlightBorder") : noFocusBorder);
+//			return checkbox;
+//		}
+//
+//	}
 	
 	/**
 	 * Change the selection state of all checkboxes in the list

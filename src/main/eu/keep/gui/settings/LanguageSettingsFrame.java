@@ -35,8 +35,8 @@ import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.CheckBoxList;
 import eu.keep.gui.util.LanguageCheckBox;
-import eu.keep.softwarearchive.SwLanguage;
-import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.SwLanguage;
+import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.util.Language;
 
 import javax.swing.*;
@@ -73,7 +73,7 @@ public class LanguageSettingsFrame extends JFrame {
     private Set<Language> availableLanguages = new HashSet<Language>();
     private Set<Language> acceptedLanguages = new HashSet<Language>();
     private static final String acceptedLanguagesProperty = "accepted.languages";
-    private CheckBoxList checkBoxList = new CheckBoxList();
+    private CheckBoxList<JCheckBox> checkBoxList = new CheckBoxList<JCheckBox>();
 
     private static final String select_all = "Select all";
     
@@ -249,7 +249,8 @@ public class LanguageSettingsFrame extends JFrame {
 			
 			checkBoxes.add(languageCheckBox);
 		}
-		checkBoxList.setListData(checkBoxes.toArray());
+		// Have to call toArray() with empty LanguageCheckBox array, to make sure the returned array contains LanguageCheckBox objects.
+		checkBoxList.setListData(checkBoxes.toArray(new LanguageCheckBox[0]));
 		checkBoxesPanel.add(checkBoxList);
 
 		// Add everything together

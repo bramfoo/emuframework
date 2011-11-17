@@ -43,7 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
-import eu.keep.softwarearchive.SwLanguage;
+import eu.keep.softwarearchive.pathway.SwLanguage;
 
 /**
  * A Junit Test class for {@link eu.keep.util.Language }

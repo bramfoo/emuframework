@@ -59,8 +59,9 @@ import eu.keep.downloader.db.DBUtil;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
-import eu.keep.softwarearchive.SwLanguage;
-import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.SwLanguage;
+import eu.keep.softwarearchive.pathway.SwLanguageList;
+import eu.keep.softwarearchive.pathway.ApplicationType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;
@@ -577,14 +578,41 @@ public class Kernel implements CoreEngineModel {
         				ArrayList<SoftwarePackage> swPackList = new ArrayList<SoftwarePackage>();
         				for (String format_emu : formats_emu) {
 
-        					// get all images whose format is compatible
+        					// get all images whose format is compatible and whose software/OS have acceptable language
         					for (SoftwarePackage swPack : swPacks) {
 
-        						String format = downloader.getSoftwarePackageFormat(swPack.getId());
-        						//swPack.
-        						
-        						if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
-        							swPackList.add(swPack);
+        						// Check the language of the OS (assume swPack contains one OS only)
+        						if (this.acceptedLanguages.contains(new Language(swPack.getOs().get(0).getLanguage()))) {
+        							// Get the application that is needed for this pathway
+            						ApplicationType pathwayApp = pathway.getApplication();
+
+            						// Check if the swPack contains a version of the Application, given in the pathway, with an acceptable language.
+            						// (it is possible that it contains several versions of the same Application)
+        							boolean containsCompatibleApp = false;
+        							for (ApplicationType swPackApp : swPack.getApp()) {
+            							if (swPackApp.getId().equals(pathwayApp.getId()) && 
+            									this.acceptedLanguages.contains(new Language(swPackApp.getLanguage()))) {
+            								containsCompatibleApp = true;
+            								break;
+            							}
+            						}            						
+        							if (containsCompatibleApp) {
+                						String format = downloader.getSoftwarePackageFormat(swPack.getId());
+                						if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
+                							swPackList.add(swPack);
+                						}        								
+        							}
+        							else {
+            		    				logger.warn("SoftwarePackage " + swPack.getId() + " (" + swPack.getDescription() + 
+            		    						") does not contain a version of the application required for the requested " +
+            		    						"pathway with a language that was selected in the EF settings.");        								
+        							}        							
+        						}
+        						else {
+        		    				logger.warn("SoftwarePackage " + swPack.getId() + " (" + swPack.getDescription() + 
+        		    						") has an OS with a language that is not selected in the EF settings: " + 
+        		    						swPack.getOs().get(0).getLanguage().getLanguageId() + " - " + 
+        		    						swPack.getOs().get(0).getLanguage().getLanguageName());
         						}
         					}
         				}
@@ -598,8 +626,7 @@ public class Kernel implements CoreEngineModel {
         				logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
         					" does not support any image formats");
         			}	
-        		}
-        		
+        		}      		
         		else {
     				logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
     						" has a language that is not selected in the EF settings: " + emuPack.getEmulator().getLanguage().getLanguageId() + 

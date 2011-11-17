@@ -58,7 +58,7 @@ import eu.keep.downloader.db.H2DataAccessObject;
 import eu.keep.downloader.db.SoftwareArchivePrototype;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
-import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;

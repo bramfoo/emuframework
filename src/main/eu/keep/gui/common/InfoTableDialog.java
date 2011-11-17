@@ -154,7 +154,7 @@ public class InfoTableDialog extends JFrame {
 
             row = new ArrayList<String>();
             row.add("Language");
-            row.add(app.getLanguage());
+            row.add(app.getLanguage().getLanguageName());
             dataList.add(row);
 
             row = new ArrayList<String>();

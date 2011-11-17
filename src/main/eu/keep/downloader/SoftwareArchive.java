@@ -30,7 +30,7 @@
 */
 package eu.keep.downloader;
 
-import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
