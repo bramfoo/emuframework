@@ -30,13 +30,9 @@
  */
 package eu.keep.gui.settings;
 
-import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
-import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.CheckBoxList;
 import eu.keep.gui.util.LanguageCheckBox;
-import eu.keep.softwarearchive.pathway.SwLanguageList;
-import eu.keep.util.FloppyDiskType;
 import eu.keep.util.Language;
 
 import javax.swing.*;
