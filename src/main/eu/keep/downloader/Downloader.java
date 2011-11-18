@@ -62,6 +62,7 @@ import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;
+import eu.keep.util.Language;
 
 /**
  * The Downloader component handles all functionality related to downloading and 
@@ -362,9 +363,14 @@ public class Downloader {
      * @return List of all languages used by emulators
      * @throws IOException If a connection error occurs when contacting the Emulator Archive
      */
-    public EmuLanguageList getEmulatorLanguages() throws IOException {
+    public List<Language> getEmulatorLanguages() throws IOException {
         try {
-            return emulatorArchive.getEmulatorLanguages();
+        	List<Language> languages = new ArrayList<Language>();        	
+        	EmuLanguageList emulatorLanguageIds = emulatorArchive.getEmulatorLanguages();
+        	for (String languageId : emulatorLanguageIds.getLanguageIds()) {
+        		languages.add(Language.valueOf(languageId));
+        	}
+            return languages;
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to emulator archive!");
@@ -553,9 +559,14 @@ public class Downloader {
      * @return List of all languages used by software in the archive
      * @throws IOException If a connection error occurs when contacting the Software Archive
      */
-    public SwLanguageList getSoftwareLanguages() throws IOException {
+    public List<Language> getSoftwareLanguages() throws IOException {
         try {
-            return softwareArchive.getSoftwareLanguages();
+        	List<Language> languages = new ArrayList<Language>();        	
+        	SwLanguageList softwareLanguageIds = softwareArchive.getSoftwareLanguages();
+        	for (String languageId : softwareLanguageIds.getLanguageIds()) {
+        		languages.add(Language.valueOf(languageId));
+        	}
+            return languages;
         }
         catch (ConnectException ce) {
             logger.error("Cannot connect to software archive!");

@@ -31,8 +31,8 @@
 */
 package eu.keep.util;
 
-import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
-import eu.keep.softwarearchive.pathway.SwLanguage;
+//import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
+//import eu.keep.softwarearchive.pathway.SwLanguage;
 
 /**
  * Utility class to hold language details.
@@ -40,8 +40,13 @@ import eu.keep.softwarearchive.pathway.SwLanguage;
  * (from EmulatorArchive and SoftwareArchive respectively)
  * @author nooe
  */
-public class Language {
+public enum Language {
 
+	en("en", "English"),
+	nl("nl", "Nederlands"),
+	fr("fr", "Français"),
+	de("de", "Deutsch");
+	
     private final String languageId;
 	private final String languageName;
 
@@ -49,28 +54,37 @@ public class Language {
 	 * Construct a basic Language object with a languageId only
 	 * @param languageId the languageId
 	 */
-	public Language(String languageId) {
+	private Language(String languageId, String languageName) {
 		this.languageId = languageId;
-		this.languageName = null;
+		this.languageName = languageName;
 	}
 	
-	/**
-	 * Construct a Language object from an EmuLanguage object
-	 * @param emuLanguage
-	 */
-	public Language(EmuLanguage emuLanguage) {
-		this.languageId = emuLanguage.getLanguageId();
-		this.languageName = emuLanguage.getLanguageName();
-	}
-	
-	/**
-	 * Construct a Language object from an SwLanguage object
-	 * @param emuLanguage
-	 */
-	public Language(SwLanguage swLanguage) {
-		this.languageId = swLanguage.getLanguageId();
-		this.languageName = swLanguage.getLanguageName();
-	}
+//	/**
+//	 * Construct a basic Language object with a languageId only
+//	 * @param languageId the languageId
+//	 */
+//	public Language(String languageId) {
+//		this.languageId = languageId;
+//		this.languageName = null;
+//	}
+//	
+//	/**
+//	 * Construct a Language object from an EmuLanguage object
+//	 * @param emuLanguage
+//	 */
+//	public Language(EmuLanguage emuLanguage) {
+//		this.languageId = emuLanguage.getLanguageId();
+//		this.languageName = emuLanguage.getLanguageName();
+//	}
+//	
+//	/**
+//	 * Construct a Language object from an SwLanguage object
+//	 * @param emuLanguage
+//	 */
+//	public Language(SwLanguage swLanguage) {
+//		this.languageId = swLanguage.getLanguageId();
+//		this.languageName = swLanguage.getLanguageName();
+//	}
 
 	public String getLanguageId() {
 		return languageId;
@@ -80,42 +94,42 @@ public class Language {
 		return languageName;
 	}
 
-	/**
-	 * equals method to enable comparing languages. Only the language ID is used for comparison.
-	 * @param otherLanguage
-	 * @return true if both languages have the same languageId, false otherwise
-	 */
-	@Override
-	public boolean equals(Object otherLanguage) {
-		if (otherLanguage instanceof Language) {
-			if (((Language)otherLanguage).getLanguageId().equals(this.languageId) 
-					// Currently test for equality on languageId only. Uncomment following line to include languageName in test.
-					// && otherLanguage.getLanguageName().equalsIgnoreCase(this.languageName)
-				) {
-				return true;
-			} 
-			else {
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
-	}
+//	/**
+//	 * equals method to enable comparing languages. Only the language ID is used for comparison.
+//	 * @param otherLanguage
+//	 * @return true if both languages have the same languageId, false otherwise
+//	 */
+//	@Override
+//	public boolean equals(Object otherLanguage) {
+//		if (otherLanguage instanceof Language) {
+//			if (((Language)otherLanguage).getLanguageId().equals(this.languageId) 
+//					// Currently test for equality on languageId only. Uncomment following line to include languageName in test.
+//					// && otherLanguage.getLanguageName().equalsIgnoreCase(this.languageName)
+//				) {
+//				return true;
+//			} 
+//			else {
+//				return false;
+//			}
+//		}
+//		else {
+//			return false;
+//		}
+//	}
 
-	/**
-	 * hashCode method to enable comparing languages. Only the language ID is used for calculating the Hash.
-	 * @param otherLanguage
-	 * @return hashCode based on language Id
-	 */
-	@Override
-	public int hashCode() {
-        final int prime = 31;
-        int hashCode = 1;
-        hashCode = prime * hashCode + ((this.languageId == null) ? 0 : this.languageId.hashCode());
-		// Currently test for equality on languageId only. Uncomment following line to include languageName in test.
-        // hashCode = prime * hashCode + ((this.languageName == null) ? 0 : this.languageName.hashCode());
-        return hashCode;
-	}
+//	/**
+//	 * hashCode method to enable comparing languages. Only the language ID is used for calculating the Hash.
+//	 * @param otherLanguage
+//	 * @return hashCode based on language Id
+//	 */
+//	@Override
+//	public int hashCode() {
+//        final int prime = 31;
+//        int hashCode = 1;
+//        hashCode = prime * hashCode + ((this.languageId == null) ? 0 : this.languageId.hashCode());
+//		// Currently test for equality on languageId only. Uncomment following line to include languageName in test.
+//        // hashCode = prime * hashCode + ((this.languageName == null) ? 0 : this.languageName.hashCode());
+//        return hashCode;
+//	}
 	
 }

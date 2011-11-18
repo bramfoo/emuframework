@@ -34,6 +34,7 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.softwarearchive.pathway.ApplicationType;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
+import eu.keep.util.Language;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -154,7 +155,7 @@ public class InfoTableDialog extends JFrame {
 
             row = new ArrayList<String>();
             row.add("Language");
-            row.add(app.getLanguage().getLanguageName());
+            row.add((Language.valueOf(app.getLanguageId())).getLanguageName());
             dataList.add(row);
 
             row = new ArrayList<String>();

@@ -113,7 +113,7 @@ public class ConfigPanel extends JPanel {
                         try {
                             List<Pathway> paths = parent.model.getPathways(frmt);
                             if (paths.isEmpty()) {
-                                parent.unlock("Didn't find any suitable dependency for format: " + frmt);
+                                parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
                             } else {
                                 parent.unlock("Found " + paths.size() + " suitable dependencies");
                                 ConfigPanel.this.loadPathways(paths);
@@ -129,31 +129,28 @@ public class ConfigPanel extends JPanel {
 
         // find emulators button
         findEmus.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
-                parent.lock("Loading configuration for dependency: " + path + ", please wait...");
-                (new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            if (!parent.model.isPathwaySatisfiable(path)) {
-                                parent.unlock("Sorry, " + path + " is not satisfiable");
-                            } else {                            	
-                                Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
-                                if (emuMap.isEmpty()) {
-                                    parent.unlock("Didn't find an emulator for dependency: " + new PathwayWrapper(path).toString());
-                                } else {
-                                    parent.unlock("Found " + emuMap.size() + " suitable emulators");
-                                    ConfigPanel.this.loadEmus(emuMap);
-                                }
-                            }
-                        } catch (IOException e1) {
-                            parent.unlock("ERROR: " + e1.getMessage());
-                        }
-                    }
-                })).start();
-            }
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		final Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
+        		parent.lock("Loading configuration for dependency: " + path + ", please wait...");
+        		(new Thread(new Runnable() {
+        			@Override
+        			public void run() {
+        				try {
+        					if (!parent.model.isPathwaySatisfiable(path)) {
+        						parent.unlock("Sorry, path is not satisfiable given the available emulators, " +
+        								"software images and acceptable languages.");
+        					} else {                            	
+        						Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
+        						parent.unlock("Found " + emuMap.size() + " suitable emulators");
+        						ConfigPanel.this.loadEmus(emuMap);
+        					}
+        				} catch (IOException e1) {
+        					parent.unlock("ERROR: " + e1.getMessage());
+        				}
+        			}
+        		})).start();
+        	}
         });
 
         // find software button

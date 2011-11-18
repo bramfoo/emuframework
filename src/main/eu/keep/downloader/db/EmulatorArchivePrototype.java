@@ -328,7 +328,7 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
         int dummy = 0;
         try {
         	languageList = port.getLanguageList(dummy);
-            logger.debug("Downloaded " + languageList.getLanguages().size() + " languages referenced in Emulator Archive.");
+            logger.debug("Downloaded " + languageList.getLanguageIds().size() + " languages referenced in Emulator Archive.");
         }
         catch (WebServiceException e) {
             if (e.getCause() instanceof SocketTimeoutException)

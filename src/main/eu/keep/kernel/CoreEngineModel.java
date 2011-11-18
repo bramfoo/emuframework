@@ -188,6 +188,8 @@ public interface CoreEngineModel {
      * technical registries and returns the pathways (digital object, 
      * rendering application, OS, hardware platform) found
      * for the given formatName.
+     * Rendering applications and OSs will be filtered on the languages 
+     * that the user has indicated as acceptable.
      * @param format Format of digital object
      * @return List<Pathway> List of available pathways objects
      * @throws IOException If a Software Archive connection error occurs
@@ -246,10 +248,11 @@ public interface CoreEngineModel {
     /////////////////////
 
     /**
-     * Match emulators with a list of associated software images from a given pathway
+     * Match emulators with a list of associated software images from a given pathway and filter all by language
      * @param pathway Pathway object to analyse
      * @return Map<EmulatorPackage, List<SoftwarePackage>> A map of emulators with their
-     *         associated list of compatible software images
+     *         associated list of compatible software images, all filtered on the languages 
+     *         that the user has indicated as acceptable.
      * @throws IOException If an error occurs while connecting the Emulator/Software Archive
      */
     Map<EmulatorPackage, List<SoftwarePackage>> matchEmulatorWithSoftware(Pathway pathway) throws IOException;
@@ -439,7 +442,7 @@ public interface CoreEngineModel {
      * @return List of all languages used by emulators
      * @throws IOException If a database connection error occurs 
      */
-    public EmuLanguageList getEmulatorLanguages() throws IOException;
+    public List<Language> getEmulatorLanguages() throws IOException;
 
     ////////////////////
     // Software database
@@ -468,7 +471,7 @@ public interface CoreEngineModel {
     * @return List of all languages used by software
     * @throws IOException If a database connection error occurs 
     */
-   public SwLanguageList getSoftwareLanguages() throws IOException;
+   public List<Language> getSoftwareLanguages() throws IOException;
 
    ////////////////////////
     // Technical registries

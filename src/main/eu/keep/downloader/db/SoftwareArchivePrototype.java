@@ -406,7 +406,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
         String dummy = "dummy";
         try {
         	languageList = port.getLanguageList(dummy);
-            logger.debug("Downloaded " + languageList.getLanguages().size() + " languages referenced in Software Archive.");
+            logger.debug("Downloaded " + languageList.getLanguageIds().size() + " language IDs referenced in Software Archive.");
         }
         catch (WebServiceException e) {
             if (e.getCause() instanceof SocketTimeoutException)

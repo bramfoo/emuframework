@@ -59,7 +59,7 @@ import eu.keep.downloader.db.DBUtil;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
-import eu.keep.softwarearchive.pathway.SwLanguage;
+import eu.keep.softwarearchive.pathway.OperatingSystemType;
 import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.pathway.ApplicationType;
 import eu.keep.softwarearchive.pathway.Pathway;
@@ -257,41 +257,36 @@ public class Kernel implements CoreEngineModel {
      * @throws IOException On initialization problems, such as database connection problems
      */
     private void initAcceptedLanguages() throws IOException {
-
     	// Get the accepted Languages from properties
     	logger.debug("Reading current acceptable languages from property accepted.languages");
     	String acceptedLanguagesProp = props.getProperty("accepted.languages");
+
     	if (acceptedLanguagesProp.equalsIgnoreCase("all")) {
-
     		logger.debug("Marking all available languages as acceptable.");
-            
     		// Get all available languages, from both EmulatorArchive and SoftwareArchive
-        	Set<Language> availableLanguages = new HashSet<Language>();
-        	
-        	EmuLanguageList emuLanguages = getEmulatorLanguages();
-        	for (EmuLanguage emuLanguage : emuLanguages.getLanguages()) {
-        		Language language = new Language(emuLanguage);
-        		// The Set interface of allLanguages will ensure that no duplicate Languages are added.
-        		// See the Language.equals() and Language.hashCode() methods on how equality is determined.
-        		availableLanguages.add(language);
-        	}
-
-        	SwLanguageList softwareLanguages = getSoftwareLanguages();
-        	for (SwLanguage swLanguage : softwareLanguages.getLanguages()) {
-        		Language language = new Language(swLanguage);
-        		// The Set interface of allLanguages will ensure that no duplicate Languages are added.
-        		// See the Language.equals() and Language.hashCode() methods on how equality is determined.
-        		availableLanguages.add(language);
-        	}        	
-        	logger.debug("Total of " + availableLanguages.size() + " languages available in Emulator and Software Archives.");
-
-    		acceptedLanguages.addAll(availableLanguages);
+    		// The Set interface of acceptedLanguages will ensure that no duplicate Languages are added.
+			try {
+	    		acceptedLanguages.addAll(getEmulatorLanguages());
+	    		acceptedLanguages.addAll(getSoftwareLanguages());	
+			} catch (IllegalArgumentException iae) {
+				logger.fatal("Cannot initialise Set of accepted Languages: EmulatorArchive or SoftwareArchive contains invalid language ID.");
+				throw iae;
+			} catch (IOException ioe) {
+				logger.fatal("Cannot initialise Set of accepted Languages: EmulatorArchive or SoftwareArchive could not be contacted.");
+				throw ioe;				
+			}
+    		logger.debug("Total of " + acceptedLanguages.size() + " languages available in Emulator and Software Archives. All accepted.");
     	} else {
     		String[] acceptedLangIds = acceptedLanguagesProp.split(",");
     		for (String acceptedLangId : acceptedLangIds) {
-    			Language acceptedLanguage = new Language(acceptedLangId);
-    			logger.debug("Marking language as acceptable: " + acceptedLanguage.getLanguageId());
-    			acceptedLanguages.add(acceptedLanguage);
+    			try {
+	    			Language acceptedLanguage = Language.valueOf(acceptedLangId);
+	    			logger.debug("Marking language as acceptable: " + acceptedLanguage.getLanguageId());
+	    			acceptedLanguages.add(acceptedLanguage);
+    			} catch (IllegalArgumentException iae) {
+    				logger.warn("'accepted.languages' property in property-file contains unknown language ID: " + 
+    						acceptedLangId + ". Ignoring...");
+    			}
     		}
     	}
     }
@@ -359,13 +354,37 @@ public class Kernel implements CoreEngineModel {
     @Override
     public List<Pathway> getPathways(Format format) throws IOException {
 
-        List<Pathway> pathways;
+    	// Query technical registry and EF database for pathways 
+    	List<Pathway> pathways;
+    	pathways = characteriser.generatePathway(format);
+    	pathways.addAll(downloader.getPathwayByFileFormat(format.getName()));
 
-        pathways = characteriser.generatePathway(format);
-        pathways.addAll(downloader.getPathwayByFileFormat(format.getName()));
-        logger.info("Pathways found for the format '" + format + "': " + pathways.toString());
+    	// Filter by application and OS language
+    	List<Pathway> filteredPathways = new ArrayList<Pathway>();
+    	for (Pathway pathway : pathways) {
+    		try {
+    			if ((pathway.getOperatingSystem().getId().equals("-1") || 
+    				 acceptedLanguages.contains(Language.valueOf(pathway.getOperatingSystem().getLanguageId()))) &&
+    				(pathway.getApplication().getId().equals("-1") ||
+    				 acceptedLanguages.contains(Language.valueOf(pathway.getApplication().getLanguageId())))
+    				) {
+    				filteredPathways.add(pathway);
+    			} 
+    			else {
+    				logger.info("Pathway has OS or Application with language that is not selected in the EF settings. " + 
+    						"OS ID = " + pathway.getOperatingSystem().getId() + "; language ID = " + pathway.getOperatingSystem().getLanguageId() + "; " + 
+    						"Application ID = " + pathway.getApplication().getId() + "; language ID = " + pathway.getApplication().getLanguageId());
+    			}
+    		} catch (IllegalArgumentException iae) {
+    			logger.error("Pathway has OS or Application with invalid language ID. " + 
+						"OS ID = " + pathway.getOperatingSystem().getId() + "; language ID = " + pathway.getOperatingSystem().getLanguageId() + "; " + 
+						"Application ID = " + pathway.getApplication().getId() + "; language ID = " + pathway.getApplication().getLanguageId());
+    		}
+    	}
 
-        return new ArrayList<Pathway>(pathways);
+    	logger.info("Pathways found for the format '" + format + "': " + filteredPathways.toString());
+
+    	return filteredPathways;
     }
 
     /**
@@ -542,106 +561,78 @@ public class Kernel implements CoreEngineModel {
      */
     @Override
     public Map<EmulatorPackage, List<SoftwarePackage>> matchEmulatorWithSoftware(Pathway pathway) throws IOException {
-        List<EmulatorPackage> emuPacks;
-        List<SoftwarePackage> swPacks;
+    	List<EmulatorPackage> emuPacks;
+    	List<SoftwarePackage> swPacks;
 
-        // Get list of potential emulator and software images that satisfy the pathway
-        try {
-            emuPacks = getEmulatorsByPathway(pathway);
-            swPacks = getSoftwareByPathway(pathway);
-        }
-        catch (IOException e) {
-            logger.error("Error while retrieving list of potential " +
-                    "emulators and software images from pathway: " + e.toString());
-            throw e;
-        }
+    	// Get list of potential emulator and software images that satisfy the pathway
+    	try {
+    		emuPacks = getEmulatorsByPathway(pathway);
+    		swPacks = getSoftwareByPathway(pathway);
+    	}
+    	catch (IOException e) {
+    		logger.error("Error while retrieving list of potential " +
+    				"emulators and software images from pathway: " + e.toString());
+    		throw e;
+    	}
 
-        
-        Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = new HashMap<EmulatorPackage, List<SoftwarePackage>>();
-        List<String> formats_emu;
-        
-        try {
-        	logger.info("Starting emulator hardware/software image matching " +
-        			"(" + emuPacks.size() +"/" + swPacks.size() +") and language filtering");
-        	// Get a Map of emulators (as keys) and a list of image IDs (as value)
-        	for (EmulatorPackage emuPack : emuPacks) {
+    	Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = new HashMap<EmulatorPackage, List<SoftwarePackage>>();
+    	List<String> formats_emu;
 
-        		// Check if the user accepts the language of that emulator
-        		if (this.acceptedLanguages.contains(new Language(emuPack.getEmulator().getLanguage()))) {
+    	try {
+    		logger.info("Starting emulator hardware/software image matching " +
+    				"(" + emuPacks.size() +"/" + swPacks.size() +") and language filtering");
 
-        			// Get the list of formats supported by that emulator
-        			formats_emu = emuPack.getEmulator().getImageFormat();
-        			logger.debug("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " supports formats " + formats_emu);
+    		// Get a Map of emulators (as keys) and a list of image IDs (as value)
+    		for (EmulatorPackage emuPack : emuPacks) {
 
-        			if (!formats_emu.isEmpty()) {
-        				// loop over format supported by this emulator
-        				ArrayList<SoftwarePackage> swPackList = new ArrayList<SoftwarePackage>();
-        				for (String format_emu : formats_emu) {
+    			// Check if the user accepts the language of this emulator
+    			if (this.acceptedLanguages.contains(Language.valueOf(emuPack.getEmulator().getLanguageId()))) {
+    				logger.debug("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
+    						" has acceptable language: " + 
+    						Language.valueOf(emuPack.getEmulator().getLanguageId()).getLanguageName());
 
-        					// get all images whose format is compatible and whose software/OS have acceptable language
-        					for (SoftwarePackage swPack : swPacks) {
+    				// Get the list of formats supported by that emulator
+    				formats_emu = emuPack.getEmulator().getImageFormat();
+    				logger.debug("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " supports formats " + formats_emu);
 
-        						// Check the language of the OS (assume swPack contains one OS only)
-        						if (this.acceptedLanguages.contains(new Language(swPack.getOs().get(0).getLanguage()))) {
-        							// Get the application that is needed for this pathway
-            						ApplicationType pathwayApp = pathway.getApplication();
+    				if (!formats_emu.isEmpty()) {
+    					// loop over format supported by this emulator
+    					ArrayList<SoftwarePackage> swPackList = new ArrayList<SoftwarePackage>();
+    					for (String format_emu : formats_emu) {
 
-            						// Check if the swPack contains a version of the Application, given in the pathway, with an acceptable language.
-            						// (it is possible that it contains several versions of the same Application)
-        							boolean containsCompatibleApp = false;
-        							for (ApplicationType swPackApp : swPack.getApp()) {
-            							if (swPackApp.getId().equals(pathwayApp.getId()) && 
-            									this.acceptedLanguages.contains(new Language(swPackApp.getLanguage()))) {
-            								containsCompatibleApp = true;
-            								break;
-            							}
-            						}            						
-        							if (containsCompatibleApp) {
-                						String format = downloader.getSoftwarePackageFormat(swPack.getId());
-                						if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
-                							swPackList.add(swPack);
-                						}        								
-        							}
-        							else {
-            		    				logger.warn("SoftwarePackage " + swPack.getId() + " (" + swPack.getDescription() + 
-            		    						") does not contain a version of the application required for the requested " +
-            		    						"pathway with a language that was selected in the EF settings.");        								
-        							}        							
-        						}
-        						else {
-        		    				logger.warn("SoftwarePackage " + swPack.getId() + " (" + swPack.getDescription() + 
-        		    						") has an OS with a language that is not selected in the EF settings: " + 
-        		    						swPack.getOs().get(0).getLanguage().getLanguageId() + " - " + 
-        		    						swPack.getOs().get(0).getLanguage().getLanguageName());
-        						}
-        					}
-        				}
-        				// Store the emulator - list of compatible software image IDs
-        				if(!swPackList.isEmpty()) {
-        					emuSwMap.put(emuPack, swPackList);
-        				}
-        			}
-        			
-        			else {
-        				logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
-        					" does not support any image formats");
-        			}	
-        		}      		
-        		else {
+    						// get all images whose format is compatible and whose software/OS have acceptable language
+    						for (SoftwarePackage swPack : swPacks) {
+    							String format = downloader.getSoftwarePackageFormat(swPack.getId());
+    							if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
+    								swPackList.add(swPack);
+    							}        								
+    						}
+    					}
+    					// Store the emulator - list of compatible software image IDs
+    					if(!swPackList.isEmpty()) {
+    						emuSwMap.put(emuPack, swPackList);
+    					}
+    				}        			
+    				else {
+    					logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
+    							" does not support any image formats");
+    				}	
+    			}      		
+    			else {
     				logger.warn("Emulator " + emuPack.getEmulator().getName() + " " + emuPack.getEmulator().getVersion() + 
-    						" has a language that is not selected in the EF settings: " + emuPack.getEmulator().getLanguage().getLanguageId() + 
-    						" - " + emuPack.getEmulator().getLanguage().getLanguageName());
-        		}
-        		
-        	}
-        }
-        catch (IllegalArgumentException e) {
-        	logger.error("Inappropriate ID requested: " + e.getMessage());
-        	throw new IOException("Inappropriate ID requested: " + e.getMessage());
-        }
+    						" has a language that is not selected in the EF settings: " + emuPack.getEmulator().getLanguageId() + 
+    						" - " + Language.valueOf(emuPack.getEmulator().getLanguageId()).getLanguageName());
+    			}
 
-        logger.info("Found compatible emulator-images pairs: " + emuSwMap);
-        return new HashMap<EmulatorPackage, List<SoftwarePackage>>(emuSwMap);
+    		}
+    	}
+    	catch (IllegalArgumentException e) {
+    		logger.error("Inappropriate ID requested: " + e.getMessage());
+    		throw new IOException("Inappropriate ID requested: " + e.getMessage());
+    	}
+
+    	logger.info("Found compatible emulator-images pairs: " + emuSwMap);
+    	return new HashMap<EmulatorPackage, List<SoftwarePackage>>(emuSwMap);
     }
 
     /**
@@ -1065,7 +1056,7 @@ public class Kernel implements CoreEngineModel {
      * @inheritDoc
      */
     @Override
-    public SwLanguageList getSoftwareLanguages() throws IOException {
+    public List<Language> getSoftwareLanguages() throws IOException {
         return downloader.getSoftwareLanguages();
     }
 
@@ -1159,9 +1150,9 @@ public class Kernel implements CoreEngineModel {
      * @inheritDoc
      */
 	@Override
-	public EmuLanguageList getEmulatorLanguages() throws IOException {
-		return downloader.getEmulatorLanguages();
-		}
+    public List<Language> getEmulatorLanguages() throws IOException {
+        return downloader.getEmulatorLanguages();
+    }
 
     /**
      * @inheritDoc

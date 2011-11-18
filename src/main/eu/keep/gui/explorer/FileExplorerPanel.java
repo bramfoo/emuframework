@@ -238,7 +238,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                             parent.getConfigPanel().enableOptions(false);
 
                             if (paths.isEmpty()) {
-                                parent.unlock("Didn't find any suitable dependency for format: " + frmt);
+                                parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
                             }
                             else {
                                 parent.getConfigPanel().loadPathways(paths);

@@ -35,8 +35,8 @@ import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.CheckBoxList;
 import eu.keep.gui.util.LanguageCheckBox;
-import eu.keep.softwarearchive.pathway.SwLanguage;
 import eu.keep.softwarearchive.pathway.SwLanguageList;
+import eu.keep.util.FloppyDiskType;
 import eu.keep.util.Language;
 
 import javax.swing.*;
@@ -75,7 +75,7 @@ public class LanguageSettingsFrame extends JFrame {
     private static final String acceptedLanguagesProperty = "accepted.languages";
     private CheckBoxList<JCheckBox> checkBoxList = new CheckBoxList<JCheckBox>();
 
-    private static final String select_all = "Select all";
+    private static final String select_all_label = "Select all";
     
     /**
      * Constructor
@@ -99,7 +99,7 @@ public class LanguageSettingsFrame extends JFrame {
             this.close();
         }
           
-        initFrame();
+        initFrame();        
     }
 
     /**
@@ -194,7 +194,7 @@ public class LanguageSettingsFrame extends JFrame {
 		JPanel checkBoxesPanel = new JPanel(new GridLayout(0,1));
 
 		// Select all checkbox
-		final JCheckBox selectAllBox = new JCheckBox(select_all); // final so it can be accessed in anonymous inner classes
+		final JCheckBox selectAllBox = new JCheckBox(select_all_label); // final so it can be accessed in anonymous inner classes
 		selectAllBox.setSelected(allLanguagesAccepted);
 		selectAllBox.addActionListener(new ActionListener() {		
 			@Override
@@ -266,33 +266,32 @@ public class LanguageSettingsFrame extends JFrame {
 	 */
 	private boolean initAcceptedLanguages() {
 		// Get all available languages, from both EmulatorArchive and SoftwareArchive
-        try {
-        	EmuLanguageList emuLanguages = parent.model.getEmulatorLanguages();
-        	for (EmuLanguage emuLanguage : emuLanguages.getLanguages()) {
-        		Language language = new Language(emuLanguage);
-        		// The Set interface of allLanguages will ensure that no duplicate Languages are added.
-        		// See the Language.equals() and Language.hashCode() methods on how equality is determined.
-        		availableLanguages.add(language);
-        	}
-        	
-        	SwLanguageList softwareLanguages = parent.model.getSoftwareLanguages();
-        	for (SwLanguage swLanguage : softwareLanguages.getLanguages()) {
-        		Language language = new Language(swLanguage);
-        		// The Set interface of allLanguages will ensure that no duplicate Languages are added.
-        		// See the Language.equals() and Language.hashCode() methods on how equality is determined.
-        		availableLanguages.add(language);
-        	}        	
-        } catch (IOException ioe) {
-        	JOptionPane.showMessageDialog(this, ioe.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-        }
-        logger.debug("Total of " + availableLanguages.size() + " languages available in Emulator and Software Archives.");
-                
-        // Get the current set of accepted Languages from the Kernel
-        logger.trace("Reading current acceptable languages from Kernel");
-	    acceptedLanguages.addAll(parent.model.getAcceptedLanguages());
-	
-    	// Return true if all available languages are selected
-    	return (acceptedLanguages.equals(availableLanguages));
+		try {
+			availableLanguages.addAll(parent.model.getEmulatorLanguages());
+			availableLanguages.addAll(parent.model.getSoftwareLanguages());       	
+		} catch (Exception e) {
+			String errorMessage = "";
+			if (e instanceof IOException) {
+				errorMessage = "Cannot initialise Language Settings Window: EmulatorArchive or SoftwareArchive could not be contacted.";				
+			} 
+			else if (e instanceof IllegalArgumentException) {
+				errorMessage = "Cannot initialise Language Settings Window: EmulatorArchive or SoftwareArchive contains invalid language ID.";	
+			} 
+			else {
+				errorMessage = "Cannot initialise Language Settings Window: unknown problem. See system log-file for further info.";								
+			}
+			logger.error(errorMessage + ": " + e.getMessage());
+			JOptionPane.showMessageDialog(parent, errorMessage, "", JOptionPane.ERROR_MESSAGE);
+            this.close();
+		}
+		logger.debug("Total of " + availableLanguages.size() + " languages available in Emulator and Software Archives.");
+
+		// Get the current set of accepted Languages from the Kernel
+		logger.trace("Reading current acceptable languages from Kernel");
+		acceptedLanguages.addAll(parent.model.getAcceptedLanguages());
+
+		// Return true if all available languages are selected
+		return (acceptedLanguages.equals(availableLanguages));
 	}
 
 	/**
