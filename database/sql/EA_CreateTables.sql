@@ -42,7 +42,6 @@
 CREATE TABLE languages
 (
   language_id varchar2(2) NOT NULL PRIMARY KEY, 
-  language_name varchar2(250) UNIQUE
 );
 
 -- Table for emulators

@@ -231,7 +231,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
 
         emu.setName(epDAO.getEmulatorName(id));
         emu.setUserInstructions(epDAO.getEmulatorInstructions(id));
-        emu.setLanguage(epDAO.getEmulatorLanguage(id));
+        emu.setLanguageId(epDAO.getEmulatorLanguageId(id));
         emu.setVersion(epDAO.getEmulatorVersion(id));
         emu.setDescription(epDAO.getEmulatorDescription(id));
         List<String> hw = emu.getHardware();

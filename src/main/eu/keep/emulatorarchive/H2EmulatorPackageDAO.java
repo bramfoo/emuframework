@@ -45,7 +45,6 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.keep.emulatorarchive.EmulatorPackageDAO;
-import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 
 /**
@@ -79,6 +78,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     private static final String SELECT_EMULATOR_IDS                     = "SELECT emulator_id FROM " + EMULATOR_TABLE_NAME;
     private static final String SELECT_EMULATOR_EXEC_TYPE_WHERE         = "SELECT exec_type FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_PACKAGE_TYPE_WHERE      = "SELECT package_type FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
+    private static final String SELECT_EMULATOR_LANGUAGE_ID_WHERE       = "SELECT language_id FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_PACKAGE_FILENAME_WHERE  = "SELECT package_name FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_PACKAGE_VERSION_WHERE   = "SELECT package_version FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_NAME_WHERE              = "SELECT name FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
@@ -105,10 +105,6 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
                                                                                " INNER JOIN " + EMULATOR_HARDWARE_JCT_TABLE_NAME + " e_ehw " + 
                                                                                " ON e_ehw.hardware_id=e_hw.hardware_id " + 
                                                                                " WHERE e_ehw.emulator_id=?";
-    private static final String SELECT_LANGUAGE		                    = "SELECT * FROM " + LANGUAGE_TABLE_NAME + " lang" + 
-			   																   " INNER JOIN " + EMULATOR_TABLE_NAME + " em" + 
-			   																   " ON em.language_id=lang.language_id " + 
-			   																   " WHERE em.emulator_id=?";
 
 
     /**
@@ -517,26 +513,24 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     /**
      * {@inheritDoc}
      */
-    public EmuLanguage getEmulatorLanguage(Integer emuID) {
+    public String getEmulatorLanguageId(Integer emuID) {
 
     	// sanity check
     	if (emuID == null || emuID.compareTo(0) <= 0) {
     		throw new IllegalArgumentException("Invalid emulator ID");
     	}
 
-    	EmuLanguage emuLanguage = null;
+    	String emuLanguageId = "";
     	PreparedStatement pstmt = null;
     	ResultSet rs = null;
 
     	try {
     		try {
-    			pstmt = conn.prepareStatement(SELECT_LANGUAGE);
+    			pstmt = conn.prepareStatement(SELECT_EMULATOR_LANGUAGE_ID_WHERE);
     			pstmt.setLong(1, emuID);
     			rs = pstmt.executeQuery();
     			while (rs.next()) {
-    				emuLanguage = new EmuLanguage();
-    				emuLanguage.setLanguageName(rs.getString("language_name"));
-    				emuLanguage.setLanguageId(rs.getString("language_id"));
+    				emuLanguageId = rs.getString("language_id");
     			}
     		}
     		finally {
@@ -551,7 +545,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     		throw new RuntimeException(e);
     	}
 
-    	return emuLanguage;
+    	return emuLanguageId;
     }
 
     /**
@@ -917,11 +911,9 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 				stmt = conn.createStatement();
 				rs = stmt.executeQuery(SELECT_LANGUAGES);
 				while (rs.next()) {
-					EmuLanguage language = new EmuLanguage();
-					language.setLanguageId(rs.getString("language_id"));
-					language.setLanguageName(rs.getString("language_name"));
-					languages.getLanguages().add(language);
-					logger.debug("Found language: " + language.getLanguageName());
+					String languageId = rs.getString("language_id");
+					logger.debug("Found language ID: " + languageId);
+					languages.getLanguageIds().add(languageId);
 				}
 			}
 			finally {

@@ -43,10 +43,8 @@
 
 -- Languages table
 -- Contains the language id (locale code) and language name of known languages
-INSERT INTO emulatorarchive.languages (language_id, language_name) VALUES('nl','Nederlands');
-INSERT INTO emulatorarchive.languages (language_id, language_name) VALUES('fr','Français');
-INSERT INTO emulatorarchive.languages (language_id, language_name) VALUES('de','Deutsch');
-INSERT INTO emulatorarchive.languages (language_id, language_name) VALUES('en','English');
+INSERT INTO emulatorarchive.languages (language_id) VALUES('fr');
+INSERT INTO emulatorarchive.languages (language_id) VALUES('en');
 
 -- Emulators table
 INSERT INTO emulatorarchive.emulators (emulator_id,name,version,exec_type,exec_name,description,language_id,package_name,package_type,package_version,package) VALUES(3, 'Dioscuri', '0.5.0', 'jar', 'Dioscuri-0.5.0.jar', 'Dioscuri, the modular emulator', 'en', 'dioscuri_050Package.zip', 'zip', '1', FILE_READ('./packages/dioscuri_050Package.zip'));

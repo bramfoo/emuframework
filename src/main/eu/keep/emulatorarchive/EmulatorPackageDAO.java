@@ -35,7 +35,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
-import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 
 /**
@@ -108,7 +107,7 @@ public interface EmulatorPackageDAO {
      * @param emuID emulator ID
      * @return EmulatorLanguage the language object associated with this emulator
      */
-    public EmuLanguage getEmulatorLanguage(Integer emuID);
+    public String getEmulatorLanguageId(Integer emuID);
 
     /**
      * Returns the emulator description
