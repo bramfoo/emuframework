@@ -53,7 +53,6 @@ CREATE TABLE fileformats
 CREATE TABLE languages
 (
   language_id varchar2(2) NOT NULL PRIMARY KEY, 
-  language_name varchar2(250) UNIQUE
 );
 
 -- Table for applications
@@ -219,7 +218,6 @@ SELECT imgs.image_id,
        ops.release_date as "OS_RELEASE_DATE",
        ops.license as "OS_LICENSE",
        lang.language_id as "OS_LANGUAGE_ID",
-       lang.language_name as "OS_LANGUAGE_NAME",
        ops.reference as "OS_REFERENCE"
 FROM images imgs, languages lang
 INNER JOIN opsys_images ops_img
@@ -237,7 +235,6 @@ SELECT imgs.image_id,
        apps.release_date as "APP_RELEASE_DATE",
        apps.license as "APP_LICENSE",
        lang.language_id as "APP_LANGUAGE_ID",
-       lang.language_name as "APP_LANGUAGE_NAME",
        apps.reference as "APP_REFERENCE",
        apps.user_instructions as "APP_USER_INSTRUCTIONS"
 FROM images imgs, languages lang

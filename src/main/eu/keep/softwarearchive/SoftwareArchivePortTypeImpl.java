@@ -47,7 +47,6 @@ import eu.keep.softwarearchive.pathway.HardwarePlatformType;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
 import eu.keep.softwarearchive.pathway.Pathway;
-import eu.keep.softwarearchive.pathway.SwLanguage;
 import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -382,7 +381,6 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         columnNames.add("OS_RELEASE_DATE");
         columnNames.add("OS_LICENSE");
         columnNames.add("OS_LANGUAGE_ID");
-        columnNames.add("OS_LANGUAGE_NAME");
         columnNames.add("OS_REFERENCE");
         results = spDAO.getViewData(id, byImgID, "os", columnNames);
 
@@ -407,12 +405,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 	        os.setLicense(item == null ? "N/A" : item);
 	        // The following item cannot be null
         	String languageId = it.next();
-        	// LanguageName can be null, but that's OK
-        	String languageName = it.next();
-        	SwLanguage language = new SwLanguage();
-        	language.setLanguageId(languageId);
-        	language.setLanguageName(languageName);
-	        os.setLanguage(language);
+	        os.setLanguageId(languageId);
 	        // The folllowing item can be null
         	item = it.next();
 	        os.setReference(item == null ? "N/A" : item);
@@ -440,7 +433,6 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 		columnNames.add("APP_RELEASE_DATE");
 		columnNames.add("APP_LICENSE");
 		columnNames.add("APP_LANGUAGE_ID");
-		columnNames.add("APP_LANGUAGE_NAME");
 		columnNames.add("APP_REFERENCE");
 		columnNames.add("APP_USER_INSTRUCTIONS");
 		results = spDAO.getViewData(id, byImgID, "app", columnNames);
@@ -465,13 +457,8 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 			app.setLicense(item == null ? "N/A" : item);
 	        // The following item cannot be null
         	String languageId = it.next();
-        	// LanguageName can be null, but that's OK
-        	String languageName = it.next();
-        	SwLanguage language = new SwLanguage();
-        	language.setLanguageId(languageId);
-        	language.setLanguageName(languageName);
-        	app.setLanguage(language);
-	        // The folllowing item can be null
+        	app.setLanguageId(languageId);
+	        // The folllowing items can be null
 			item = it.next();
 			app.setReference(item == null ? "N/A" : item);
 			item = it.next();

@@ -54,7 +54,7 @@ $header:
 				<xs:element name="creator" type="xs:string" minOccurs="0"/>
 				<xs:element name="releaseDate" type="xs:string" minOccurs="0"/>
 				<xs:element name="license" type="xs:string" minOccurs="0"/>
-				<xs:element name="language" type="pw:swLanguage" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="languageId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="reference" type="xs:string" minOccurs="0"/>
 				<xs:element name="userInstructions" type="xs:string" minOccurs="0"/>
 			</xs:all>
@@ -69,7 +69,7 @@ $header:
 				<xs:element name="creator" type="xs:string" minOccurs="0"/>
 				<xs:element name="releaseDate" type="xs:string" minOccurs="0"/>
 				<xs:element name="license" type="xs:string" minOccurs="0"/>
-				<xs:element name="language" type="pw:swLanguage" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="languageId" type="xs:string" minOccurs="0" maxOccurs="1"/>
 				<xs:element name="reference" type="xs:string" minOccurs="0"/>
 			</xs:all>
 			<xs:attribute name="id" type="xs:string" use="required"/>
@@ -98,15 +98,9 @@ $header:
 			</xs:complexType>
 		</xs:element>
 
-        <xs:complexType name="swLanguage">
-			<xs:all>
-				<xs:element name="language_id" type="xs:string"/>
-				<xs:element name="language_name" type="xs:string"/>
-			</xs:all>      	
-        </xs:complexType>            
         <xs:complexType name="swLanguage_list">
       		<xs:sequence>
-      			<xs:element name="languages" type="pw:swLanguage" minOccurs="0" maxOccurs="unbounded"/>
+      			<xs:element name="languageIds" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
       		</xs:sequence>
         </xs:complexType>
 </xs:schema>

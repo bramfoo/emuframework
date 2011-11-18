@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.log4j.Logger;
 
-import eu.keep.softwarearchive.pathway.SwLanguage;
 import eu.keep.softwarearchive.pathway.SwLanguageList;
 
 /**
@@ -409,11 +408,9 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 				stmt = conn.createStatement();
 				rs = stmt.executeQuery(SELECT_LANGUAGES);
 				while (rs.next()) {
-					SwLanguage language = new SwLanguage();
-					language.setLanguageId(rs.getString("language_id"));
-					language.setLanguageName(rs.getString("language_name"));
-					languages.getLanguages().add(language);
-			        LOGGER.debug("Found language: " + language.getLanguageName());
+					String languageId = rs.getString("language_id");
+			        LOGGER.debug("Found language ID: " + languageId);
+					languages.getLanguageIds().add(languageId);
 				}
 			}
 			finally {

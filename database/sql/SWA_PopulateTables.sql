@@ -95,7 +95,5 @@ INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VA
 
 -- Languages table
 -- Contains the language id (locale code) and language name of known languages
-INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('nl','Nederlands');
-INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('fr','Français');
-INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('de','Deutsch');
-INSERT INTO softwarearchive.languages (language_id, language_name) VALUES('en','English');
+INSERT INTO softwarearchive.languages (language_id) VALUES('nl');
+INSERT INTO softwarearchive.languages (language_id) VALUES('en');
