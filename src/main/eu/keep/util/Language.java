@@ -36,56 +36,209 @@ package eu.keep.util;
 
 /**
  * Utility class to hold language details.
- * Wraps both EmuLanguage and SwLanguage objects (which come
- * (from EmulatorArchive and SoftwareArchive respectively)
  * @author nooe
  */
 public enum Language {
 
+	// From http://www.loc.gov/standards/iso639-2/php/English_list.php
+	aa("aa", "Afar"),
+	ab("ab", "Abkhazian"),
+	ae("ae", "Avestan"),
+	af("af", "Afrikaans"),
+	ak("ak", "Akan"),
+	am("am", "Amharic"),
+	an("an", "Aragonese"),
+	ar("ar", "Arabic"),
+	as("as", "Assamese"),
+	av("av", "Avaric"),
+	ay("ay", "Aymara"),
+	az("az", "Azerbaijani"),
+	ba("ba", "Bashkir"),
+	be("be", "Belarusian"),
+	bg("bg", "Bulgarian"),
+	bh("bh", "Bihari languages"),
+	bi("bi", "Bislama"),
+	bm("bm", "Bambara"),
+	bn("bn", "Bengali"),
+	bo("bo", "Tibetan"),
+	br("br", "Breton"),
+	bs("bs", "Bosnian"),
+	ca("ca", "Catalan"),
+	ce("ce", "Chechen"),
+	ch("ch", "Chamorro"),
+	co("co", "Corsican"),
+	cr("cr", "Cree"),
+	cs("cs", "Czech"),
+	cu("cu", "Church Slavic"),
+	cv("cv", "Chuvash"),
+	cy("cy", "Welsh"),
+	da("da", "Danish"),
+	de("de", "Deutsch"),
+	dv("dv", "Dhivehi"),
+	dz("dz", "Dzongkha"),
+	ee("ee", "Ewe"),
+	el("el", "Greek, Modern (1453-)"),
 	en("en", "English"),
-	nl("nl", "Nederlands"),
+	eo("eo", "Esperanto"),
+	es("es", "Spanish"),
+	et("et", "Estonian"),
+	eu("eu", "Basque"),
+	fa("fa", "Persian"),
+	ff("ff", "Fulah"),
+	fi("fi", "Finnish"),
+	fj("fj", "Fijian"),
+	fo("fo", "Faroese"),
 	fr("fr", "Français"),
-	de("de", "Deutsch");
+	fy("fy", "Western Frisian"),
+	ga("ga", "Irish"),
+	gd("gd", "Gaelic"),
+	gl("gl", "Galician"),
+	gn("gn", "Guarani"),
+	gu("gu", "Gujarati"),
+	gv("gv", "Manx"),
+	ha("ha", "Hausa"),
+	he("he", "Hebrew"),
+	hi("hi", "Hindi"),
+	ho("ho", "Hiri Motu"),
+	hr("hr", "Croatian"),
+	ht("ht", "Haitian"),
+	hu("hu", "Hungarian"),
+	hy("hy", "Armenian"),
+	hz("hz", "Herero"),
+	ia("ia", "Interlingua (International Auxiliary Language Association)"),
+	id("id", "Indonesian"),
+	ie("ie", "Occidental"),
+	ig("ig", "Igbo"),
+	ii("ii", "Sichuan Yi"),
+	ik("ik", "Inupiaq"),
+	io("io", "Ido"),
+	is("is", "Icelandic"),
+	it("it", "Italian"),
+	iu("iu", "Inuktitut"),
+	ja("ja", "Japanese"),
+	jv("jv", "Javanese"),
+	ka("ka", "Georgian"),
+	kg("kg", "Kongo"),
+	ki("ki", "Kikuyu"),
+	kj("kj", "Kwanyama"),
+	kk("kk", "Kazakh"),
+	kl("kl", "Kalaallisut"),
+	km("km", "Central Khmer"),
+	kn("kn", "Kannada"),
+	ko("ko", "Korean"),
+	kr("kr", "Kanuri"),
+	ks("ks", "Kashmiri"),
+	ku("ku", "Kurdish"),
+	kv("kv", "Komi"),
+	kw("kw", "Cornish"),
+	ky("ky", "Kyrgyz"),
+	la("la", "Latin"),
+	lb("lb", "Letzeburgesch"),
+	lg("lg", "Ganda"),
+	li("li", "Limburger"),
+	ln("ln", "Lingala"),
+	lo("lo", "Lao"),
+	lt("lt", "Lithuanian"),
+	lu("lu", "Luba-Katanga"),
+	lv("lv", "Latvian"),
+	mg("mg", "Malagasy"),
+	mh("mh", "Marshallese"),
+	mi("mi", "Maori"),
+	mk("mk", "Macedonian"),
+	ml("ml", "Malayalam"),
+	mn("mn", "Mongolian"),
+	mr("mr", "Marathi"),
+	ms("ms", "Malay"),
+	mt("mt", "Maltese"),
+	my("my", "Burmese"),
+	na("na", "Nauru"),
+	nb("nb", "Norwegian Bokmål"),
+	nd("nd", "North Ndebele"),
+	ne("ne", "Nepali"),
+	ng("ng", "Ndonga"),
+	nl("nl", "Nederlands"),
+	nn("nn", "Norwegian Nynorsk"),
+	no("no", "Norwegian"),
+	nr("nr", "South Ndebele"),
+	nv("nv", "Navaho"),
+	ny("ny", "Chichewa"),
+	oc("oc", "Occitan (post 1500)"),
+	oj("oj", "Ojibwa"),
+	om("om", "Oromo"),
+	or("or", "Oriya"),
+	os("os", "Ossetian"),
+	pa("pa", "Punjabi"),
+	pi("pi", "Pali"),
+	pl("pl", "Polish"),
+	ps("ps", "Pashto"),
+	pt("pt", "Portuguese"),
+	qu("qu", "Quechua"),
+	rm("rm", "Romansh"),
+	rn("rn", "Rundi"),
+	ro("ro", "Romanian"),
+	ru("ru", "Russian"),
+	rw("rw", "Kinyarwanda"),
+	sa("sa", "Sanskrit"),
+	sc("sc", "Sardinian"),
+	sd("sd", "Sindhi"),
+	se("se", "Northern Sami"),
+	sg("sg", "Sango"),
+	si("si", "Sinhala"),
+	sk("sk", "Slovak"),
+	sl("sl", "Slovenian"),
+	sm("sm", "Samoan"),
+	sn("sn", "Shona"),
+	so("so", "Somali"),
+	sq("sq", "Albanian"),
+	sr("sr", "Serbian"),
+	ss("ss", "Swati"),
+	st("st", "Sotho, Southern"),
+	su("su", "Sundanese"),
+	sv("sv", "Swedish"),
+	sw("sw", "Swahili"),
+	ta("ta", "Tamil"),
+	te("te", "Telugu"),
+	tg("tg", "Tajik"),
+	th("th", "Thai"),
+	ti("ti", "Tigrinya"),
+	tk("tk", "Turkmen"),
+	tl("tl", "Tagalog"),
+	tn("tn", "Tswana"),
+	to("to", "Tonga (Tonga Islands)"),
+	tr("tr", "Turkish"),
+	ts("ts", "Tsonga"),
+	tt("tt", "Tatar"),
+	tw("tw", "Twi"),
+	ty("ty", "Tahitian"),
+	ug("ug", "Uyghur"),
+	uk("uk", "Ukrainian"),
+	ur("ur", "Urdu"),
+	uz("uz", "Uzbek"),
+	ve("ve", "Venda"),
+	vi("vi", "Vietnamese"),
+	vo("vo", "Volapük"),
+	wa("wa", "Walloon"),
+	wo("wo", "Wolof"),
+	xh("xh", "Xhosa"),
+	yi("yi", "Yiddish"),
+	yo("yo", "Yoruba"),
+	za("za", "Zhuang"),
+	zh("zh", "Chinese"),
+	zu("zu", "Zulu");
 	
     private final String languageId;
 	private final String languageName;
 
 	/**
-	 * Construct a basic Language object with a languageId only
+	 * Constructor
 	 * @param languageId the languageId
+	 * @param languageName the language Name
 	 */
 	private Language(String languageId, String languageName) {
 		this.languageId = languageId;
 		this.languageName = languageName;
 	}
 	
-//	/**
-//	 * Construct a basic Language object with a languageId only
-//	 * @param languageId the languageId
-//	 */
-//	public Language(String languageId) {
-//		this.languageId = languageId;
-//		this.languageName = null;
-//	}
-//	
-//	/**
-//	 * Construct a Language object from an EmuLanguage object
-//	 * @param emuLanguage
-//	 */
-//	public Language(EmuLanguage emuLanguage) {
-//		this.languageId = emuLanguage.getLanguageId();
-//		this.languageName = emuLanguage.getLanguageName();
-//	}
-//	
-//	/**
-//	 * Construct a Language object from an SwLanguage object
-//	 * @param emuLanguage
-//	 */
-//	public Language(SwLanguage swLanguage) {
-//		this.languageId = swLanguage.getLanguageId();
-//		this.languageName = swLanguage.getLanguageName();
-//	}
-
 	public String getLanguageId() {
 		return languageId;
 	}
@@ -94,42 +247,4 @@ public enum Language {
 		return languageName;
 	}
 
-//	/**
-//	 * equals method to enable comparing languages. Only the language ID is used for comparison.
-//	 * @param otherLanguage
-//	 * @return true if both languages have the same languageId, false otherwise
-//	 */
-//	@Override
-//	public boolean equals(Object otherLanguage) {
-//		if (otherLanguage instanceof Language) {
-//			if (((Language)otherLanguage).getLanguageId().equals(this.languageId) 
-//					// Currently test for equality on languageId only. Uncomment following line to include languageName in test.
-//					// && otherLanguage.getLanguageName().equalsIgnoreCase(this.languageName)
-//				) {
-//				return true;
-//			} 
-//			else {
-//				return false;
-//			}
-//		}
-//		else {
-//			return false;
-//		}
-//	}
-
-//	/**
-//	 * hashCode method to enable comparing languages. Only the language ID is used for calculating the Hash.
-//	 * @param otherLanguage
-//	 * @return hashCode based on language Id
-//	 */
-//	@Override
-//	public int hashCode() {
-//        final int prime = 31;
-//        int hashCode = 1;
-//        hashCode = prime * hashCode + ((this.languageId == null) ? 0 : this.languageId.hashCode());
-//		// Currently test for equality on languageId only. Uncomment following line to include languageName in test.
-//        // hashCode = prime * hashCode + ((this.languageName == null) ? 0 : this.languageName.hashCode());
-//        return hashCode;
-//	}
-	
 }
