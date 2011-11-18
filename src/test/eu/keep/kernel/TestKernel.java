@@ -92,7 +92,11 @@ public class TestKernel {
         pw1 = new Pathway();
     	ObjectFormatType objF = new ObjectFormatType();
     	ApplicationType app = new ApplicationType();
+    	app.setId("APP-1");
+    	app.setLanguageId("nl");
     	OperatingSystemType opsys = new OperatingSystemType();
+    	opsys.setId("OPS-1");
+    	opsys.setLanguageId("en");
     	HardwarePlatformType hpf = new HardwarePlatformType();
     	pw1.setObjectFormat(objF);
     	pw1.setApplication(app);
@@ -165,8 +169,8 @@ public class TestKernel {
     	
     	assertFalse("Format list not right size.", f.isEmpty());
     	assertEquals("Format list not right size.", 1, f.size());
-    	assertEquals("Format not plain text", "Plain text.", f.get(0).getName());
-    	assertEquals("Format mime not text", "text/plain.", f.get(0).getMimeType());
+    	assertEquals("Format not plain text", "Plain text", f.get(0).getName());
+    	assertEquals("Format mime not text", "text/plain", f.get(0).getMimeType());
     	assertFalse("Reporting tool list not right size.", f.get(0).getReportingTools().isEmpty());
     	assertEquals("Reporting tool list not right size.", 1, f.get(0).getReportingTools().size());
     	assertEquals("Reporting tool not Jhove.", "Jhove 1.5", f.get(0).getReportingTools().get(0));
@@ -211,6 +215,10 @@ public class TestKernel {
     @Test
     public void testGetPathways() throws IOException {
     	assertEquals("Expected pathway list not returned.", pwList, kernel.getPathways(mockFrm));
+    	
+    	// Change language on test Application to french, and test that it is not returned.
+    	pw1.getApplication().setLanguageId("fr");
+    	assertEquals("Pathway with Application with unaccepted language returned. ", 0, kernel.getPathways(mockFrm).size());
     }
 
     
