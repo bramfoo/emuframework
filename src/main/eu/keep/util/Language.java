@@ -41,6 +41,7 @@ package eu.keep.util;
 public enum Language {
 
 	// From http://www.loc.gov/standards/iso639-2/php/English_list.php
+	undefined(null, null),
 	aa("aa", "Afar"),
 	ab("ab", "Abkhazian"),
 	ae("ae", "Avestan"),
@@ -105,7 +106,7 @@ public enum Language {
 	hu("hu", "Hungarian"),
 	hy("hy", "Armenian"),
 	hz("hz", "Herero"),
-	ia("ia", "Interlingua (International Auxiliary Language Association)"),
+	ia("ia", "Interlingua"),
 	id("id", "Indonesian"),
 	ie("ie", "Occidental"),
 	ig("ig", "Igbo"),

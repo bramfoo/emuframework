@@ -1,10 +1,13 @@
 package eu.keep.gui.swa.tabs;
 
 import eu.keep.gui.swa.SWAGUI;
+import eu.keep.gui.swa.tabs.LanguageOption;
 import eu.keep.gui.util.DBUtil;
+import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,7 +25,7 @@ public class OS extends JPanel {
     private final String getOSQuery = "SELECT opsys_id, name FROM softwarearchive.opsys";
 
     private final String insertNewOS = "INSERT INTO softwarearchive.opsys " +
-            "(opsys_id, name, version, description, creator, release_date, license, language, reference) " +
+            "(opsys_id, name, version, description, creator, release_date, license, language_id, reference) " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final String getPlatformsQuery = "SELECT platform_id, name, description FROM softwarearchive.platforms";
@@ -61,6 +64,12 @@ public class OS extends JPanel {
             tempPlatforms.add(new PlatformIDNameDescription(row.get(0), row.get(1), row.get(2)));
         }
 
+        Language[] allLanguages = Language.values();
+        Vector<LanguageOption> languageOptions = new Vector<LanguageOption>();
+        for (int i=0; i<allLanguages.length; i++) {
+        	languageOptions.add(new LanguageOption(allLanguages[i]));
+        }
+        
         Dimension d = new Dimension(320, 25);
 
         final JComboBox osses = new JComboBox(tempOS);
@@ -87,7 +96,7 @@ public class OS extends JPanel {
         final JTextField license = new JTextField();
         license.setPreferredSize(d);
 
-        final JTextField language = new JTextField();
+        final JComboBox language = new JComboBox(languageOptions);
         language.setPreferredSize(d);
 
         final JTextField reference = new JTextField();
@@ -161,7 +170,7 @@ public class OS extends JPanel {
                     creator.setText("");
                     release_date.setText("");
                     license.setText("");
-                    language.setText("");
+                    language.setSelectedIndex(0);
                     reference.setText("");
                 } else {
                     ok.setEnabled(!newName.isEmpty());
@@ -210,7 +219,7 @@ public class OS extends JPanel {
                             creator.getText().trim(),
                             release_date.getText().trim(),
                             license.getText().trim(),
-                            language.getText().trim(),
+                            ((LanguageOption)language.getSelectedItem()).id,
                             reference.getText().trim()
                     );
 

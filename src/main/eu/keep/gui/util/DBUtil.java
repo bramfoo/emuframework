@@ -35,8 +35,6 @@ import eu.keep.util.FileUtilities;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.*;
 import org.apache.log4j.Logger;

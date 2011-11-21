@@ -2,6 +2,7 @@ package eu.keep.gui.swa.tabs;
 
 import eu.keep.gui.swa.SWAGUI;
 import eu.keep.gui.util.DBUtil;
+import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -21,7 +22,7 @@ public class App extends JPanel {
 
     private final String getAppsQuery = "SELECT app_id, name FROM softwarearchive.apps";
     private final String insertAppQuery = "INSERT INTO softwarearchive.apps " +
-            "(app_id, name, version, description, creator, release_date, license, language, reference) " +
+            "(app_id, name, version, description, creator, release_date, license, language_id, reference) " +
             "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final String insertFormatApp = "INSERT INTO softwarearchive.fileformats_apps (fileformat_id, app_id) VALUES(?, ?)";
@@ -48,6 +49,12 @@ public class App extends JPanel {
             temp.add(new AppIDName(row.get(0), row.get(1)));
         }
 
+        Language[] allLanguages = Language.values();
+        Vector<LanguageOption> languageOptions = new Vector<LanguageOption>();
+        for (int i=0; i<allLanguages.length; i++) {
+        	languageOptions.add(new LanguageOption(allLanguages[i]));
+        }
+                
         Dimension d = new Dimension(320, 25);
 
         final JComboBox apps = new JComboBox(temp);
@@ -71,7 +78,7 @@ public class App extends JPanel {
         final JTextField license = new JTextField();
         license.setPreferredSize(d);
 
-        final JTextField language = new JTextField();
+        final JComboBox language = new JComboBox(languageOptions);
         language.setPreferredSize(d);
 
         final JTextField reference = new JTextField();
@@ -140,7 +147,7 @@ public class App extends JPanel {
                     creator.setText("");
                     release_date.setText("");
                     license.setText("");
-                    language.setText("");
+                    language.setSelectedIndex(0);
                     reference.setText("");
                 }
                 else {
@@ -170,7 +177,7 @@ public class App extends JPanel {
                             creator.getText().trim(),
                             release_date.getText().trim(),
                             license.getText().trim(),
-                            language.getText().trim(),
+                            ((LanguageOption)language.getSelectedItem()).id,
                             reference.getText().trim()
                     );
 
@@ -218,4 +225,5 @@ public class App extends JPanel {
             return name == null ? "" : name;
         }
     }
+    
 }
