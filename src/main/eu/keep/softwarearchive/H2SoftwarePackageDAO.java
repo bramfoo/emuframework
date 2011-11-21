@@ -59,7 +59,8 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
     private static final String OS_PACK_VIEW                  = "os_package";
     private static final String APP_PACK_VIEW                 = "app_package";
     private static final String PATHWAY_VIEW                  = "pathways";
-    private static final String LANGUAGE_TABLE_NAME           = "languages";
+    private static final String APP_TABLE_NAME                = "apps";
+    private static final String OPSYS_TABLE_NAME              = "opsys";
 
     // Simple selection
     private static final String SELECT_ALL_FILEFORMATS_ON_FF   = "SELECT * FROM " + FILEFORMAT_NAME + " WHERE fileformat_id=?";
@@ -82,7 +83,9 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 
     private static final String SELECT_IMAGEBLOB_WHERE          = "SELECT image FROM " + BLOB_TABLE_NAME + " WHERE image_id=?";
 
-    private static final String SELECT_LANGUAGES                = "SELECT * FROM " + LANGUAGE_TABLE_NAME;
+    private static final String SELECT_LANGUAGES                = "SELECT DISTINCT language_id FROM " + APP_TABLE_NAME + 
+    															  " UNION " + 
+    															  "SELECT DISTINCT language_id FROM " + OPSYS_TABLE_NAME;
 
 
     /**
