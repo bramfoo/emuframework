@@ -68,8 +68,6 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     private static final String HARDWARE_TABLE_NAME                     = "hardware";
     // Image format table
     private static final String IMAGEFORMAT_TABLE_NAME                  = "imageformats";
-    // Languages table
-    private static final String LANGUAGE_TABLE_NAME           			= "languages";
 
 
 
@@ -89,7 +87,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     private static final String COUNT_EMULATOR                          = "SELECT COUNT(*) FROM "  + EMULATOR_TABLE_NAME;
     private static final String SELECT_HARDWARE_IDS                     = "SELECT hardware_id FROM " + HARDWARE_TABLE_NAME;
     private static final String SELECT_HARDWARE_NAMES                   = "SELECT name FROM " + HARDWARE_TABLE_NAME;
-    private static final String SELECT_LANGUAGES                		= "SELECT * FROM " + LANGUAGE_TABLE_NAME;
+    private static final String SELECT_LANGUAGES                		= "SELECT DISTINCT language_id FROM " + EMULATOR_TABLE_NAME;
 
     // Joins
     private static final String EMUID_FROM_HWNAME                       = "SELECT emulator_id FROM " + EMULATOR_HARDWARE_JCT_TABLE_NAME + 
