@@ -39,6 +39,7 @@ import eu.keep.kernel.Kernel;
 import eu.keep.util.FileUtilities;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -54,7 +55,7 @@ public class GUI extends JFrame {
     public static final int WIDTH_UNIT = 50;
     public static final int TOTAL_WIDTH_UNITS = 17;
     public static final int WIDTH = WIDTH_UNIT * TOTAL_WIDTH_UNITS;
-    public static final int HEIGHT = 650;
+    public static final int HEIGHT = 700;
     public static final String PROP_FILE_NAME = "gui.properties";
     public static final String PROP_FILE_NAME_KERNEL = "user.properties";
     private static final Logger logger = Logger.getLogger(GUI.class.getName());
@@ -63,7 +64,7 @@ public class GUI extends JFrame {
     public final Properties guiProps;
 
     private MainPanel tabPanel;
-    private JLabel logLabel;
+    private JTextArea logLabel;
 
     /**
      * Private constructor: instantiation is done through the main method.
@@ -184,7 +185,14 @@ public class GUI extends JFrame {
         super.add(tabPanel, BorderLayout.CENTER);
 
         // log/message label
-        logLabel = new JLabel("GUI started");
+        logLabel = new JTextArea("GUI started", 1, 2);
+        logLabel.setEditable(false);
+        logLabel.setOpaque(false);
+        logLabel.setLineWrap(true);
+        logLabel.setWrapStyleWord(true);
+        logLabel.setBackground(new Color(UIManager.getColor("background").getRGB()));
+        logLabel.setBorder(null);
+        logLabel.setPreferredSize(new Dimension(WIDTH, 32));
         super.add(logLabel, BorderLayout.SOUTH);
 
         // init menu bar

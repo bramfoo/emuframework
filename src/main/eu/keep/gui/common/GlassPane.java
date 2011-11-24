@@ -40,6 +40,6 @@ public class GlassPane extends JComponent {
         Color bg = super.getBackground();
         Color alpha = new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 200);
         g.setColor(alpha);
-        g.fillRect(0, 0, super.getParent().getWidth(), super.getParent().getHeight() - 20);
+        g.fillRect(0, 0, super.getParent().getWidth(), super.getParent().getHeight() - 32);
     }
 }
