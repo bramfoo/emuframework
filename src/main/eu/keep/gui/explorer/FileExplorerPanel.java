@@ -204,7 +204,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             }
         });
 
-        super.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 6) - 30, GUI.HEIGHT));
+        super.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 30) - 30, GUI.HEIGHT));
         super.add(rootsCombo, BorderLayout.NORTH);
         super.add(new JScrollPane(tree), BorderLayout.CENTER);
         super.add(buttonPanel, BorderLayout.SOUTH);

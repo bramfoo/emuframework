@@ -57,7 +57,7 @@ public class ConfigPanel extends JPanel {
     protected FileExplorerPanel explorerPanel;
 
     // drop down #1
-    private JComboBox formatsDropDown;
+    private JComboBox<FormatWrapper> formatsDropDown;
     public JButton findDependencies;
 
     // drop down #2
@@ -105,7 +105,7 @@ public class ConfigPanel extends JPanel {
         findDependencies.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final Format frmt = (Format) formatsDropDown.getSelectedItem();
+                final Format frmt = ((FormatWrapper)formatsDropDown.getSelectedItem()).format;
                 parent.lock("Finding dependencies for: " + frmt + ", please wait...");
                 (new Thread(new Runnable() {
                     @Override
@@ -288,7 +288,7 @@ public class ConfigPanel extends JPanel {
         setEnableFormats(true);
         formatsDropDown.removeAllItems();
         for (Format f : formatList) {
-            formatsDropDown.addItem(f);
+            formatsDropDown.addItem(new FormatWrapper(f));
         }
     }
 
@@ -387,9 +387,9 @@ public class ConfigPanel extends JPanel {
         JLabel formatsLabel = new JLabel("Found formats:");
         formatsDropDown = new JComboBox();
         findDependencies = new JButton("Find dependencies");
-        formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
-        formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        findDependencies.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
+        formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        findDependencies.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         formatsPanel.add(formatsLabel);
         formatsPanel.add(formatsDropDown);
         formatsPanel.add(findDependencies);
@@ -401,9 +401,9 @@ public class ConfigPanel extends JPanel {
         JLabel pathwaysLabel = new JLabel("Dependencies:");
         pathwaysDropDown = new JComboBox();
         findEmus = new JButton("Find emulators");
-        pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
-        pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        findEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
+        pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        findEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         pathwaysPanel.add(pathwaysLabel);
         pathwaysPanel.add(pathwaysDropDown);
         pathwaysPanel.add(findEmus);
@@ -415,9 +415,9 @@ public class ConfigPanel extends JPanel {
         JLabel emuLabel = new JLabel("Emulators:");
         emulatorsDropDown = new JComboBox();
         findSoftware = new JButton("Find software");
-        emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
-        emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        findSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
+        emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        findSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         emuPanel.add(emuLabel);
         emuPanel.add(emulatorsDropDown);
         emuPanel.add(findSoftware);
@@ -429,9 +429,9 @@ public class ConfigPanel extends JPanel {
         JLabel swLabel = new JLabel("Software:");
         softwareDropDown = new JComboBox();
         prepareConfig = new JButton("Prepare config");
-        swLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 2, 25));
-        softwareDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 6, 25));
-        prepareConfig.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 3, 25));
+        swLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
+        softwareDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        prepareConfig.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         swPanel.add(swLabel);
         swPanel.add(softwareDropDown);
         swPanel.add(prepareConfig);
@@ -481,6 +481,10 @@ public class ConfigPanel extends JPanel {
         saveConfig.setEnabled(enabled);
     }
 
+    
+    /**
+     * Wrapper used to display EmulatorPackage in GUI
+     */
     class EmulatorPackageWrapper {
 
         final EmulatorPackage emulatorPackage;
@@ -497,6 +501,10 @@ public class ConfigPanel extends JPanel {
         }
     }
 
+    
+    /**
+     * Wrapper used to display SoftwarePackage in GUI
+     */
     class SoftwarePackageWrapper {
 
         final SoftwarePackage softwarePackage;
@@ -520,6 +528,10 @@ public class ConfigPanel extends JPanel {
         }
     }
 
+    
+    /**
+     * Wrapper used to display Pathway in GUI
+     */
     class PathwayWrapper {
 
         final Pathway pathway;
@@ -531,8 +543,27 @@ public class ConfigPanel extends JPanel {
         @Override
         public String toString() {
             return pathway.getApplication().getName() + " -> " +
-                    pathway.getOperatingSystem().getName() + " -> " +
-                    pathway.getHardwarePlatform().getName();
+                   pathway.getOperatingSystem().getName() + " -> " +
+                   pathway.getHardwarePlatform().getName();
         }
     }
+
+    
+    /**
+     * Wrapper used to display Format in GUI
+     */
+    class FormatWrapper {
+
+        final Format format;
+
+        FormatWrapper(Format f) {
+            format = f;
+        }
+
+        @Override
+        public String toString() {
+            return format.getName() + " " + format.getReportingTools().toString();
+        }
+    }
+
 }

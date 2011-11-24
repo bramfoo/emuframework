@@ -52,8 +52,8 @@ import org.apache.log4j.Logger;
  */
 public class GUI extends JFrame {
 
-    public static final int WIDTH_UNIT = 50;
-    public static final int TOTAL_WIDTH_UNITS = 17;
+    public static final int WIDTH_UNIT = 10;
+    public static final int TOTAL_WIDTH_UNITS = 95;
     public static final int WIDTH = WIDTH_UNIT * TOTAL_WIDTH_UNITS;
     public static final int HEIGHT = 700;
     public static final String PROP_FILE_NAME = "gui.properties";
