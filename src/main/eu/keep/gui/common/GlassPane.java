@@ -40,6 +40,7 @@ public class GlassPane extends JComponent {
         Color bg = super.getBackground();
         Color alpha = new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 200);
         g.setColor(alpha);
+        // Parent height - 32, to make sure status bar is always fully visible.
         g.fillRect(0, 0, super.getParent().getWidth(), super.getParent().getHeight() - 32);
     }
 }
