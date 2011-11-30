@@ -80,7 +80,6 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         // button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
-
         autoStart = new JButton("auto start");
         checkEnvironment = new JButton("check environment");
         info = new JButton("info");
@@ -97,26 +96,23 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         buttonPanel.add(checkEnvironment);
         buttonPanel.add(info);
 
+        // Root directory dropdown
         final FileNode dummyRoot = new FileNode(new File(""));
+        
         final File[] roots = File.listRoots();
-
         final Vector<FileNode> rootsVector = new Vector<FileNode>();
-
         for (File f : roots) {
             FileNode node = new FileNode(f);
             rootsVector.add(node);
         }
 
         final JComboBox rootsCombo = new JComboBox(rootsVector);
-
         if(rootsVector.size() == 0) {
             rootsCombo.setEnabled(false);
             logger.warn("Did not find a drive/mapping to search for files!");
         }
         else {
-
             FileNode node = rootsVector.get(0);
-
             for(int i = 0; i < rootsVector.size(); i++) {
                 FileNode fn = rootsVector.get(i);
                 if(!(fn.toString().toUpperCase().startsWith("A:") || fn.toString().toUpperCase().startsWith("B:"))) {
@@ -125,10 +121,21 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                     break;
                 }
             }
-
             node.discover(1);
             dummyRoot.add(node);
         }
+
+        rootsCombo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FileNode node = (FileNode)rootsCombo.getSelectedItem();
+                node.discover(1);
+                dummyRoot.removeAllChildren();
+                dummyRoot.add(node);
+                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
+                model.setRoot(dummyRoot);
+            }
+        });
 
         tree = new JTree(dummyRoot);
         tree.setCellRenderer(new ExplorerTreeCellRenderer());
@@ -155,39 +162,12 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             }
         });
 
-        rootsCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                FileNode node = (FileNode)rootsCombo.getSelectedItem();
-                node.discover(1);
-                dummyRoot.removeAllChildren();
-                dummyRoot.add(node);
-                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-                model.setRoot(dummyRoot);
-            }
-        });
-
         tree.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getClickCount() >= 2) {
                     if(selectedFile != null) {
-                        parent.clear();
-                        parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
-                        (new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    boolean success = parent.model.start(selectedFile);
-                                    if(success) {
-                                        // TODO descriptive meta data in a new tab
-                                    }
-                                    parent.unlock("Done.");
-                                } catch (IOException ex) {
-                                    parent.unlock("ERROR: " + ex.getMessage());
-                                }
-                            }
-                        })).start();
+                    	doAutoStart();
                     }
                 }
             }
@@ -215,100 +195,9 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         if (e.getSource() == autoStart) {
-            parent.clear();
-            checkEnvironment.setEnabled(false);
-            info.setEnabled(false);
-
-            parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
-            (new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        java.util.List<Format> formats = parent.model.characterise(selectedFile);
-
-                        if (formats.isEmpty()) {
-                            parent.unlock("Could not determine the format of file: " + selectedFile);
-                        }
-                        else {
-                            parent.loadFormats(formats);
-                            parent.getConfigPanel().enableOptions(false);
-                            Format frmt = formats.get(0);
-
-                            // find dependencies
-                            java.util.List<Pathway> paths = parent.model.getPathways(frmt);
-                            parent.getConfigPanel().enableOptions(false);
-
-                            if (paths.isEmpty()) {
-                                parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
-                            }
-                            else {
-                                parent.getConfigPanel().loadPathways(paths);
-                                parent.getConfigPanel().enableOptions(false);
-
-                                // find emus
-                                Pathway path = paths.get(0);
-
-                                if (!parent.model.isPathwaySatisfiable(path)) {
-                                    parent.unlock("Sorry, " + path + " is not satisfiable");
-                                }
-                                else {
-                                    Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
-                                    if (emuMap.isEmpty()) {
-                                        parent.unlock("Didn't find an emulator for dependency: " + paths);
-                                    }
-                                    else {
-                                        parent.getConfigPanel().loadEmus(emuMap);
-                                        parent.getConfigPanel().enableOptions(false);
-
-                                        // find software
-                                        List<SoftwarePackage> swList = null;
-                                        EmulatorPackage emu = null;
-
-                                        for(Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
-                                            emu = entry.getKey();
-                                            swList = entry.getValue();
-                                            if(!swList.isEmpty()) {
-                                                break;
-                                            }
-                                        }
-
-                                        if (swList == null || swList.isEmpty()) {
-                                            parent.unlock("Sorry, could not find a software package for: " + path);
-                                        }
-                                        else {
-                                            parent.getConfigPanel().loadSoftware(swList);
-                                            parent.getConfigPanel().enableOptions(false);
-
-                                            // prepare config
-                                            SoftwarePackage swPack = swList.get(0);
-                                            int lastConfiguredID = parent.model.prepareConfiguration(selectedFile, emu, swPack, path);
-
-                                            Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
-
-                                            if (configMap.isEmpty()) {
-                                                parent.unlock("Sorry, could not find a configuration for: " + swPack.getDescription());
-                                            } else {
-                                                parent.getConfigPanel().loadConfiguration(configMap);
-                                                parent.getConfigPanel().enableOptions(false);
-
-                                                // run
-                                                parent.model.setEmuConfig(configMap, lastConfiguredID);
-                                                parent.model.runEmulationProcess(lastConfiguredID);
-                                                parent.unlock("Emulation process started.");
-
-                                                new InfoTableDialog(parent, selectedFile, emu, swPack);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } catch (IOException ex) {
-                        parent.unlock("ERROR :: " + ex.getMessage());
-                    }
-                    parent.getConfigPanel().enableOptions(true);
-                }
-            })).start();
+            if(selectedFile != null) {
+            	doAutoStart();
+            }
         }
 
         if (e.getSource() == checkEnvironment) {
@@ -366,6 +255,106 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             })).start();
         }
     }
+
+    /**
+     * Start the automatic emulation process on the selected file.
+     */
+	private void doAutoStart() {
+		parent.clear();
+		checkEnvironment.setEnabled(false);
+		info.setEnabled(false);
+
+		parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
+		(new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		        try {
+		            java.util.List<Format> formats = parent.model.characterise(selectedFile);
+
+		            if (formats.isEmpty()) {
+		                parent.unlock("Could not determine the format of file: " + selectedFile);
+		            }
+		            else {
+		                parent.loadFormats(formats);
+		                parent.getConfigPanel().enableOptions(false);
+		                Format frmt = formats.get(0);
+
+		                // find dependencies
+		                java.util.List<Pathway> paths = parent.model.getPathways(frmt);
+		                parent.getConfigPanel().enableOptions(false);
+
+		                if (paths.isEmpty()) {
+		                    parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
+		                }
+		                else {
+		                    parent.getConfigPanel().loadPathways(paths);
+		                    parent.getConfigPanel().enableOptions(false);
+
+		                    // find emus
+		                    Pathway path = paths.get(0);
+
+		                    if (!parent.model.isPathwaySatisfiable(path)) {
+		                        parent.unlock("Sorry, " + path + " is not satisfiable");
+		                    }
+		                    else {
+		                        Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
+		                        if (emuMap.isEmpty()) {
+		                            parent.unlock("Didn't find an emulator for dependency: " + paths);
+		                        }
+		                        else {
+		                            parent.getConfigPanel().loadEmus(emuMap);
+		                            parent.getConfigPanel().enableOptions(false);
+
+		                            // find software
+		                            List<SoftwarePackage> swList = null;
+		                            EmulatorPackage emu = null;
+
+		                            for(Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
+		                                emu = entry.getKey();
+		                                swList = entry.getValue();
+		                                if(!swList.isEmpty()) {
+		                                    break;
+		                                }
+		                            }
+
+		                            if (swList == null || swList.isEmpty()) {
+		                                parent.unlock("Sorry, could not find a software package for: " + path);
+		                            }
+		                            else {
+		                                parent.getConfigPanel().loadSoftware(swList);
+		                                parent.getConfigPanel().enableOptions(false);
+
+		                                // prepare config
+		                                SoftwarePackage swPack = swList.get(0);
+		                                int lastConfiguredID = parent.model.prepareConfiguration(selectedFile, emu, swPack, path);
+
+		                                Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
+
+		                                if (configMap.isEmpty()) {
+		                                    parent.unlock("Sorry, could not find a configuration for: " + swPack.getDescription());
+		                                } else {
+		                                    parent.getConfigPanel().loadConfiguration(configMap);
+		                                    parent.getConfigPanel().enableOptions(false);
+
+		                                    // run
+		                                    parent.model.setEmuConfig(configMap, lastConfiguredID);
+		                                    parent.model.runEmulationProcess(lastConfiguredID);
+		                                    parent.unlock("Emulation process started.");
+
+		                                    new InfoTableDialog(parent, selectedFile, emu, swPack);
+		                                }
+		                            }
+		                        }
+		                    }
+		                }
+		            }
+		        } catch (IOException ex) {
+		            parent.unlock("ERROR : " + ex.getMessage());
+		        }
+		        parent.getConfigPanel().enableOptions(true);
+		    }
+		})).start();
+	}
 
     void select(File file) {
         boolean isFile = file.isFile();
