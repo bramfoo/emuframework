@@ -592,20 +592,19 @@ public class Kernel implements CoreEngineModel {
 
     				if (!formats_emu.isEmpty()) {
     					// loop over format supported by this emulator
-    					ArrayList<SoftwarePackage> swPackList = new ArrayList<SoftwarePackage>();
+    					Set<SoftwarePackage> swPackSet = new HashSet<SoftwarePackage>();
     					for (String format_emu : formats_emu) {
-
-    						// get all images whose format is compatible and whose software/OS have acceptable language
+    						// get all images whose format is compatible
     						for (SoftwarePackage swPack : swPacks) {
     							String format = downloader.getSoftwarePackageFormat(swPack.getId());
     							if (format.equals(format_emu) || format.equalsIgnoreCase("N/A")) {
-    								swPackList.add(swPack);
+    								swPackSet.add(swPack);
     							}        								
     						}
     					}
     					// Store the emulator - list of compatible software image IDs
-    					if(!swPackList.isEmpty()) {
-    						emuSwMap.put(emuPack, swPackList);
+    					if(!swPackSet.isEmpty()) {
+    						emuSwMap.put(emuPack, new ArrayList<SoftwarePackage>(swPackSet));
     					}
     				}        			
     				else {
