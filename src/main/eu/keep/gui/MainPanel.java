@@ -110,25 +110,5 @@ public class MainPanel extends JPanel {
         configPanel.loadFormats(formats);
     }
     
-//    /**
-//     * Enable/disable this panel, and all of its children
-//     * @param enabled true to enable, false to disable
-//     */
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//    	super.setEnabled(enabled);
-//    	tabbedPane.setEnabled(enabled);
-//    	configPanel.setEnabled(enabled);
-//    	
-//    	if (efPanel != null) {
-//    		efPanel.setEnabled(enabled);
-//    	}
-//    	if (eaPanel != null) {
-//    		eaPanel.setEnabled(enabled);
-//    	}
-//    	if (swaPanel != null) {
-//    		swaPanel.setEnabled(enabled);
-//    	}
-//    }
     
 }

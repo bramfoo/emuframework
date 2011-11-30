@@ -360,7 +360,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                         new InfoTableDialog(parent, selectedFile, data);
                         parent.unlock("Done.");
                     } catch (IOException ex) {
-                         parent.unlock("ERROR :: " + ex.getMessage());
+                         parent.unlock("ERROR : " + ex.getMessage());
                     }
                 }
             })).start();
@@ -374,23 +374,6 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         info.setEnabled(isFile);
         selectedFile = isFile ? file : null;
     }
-
-//    /**
-//     * Enable/disable this panel, and all of its children
-//     * @param enabled true to enable, false to disable
-//     */
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//    	super.setEnabled(enabled);
-//
-//    	// super.setEnabled does not enable/disable the children. Do it manually.
-//    	for (int i=0; i<this.getComponents().length; i++) {
-//    		this.getComponent(i).setEnabled(enabled);
-//    	}
-//    	
-//    	// the tree is not a direct child of this Panel.
-//    	tree.setEnabled(enabled);
-//    }
     
 
     public void setEnabled(boolean enabled) {

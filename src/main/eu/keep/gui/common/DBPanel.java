@@ -239,20 +239,4 @@ public class DBPanel extends JPanel {
         clear();
     }
     
-//    /**
-//     * Enable/disable this panel, and all of its children
-//     * @param enabled true to enable, false to disable
-//     */
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//    	super.setEnabled(enabled);
-//
-//    	tableDropDown.setEnabled(enabled);
-//    	viewDropDown.setEnabled(enabled);
-//    	dataTable.setEnabled(enabled);
-//    	removeButton.setEnabled(enabled);
-//    	insertButton.setEnabled(enabled);
-//    }
-//    
-
 }

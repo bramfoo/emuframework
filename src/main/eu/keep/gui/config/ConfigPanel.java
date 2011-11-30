@@ -486,21 +486,6 @@ public class ConfigPanel extends JPanel {
         saveConfig.setEnabled(enabled);
     }
 
-//    /**
-//     * Enable/disable this panel, and all of its children
-//     * @param enabled true to enable, false to disable
-//     */
-//    @Override
-//    public void setEnabled(boolean enabled) {
-//    	super.setEnabled(enabled);
-//
-//    	// super.setEnabled does not enable/disable the children. Do it manually.
-//    	for (int i=0; i<this.getComponents().length; i++) {
-//    		this.getComponent(i).setEnabled(enabled);
-//    		logger.info("Enabling/Disabling ConfigPanel child: " + this.getComponent(i).getName() + "; class = " + this.getComponent(i).getClass());
-//    	}
-//    }
-    
 
     
     /**
