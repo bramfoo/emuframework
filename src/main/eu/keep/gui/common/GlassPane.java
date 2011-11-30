@@ -31,6 +31,7 @@
 package eu.keep.gui.common;
 
 import javax.swing.*;
+
 import java.awt.*;
 
 public class GlassPane extends JComponent {

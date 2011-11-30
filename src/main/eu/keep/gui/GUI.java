@@ -37,6 +37,7 @@ import eu.keep.gui.settings.SettingsFrame;
 import eu.keep.kernel.CoreEngineModel;
 import eu.keep.kernel.Kernel;
 import eu.keep.util.FileUtilities;
+import eu.keep.gui.settings.EFProperty;
 
 import javax.swing.*;
 
@@ -44,6 +45,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 
@@ -256,6 +258,9 @@ public class GUI extends JFrame {
         addresses.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	List<EFProperty> editableProperties = new ArrayList<EFProperty>();
+            	editableProperties.add(EFProperty.softwareArchiveURL);
+            	editableProperties.add(EFProperty.emulatorArchiveURL);
                 new SettingsFrame(GUI.this,
                         "eu/keep/" + PROP_FILE_NAME_KERNEL,
                         "<html>" +
@@ -267,11 +272,7 @@ public class GUI extends JFrame {
                         "Examples: <ul><li><b>http://services.kb.nl:1234/softwarearchive</b></li>" +
                         "<li><b>http://123.45.67.89:1234/softwarearchive</b></li></ul>" +
                         "</html>",
-                        new String[][]{
-                                {"Software archive address:", "software.archive.url"},
-                                {"Emulator archive address:", "emulator.archive.url"}
-                        }
-                );
+                        editableProperties);
             }
         });
         settings.add(addresses);
@@ -350,16 +351,19 @@ public class GUI extends JFrame {
     public void lock(String message) {
         logLabel.setText(message);
         super.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        tabPanel.setEnabled(false);
+        GUI.enableComponentWithChildren(tabPanel, false);
     }
 
     public void reloadModel() {
         try {
             model = new Kernel(PROP_FILE_NAME_KERNEL);
+            unlock("Successfully restarted the Emulation Framework with the new settings.");
         } catch (IOException e) {
+            logger.fatal("Could not restart Kernel: ");
             e.printStackTrace();
             model = null;
-            logger.fatal("Could not recover from failed CoreEngineModel.init()");
+            logLabel.setText("Failed to reload the Kernel with the new Settings. Please change the settings.");
+            super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
 
@@ -369,11 +373,25 @@ public class GUI extends JFrame {
      * @param message the message to be displayed on the "log-label".
      */
     public void unlock(String message) {
-        tabPanel.setEnabled(true);
+    	GUI.enableComponentWithChildren(tabPanel, true);
         logLabel.setText(message);
         super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
+    /**
+     * Recursively enable/disable a component and all of its children
+     * @param component the component to be enabled/disabled
+     * @param enabled true to enable, false to disable
+     */
+    public static void enableComponentWithChildren(Component component, boolean enabled) {
+    	component.setEnabled(enabled);
+    	if (component instanceof Container) {        	    		
+        	for (int i=0; i<((Container)component).getComponentCount(); i++) {
+        		GUI.enableComponentWithChildren(((Container)component).getComponent(i), enabled);
+        	}
+        }
+    }
+   
     /**
      * The entry point for this class.
      *

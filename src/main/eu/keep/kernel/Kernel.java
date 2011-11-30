@@ -270,13 +270,13 @@ public class Kernel implements CoreEngineModel {
 				logger.fatal("Cannot initialise Set of accepted Languages: EmulatorArchive or SoftwareArchive could not be contacted.");
 				throw ioe;				
 			}
-    		logger.debug("Total of " + acceptedLanguages.size() + " languages available in Emulator and Software Archives. All accepted.");
+    		logger.info("Total of " + acceptedLanguages.size() + " languages available in Emulator and Software Archives. All accepted.");
     	} else {
     		String[] acceptedLangIds = acceptedLanguagesProp.split(",");
     		for (String acceptedLangId : acceptedLangIds) {
     			try {
 	    			Language acceptedLanguage = Language.valueOf(acceptedLangId);
-	    			logger.debug("Marking language as acceptable: " + acceptedLanguage.getLanguageId());
+	    			logger.info("Marking language as acceptable: " + acceptedLanguage.getLanguageId());
 	    			acceptedLanguages.add(acceptedLanguage);
     			} catch (IllegalArgumentException iae) {
     				logger.warn("'accepted.languages' property in property-file contains unknown language ID: " + 

@@ -32,8 +32,6 @@ package eu.keep.gui.util;
 
 import javax.swing.*;
 
-//import org.apache.log4j.Logger;
-//
 import java.awt.*;
 import java.awt.event.*;
 
@@ -43,8 +41,6 @@ import java.awt.event.*;
  */
 public class CheckBoxList<E extends JCheckBox> extends JList {
 	
-//    private static final Logger logger = Logger.getLogger(CheckBoxList.class.getName());
-//
 //	protected static Border noFocusBorder = new EmptyBorder(1, 1, 1, 1);
 //
 	public CheckBoxList() {

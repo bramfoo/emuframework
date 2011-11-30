@@ -33,6 +33,9 @@ package eu.keep.gui.settings;
 import eu.keep.gui.GUI;
 
 import javax.swing.*;
+
+import org.apache.log4j.Logger;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,20 +47,23 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.List;
 
 public class SettingsFrame extends JFrame {
+
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private final GUI parent;
     private final Properties properties;
     private final String fileName;
-    private final Map<String, JTextField> valueMap;
-
-    public SettingsFrame(GUI p, String fn, String instructions, String[][] keys) {
+    private final Map<String, EFPropertyEditor> valueMap;
+    
+    public SettingsFrame(GUI p, String fn, String instructions, List<EFProperty> editableProperties) {
         super("settings");
 
         parent = p;
         fileName = fn;
-        valueMap = new LinkedHashMap<String, JTextField>();
+        valueMap = new LinkedHashMap<String, EFPropertyEditor>();
 
         parent.setEnabled(false);
         parent.getGlassPane().setVisible(true);
@@ -78,7 +84,7 @@ public class SettingsFrame extends JFrame {
             }
         });
 
-        initGUI(instructions, keys);
+        initGUI(instructions, editableProperties);
 
         int parentX = parent.getX();
         int parentY = parent.getY();
@@ -98,8 +104,8 @@ public class SettingsFrame extends JFrame {
         this.dispose();
     }
 
-    private void initGUI(String instructions, String[][] keys) {
-        super.setSize(new Dimension(500, 400));
+    private void initGUI(String instructions, List<EFProperty> editableProperties) {
+        super.setSize(new Dimension(600, 400));
         super.setLayout(new BorderLayout(5, 5));
         super.add(new JLabel("  "), BorderLayout.NORTH);
         super.add(new JLabel("  "), BorderLayout.WEST);
@@ -110,15 +116,36 @@ public class SettingsFrame extends JFrame {
         JPanel settingsPanel = new JPanel(new GridLayout(0, 2));
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        for(String[] keyArray : keys) {
-            String keyFriendly = keyArray[0];
-            String key = keyArray[1];
-            JTextField txt = new JTextField(properties.getProperty(key));
-            settingsPanel.add(new JLabel(keyFriendly));
-            settingsPanel.add(txt);
-            valueMap.put(key, txt);
-        }
+        // Add all editable Properties
+        for (EFProperty editableProperty : editableProperties) {
+        	
+          // Get current value for property from Properties collection
+          editableProperty.setValue(properties);
+          logger.info("Found editable property: key = " + editableProperty.getKey() + "; value = " + editableProperty.getValue());
 
+          // Create suitable editor component, depending on propertyType
+          EFPropertyEditor editor = null;
+          switch (editableProperty.getType()) {
+			case STRING:
+				editor = new StringPropertyEditor(editableProperty.getValue());
+				break;
+			case SOFTWARE_ARCHIVE_URL:
+				editor = new UrlPropertyEditor(editableProperty.getValue(), "/softwarearchive/");
+				break;
+			case EMULATOR_ARCHIVE_URL:
+				editor = new UrlPropertyEditor(editableProperty.getValue(), "/emulatorarchive/");
+				break;
+			default:
+				throw new IllegalArgumentException("invalid property type: " + editableProperty.getType());
+          }
+          
+          // Add label and editor to panel
+          settingsPanel.add(new JLabel(editableProperty.getDescription()));
+          settingsPanel.add((JComponent)editor);
+          String key = editableProperty.getKey();          
+          valueMap.put(key, editor);
+        }
+        
         middlePanel.add(settingsPanel, BorderLayout.SOUTH);
         mainPanel.add(middlePanel, BorderLayout.CENTER);
         mainPanel.add(new JLabel(instructions), BorderLayout.NORTH);
@@ -130,11 +157,14 @@ public class SettingsFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                	// Save the new Properties
                     for(String key : valueMap.keySet()) {
-                        properties.setProperty(key, valueMap.get(key).getText());
+                        properties.setProperty(key, valueMap.get(key).getValue());
                     }
                     properties.store(new FileOutputStream(fileName), null);
-                    parent.lock("Saving the new settings...");
+                    
+                    // Restart the Kernel
+                    parent.lock("Saving the new settings and restarting the Emulation Framework. Please wait...");
                     (new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -143,9 +173,9 @@ public class SettingsFrame extends JFrame {
                     })).start();
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+                    parent.unlock(" ");
                 }
                 SettingsFrame.this.close();
-                parent.unlock("Successfully saved the new settings.");
             }
         });
 

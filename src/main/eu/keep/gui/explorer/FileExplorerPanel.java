@@ -66,7 +66,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     private JButton autoStart;
     private JButton checkEnvironment;
     private JButton info;
-
+    private JTree tree; 
+    
     public FileExplorerPanel(GUI p) {
         selectedFile = null;
         parent = p;
@@ -129,7 +130,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             dummyRoot.add(node);
         }
 
-        final JTree tree = new JTree(dummyRoot);
+        tree = new JTree(dummyRoot);
         tree.setCellRenderer(new ExplorerTreeCellRenderer());
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setRootVisible(false);
@@ -374,7 +375,26 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         selectedFile = isFile ? file : null;
     }
 
+//    /**
+//     * Enable/disable this panel, and all of its children
+//     * @param enabled true to enable, false to disable
+//     */
+//    @Override
+//    public void setEnabled(boolean enabled) {
+//    	super.setEnabled(enabled);
+//
+//    	// super.setEnabled does not enable/disable the children. Do it manually.
+//    	for (int i=0; i<this.getComponents().length; i++) {
+//    		this.getComponent(i).setEnabled(enabled);
+//    	}
+//    	
+//    	// the tree is not a direct child of this Panel.
+//    	tree.setEnabled(enabled);
+//    }
+    
+
     public void setEnabled(boolean enabled) {
         this.autoStart.setEnabled(enabled);
     }
+    
 }

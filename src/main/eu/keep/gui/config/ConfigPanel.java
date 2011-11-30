@@ -45,6 +45,9 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.Logger;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -53,11 +56,13 @@ import java.util.Map;
 
 public class ConfigPanel extends JPanel {
 
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
     protected GUI parent;
     protected FileExplorerPanel explorerPanel;
 
     // drop down #1
-    private JComboBox<FormatWrapper> formatsDropDown;
+    private JComboBox formatsDropDown;
     public JButton findDependencies;
 
     // drop down #2
@@ -480,6 +485,22 @@ public class ConfigPanel extends JPanel {
         startConfig.setEnabled(enabled);
         saveConfig.setEnabled(enabled);
     }
+
+//    /**
+//     * Enable/disable this panel, and all of its children
+//     * @param enabled true to enable, false to disable
+//     */
+//    @Override
+//    public void setEnabled(boolean enabled) {
+//    	super.setEnabled(enabled);
+//
+//    	// super.setEnabled does not enable/disable the children. Do it manually.
+//    	for (int i=0; i<this.getComponents().length; i++) {
+//    		this.getComponent(i).setEnabled(enabled);
+//    		logger.info("Enabling/Disabling ConfigPanel child: " + this.getComponent(i).getName() + "; class = " + this.getComponent(i).getClass());
+//    	}
+//    }
+    
 
     
     /**

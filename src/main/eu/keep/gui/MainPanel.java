@@ -33,7 +33,9 @@ package eu.keep.gui;
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.DBPanel;
 import eu.keep.gui.config.ConfigPanel;
+
 import javax.swing.*;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Properties;
@@ -47,6 +49,9 @@ public class MainPanel extends JPanel {
     protected ConfigPanel configPanel = null;
     private final boolean adminTabs;
     protected JTabbedPane tabbedPane;
+    private DBPanel efPanel = null;
+    private DBPanel eaPanel = null;
+    private DBPanel swaPanel = null;
 
     MainPanel(GUI gui, boolean at) {
         parent = gui;
@@ -70,7 +75,7 @@ public class MainPanel extends JPanel {
         if(adminTabs) {
 
             // The core emulator framework database tab.
-            DBPanel efPanel = new DBPanel(parent,
+            efPanel = new DBPanel(parent,
                     p.getProperty("ef.jdbc.prefix") + p.getProperty("ef.db.url") + p.getProperty("ef.db.exists") + p.getProperty("ef.db.server"),
                     p.getProperty("ef.db.schema.name"),
                     p.getProperty("ef.db.admin"),
@@ -78,7 +83,7 @@ public class MainPanel extends JPanel {
             );
 
             // The emulator archive database tab.
-            DBPanel eaPanel = new DBPanel(parent,
+            eaPanel = new DBPanel(parent,
                     p.getProperty("ea.jdbc.prefix") + p.getProperty("ea.db.url") + p.getProperty("ea.db.exists") + p.getProperty("ea.db.server"),
                     p.getProperty("ea.db.schema.name"),
                     p.getProperty("ea.db.admin"),
@@ -86,7 +91,7 @@ public class MainPanel extends JPanel {
             );
 
             // The software archive database tab.
-            DBPanel swaPanel = new DBPanel(parent,
+            swaPanel = new DBPanel(parent,
                     p.getProperty("swa.jdbc.prefix") + p.getProperty("swa.db.url")  + p.getProperty("swa.db.exists")  + p.getProperty("swa.db.server"),
                     p.getProperty("swa.db.schema.name"),
                     p.getProperty("swa.db.admin"),
@@ -104,4 +109,26 @@ public class MainPanel extends JPanel {
     void loadFormats(List<Format> formats) {
         configPanel.loadFormats(formats);
     }
+    
+//    /**
+//     * Enable/disable this panel, and all of its children
+//     * @param enabled true to enable, false to disable
+//     */
+//    @Override
+//    public void setEnabled(boolean enabled) {
+//    	super.setEnabled(enabled);
+//    	tabbedPane.setEnabled(enabled);
+//    	configPanel.setEnabled(enabled);
+//    	
+//    	if (efPanel != null) {
+//    		efPanel.setEnabled(enabled);
+//    	}
+//    	if (eaPanel != null) {
+//    		eaPanel.setEnabled(enabled);
+//    	}
+//    	if (swaPanel != null) {
+//    		swaPanel.setEnabled(enabled);
+//    	}
+//    }
+    
 }
