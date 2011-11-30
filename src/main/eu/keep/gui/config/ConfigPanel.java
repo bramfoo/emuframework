@@ -503,7 +503,8 @@ public class ConfigPanel extends JPanel {
 
         @Override
         public String toString() {
-            return emulatorPackage.getEmulator().getName() + " " + emulatorPackage.getEmulator().getVersion() + " (" + emulatorPackage.getEmulator().getExecutable().getType() + ")";
+            return emulatorPackage.getEmulator().getName() + " " + emulatorPackage.getEmulator().getVersion() + 
+            		" (" + emulatorPackage.getEmulator().getExecutable().getType() + ")";
         }
     }
 
