@@ -41,7 +41,7 @@ import java.awt.event.*;
  * Class to display a list of checkboxes
  * @author nooe
  */
-public class CheckBoxList<E extends JCheckBox> extends JList<JCheckBox> {
+public class CheckBoxList<E extends JCheckBox> extends JList {
 	
 //    private static final Logger logger = Logger.getLogger(CheckBoxList.class.getName());
 //
@@ -52,12 +52,12 @@ public class CheckBoxList<E extends JCheckBox> extends JList<JCheckBox> {
 		setBackground(new Color(UIManager.getColor("background").getRGB()));
 
 		// Use custom cell renderer, to display checkboxes.
-		setCellRenderer(new ListCellRenderer<JCheckBox>() {
+		setCellRenderer(new ListCellRenderer() {
 			@Override
 			public Component getListCellRendererComponent(
-					JList<? extends JCheckBox> list, JCheckBox value, int index,
+					JList list, Object value, int index,
 					boolean isSelected, boolean cellHasFocus) {
-				return value;
+				return (JCheckBox)value;
 			}
 		});
 
