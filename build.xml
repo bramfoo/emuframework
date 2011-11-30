@@ -520,8 +520,4 @@ $Revision$ $Date$ $Author$
         <ivy:publish resolver="local" pubrevision="${version}" overwrite="true" artifactspattern="${jar.dir}/[artifact].[ext]"/>
     </target>
 
-    <target name="BK" depends="jar">
-        <copy file="${jar.dir}/${jar.name}.jar" tofile="C:/Temp/ef/${jar.name}-1.0.0.jar" overwrite="yes"/>
-    </target>
-
 </project>
