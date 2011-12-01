@@ -66,7 +66,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     private JButton autoStart;
     private JButton checkEnvironment;
     private JButton info;
-    private JTree tree; 
+    private FileTree tree;
     
     public FileExplorerPanel(GUI p) {
         selectedFile = null;
@@ -96,92 +96,49 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         buttonPanel.add(checkEnvironment);
         buttonPanel.add(info);
 
-        // Root directory dropdown
-        final FileNode dummyRoot = new FileNode(new File(""));
-        
         final File[] roots = File.listRoots();
-        final Vector<FileNode> rootsVector = new Vector<FileNode>();
-        for (File f : roots) {
-            FileNode node = new FileNode(f);
-            rootsVector.add(node);
-        }
+        final JComboBox rootsCombo = new JComboBox(roots);
 
-        final JComboBox rootsCombo = new JComboBox(rootsVector);
-        if(rootsVector.size() == 0) {
-            rootsCombo.setEnabled(false);
-            logger.warn("Did not find a drive/mapping to search for files!");
-        }
-        else {
-            FileNode node = rootsVector.get(0);
-            for(int i = 0; i < rootsVector.size(); i++) {
-                FileNode fn = rootsVector.get(i);
-                if(!(fn.toString().toUpperCase().startsWith("A:") || fn.toString().toUpperCase().startsWith("B:"))) {
-                    node = fn;
-                    rootsCombo.setSelectedItem(node);
+        File start = null;
+        tree = null;
+
+        if(roots.length > 0) {
+            start = roots[0];
+
+            for(File root : roots) {
+                String name = root.getAbsolutePath().toUpperCase();
+
+                // skip possible disk drives in case of Windows
+                if(!(name.startsWith("A:") || name.startsWith("B:"))) {
+                    start = root;
                     break;
                 }
             }
-            node.discover(1);
-            dummyRoot.add(node);
+            rootsCombo.setSelectedItem(start);
+
+            tree = new FileTree(new FileTreeNode(start));
+
+            tree.addMouseListener(new MouseAdapter(){
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    parent.getConfigPanel().clear();
+                    File selected = tree.getSelectedFile();
+                    select(selected);
+
+                    if(selected.isFile() && e.getClickCount() >= 2) {
+                        doAutoStart();
+                    }
+                }
+            });
+        }
+        else {
+            logger.error("Could not read the file system.");
         }
 
         rootsCombo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FileNode node = (FileNode)rootsCombo.getSelectedItem();
-                node.discover(1);
-                dummyRoot.removeAllChildren();
-                dummyRoot.add(node);
-                DefaultTreeModel model = (DefaultTreeModel)tree.getModel();
-                model.setRoot(dummyRoot);
-            }
-        });
-
-        tree = new JTree(dummyRoot);
-        tree.setCellRenderer(new ExplorerTreeCellRenderer());
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.setRootVisible(false);
-
-        // attach listeners for tree-value changes and tree-expanding-actions
-        tree.addTreeExpansionListener(new TreeExpansionListener() {
-            @Override
-            public void treeExpanded(TreeExpansionEvent e) {
-                TreePath path = e.getPath();
-                if (path == null) return;
-                FileNode last = (FileNode) path.getLastPathComponent();
-                for (Enumeration children = last.children(); children.hasMoreElements();) {
-                    FileNode child = (FileNode) children.nextElement();
-                    child.removeAllChildren();
-                    child.discover(1);
-                }
-            }
-
-            @Override
-            public void treeCollapsed(TreeExpansionEvent event) {
-                /* ignored */
-            }
-        });
-
-        tree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if(e.getClickCount() >= 2) {
-                    if(selectedFile != null) {
-                    	doAutoStart();
-                    }
-                }
-            }
-        });
-
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                parent.clear();
-                TreePath path = e.getPath();
-                if (path == null) return;
-                FileNode last = (FileNode) path.getLastPathComponent();
-                last.discover(1);
-                FileExplorerPanel.this.select(last.getFile());
+                tree.setRoot(new FileTreeNode((File)rootsCombo.getSelectedItem()));
             }
         });
 
@@ -249,7 +206,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                         new InfoTableDialog(parent, selectedFile, data);
                         parent.unlock("Done.");
                     } catch (IOException ex) {
-                         parent.unlock("ERROR : " + ex.getMessage());
+                        parent.unlock("ERROR : " + ex.getMessage());
                     }
                 }
             })).start();
@@ -368,5 +325,4 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     public void setEnabled(boolean enabled) {
         this.autoStart.setEnabled(enabled);
     }
-    
 }
