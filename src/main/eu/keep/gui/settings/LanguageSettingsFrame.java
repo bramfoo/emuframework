@@ -140,10 +140,10 @@ public class LanguageSettingsFrame extends JFrame {
 	private void initLanguagePanel(JPanel mainPanel) {		
 
 		// Buttons for available language options
-        JRadioButton english = new JRadioButton("English");
-        JRadioButton german = new JRadioButton("Deutsch");
-        JRadioButton french = new JRadioButton("Fran\u0231ais");
-        JRadioButton dutch = new JRadioButton("Nederlands");
+        JRadioButton english = new JRadioButton(Language.en.getLanguageName());
+        JRadioButton german = new JRadioButton(Language.de.getLanguageName());
+        JRadioButton french = new JRadioButton(Language.fr.getLanguageName());
+        JRadioButton dutch = new JRadioButton(Language.nl.getLanguageName());
         english.setSelected(true);
         german.setEnabled(false);
         french.setEnabled(false);
