@@ -40,13 +40,6 @@ import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -99,11 +92,10 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         final File[] roots = File.listRoots();
         final JComboBox rootsCombo = new JComboBox(roots);
 
-        File start = null;
         tree = null;
 
         if(roots.length > 0) {
-            start = roots[0];
+            File start = roots[0];
 
             for(File root : roots) {
                 String name = root.getAbsolutePath().toUpperCase();
