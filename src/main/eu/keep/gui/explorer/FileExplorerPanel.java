@@ -160,8 +160,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                         if (formats.isEmpty()) {
                             parent.unlock("Could not determine the format of file: " + selectedFile);
                         } else {
-                            parent.loadFormats(formats);
                             parent.unlock("Done, found " + formats.size() + " possible format(s)");
+                            parent.loadFormats(formats);
                         }
                     } catch (IOException ex) {
                         parent.unlock("ERROR :: " + ex.getMessage());

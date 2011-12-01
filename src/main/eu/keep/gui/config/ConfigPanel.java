@@ -56,8 +56,6 @@ import java.util.Map;
 
 public class ConfigPanel extends JPanel {
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
-
     protected GUI parent;
     protected FileExplorerPanel explorerPanel;
 
@@ -281,7 +279,6 @@ public class ConfigPanel extends JPanel {
 
     public void loadEmus(Map<EmulatorPackage, List<SoftwarePackage>> emuMap) {
         setEnableEmus(true);
-        emulatorsDropDown.removeAllItems();
         for (Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
             emulatorsDropDown.addItem(new EmulatorPackageWrapper(entry));
         }
@@ -291,7 +288,6 @@ public class ConfigPanel extends JPanel {
         clear();
         explorerPanel.setEnabled(false);
         setEnableFormats(true);
-        formatsDropDown.removeAllItems();
         for (Format f : formatList) {
             formatsDropDown.addItem(new FormatWrapper(f));
         }
@@ -317,9 +313,6 @@ public class ConfigPanel extends JPanel {
     private void setEnableFormats(boolean enable) {
         // disable all components beneath this drop down box
         setEnablePathways(false);
-        setEnableEmus(false);
-        setEnableSoftware(false);
-        setEnableConfig(false);
 
         // reset and enable or disable components
         formatsDropDown.removeAllItems();
@@ -331,8 +324,6 @@ public class ConfigPanel extends JPanel {
     private void setEnablePathways(boolean enable) {
         // disable all components beneath this drop down box
         setEnableEmus(false);
-        setEnableSoftware(false);
-        setEnableConfig(false);
 
         // reset and enable or disable components
         pathwaysDropDown.removeAllItems();
@@ -344,12 +335,26 @@ public class ConfigPanel extends JPanel {
     private void setEnableEmus(boolean enable) {
         // disable all components beneath this drop down box
         setEnableSoftware(false);
-        setEnableConfig(false);
 
         // reset and enable or disable components
         emulatorsDropDown.removeAllItems();
         emulatorsDropDown.setEnabled(enable);
-        findSoftware.setEnabled(enable);
+                
+        if (enable) {
+        	// If the selected pathway does not define any OS or application, there's no need to 
+        	// select anything in the software dropdown, and the user can simply proceed to the 'Prepare Config'stage.
+    		Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
+    		if (path.getOperatingSystem().getId().equalsIgnoreCase("-1") && 
+    			path.getApplication().getId().equalsIgnoreCase("-1")) {
+    			bypassSoftwareSelection();
+    		}
+    		else {
+    			findSoftware.setEnabled(true);
+    		}
+        }
+        else {
+            findSoftware.setEnabled(false);        	
+        }
     }
 
     // drop down #4
@@ -374,7 +379,32 @@ public class ConfigPanel extends JPanel {
         configTxt.setText("");
         startConfig.setEnabled(enable);
         saveConfig.setEnabled(enable);
+
+        if (enable) {
+        	// If the selected pathway does not define any OS or application, there's no need to 
+        	// select anything in the software dropdown, and the user can simply proceed to the 'Prepare Config'stage.
+    		Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
+    		if (path.getOperatingSystem().getId().equalsIgnoreCase("-1") && 
+    			path.getApplication().getId().equalsIgnoreCase("-1")) {
+    			bypassSoftwareSelection();
+    		}
+        }
     }
+
+	private void bypassSoftwareSelection() {
+		findSoftware.setEnabled(false);
+		softwareDropDown.removeAllItems();
+		// Add dummy software package to dropdown
+		SoftwarePackage sp = new SoftwarePackage();
+		sp.setId("0");
+		sp.setDescription("N/A");
+		sp.setFormat("0");  
+		SoftwarePackageWrapper spw = new SoftwarePackageWrapper(sp);
+		softwareDropDown.addItem(spw);
+		softwareDropDown.setSelectedItem(spw);
+		softwareDropDown.setEnabled(false);
+		prepareConfig.setEnabled(true);
+	}
 
     private void setupGUI() {
         super.setLayout(new BorderLayout(2, 2));
