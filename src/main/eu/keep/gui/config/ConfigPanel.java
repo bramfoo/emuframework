@@ -219,11 +219,13 @@ public class ConfigPanel extends JPanel {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 configTxt.setText("");
+                saveConfig.setEnabled(false);
                 TreePath path = e.getPath();
                 if (path == null) return;
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
                 if (node.isLeaf()) {
                     configTxt.setText(node.toString());
+                    saveConfig.setEnabled(true);
                 }
             }
         });
@@ -378,7 +380,9 @@ public class ConfigPanel extends JPanel {
         configTree.removeAll();
         configTxt.setText("");
         startConfig.setEnabled(enable);
-        saveConfig.setEnabled(enable);
+        
+        // Save Config button is only ever enabled by selecting leaf node in configTree
+        saveConfig.setEnabled(false);
 
         if (enable) {
         	// If the selected pathway does not define any OS or application, there's no need to 
