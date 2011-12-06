@@ -92,8 +92,8 @@ public class SoftwareArchive {
         		throw new IOException("Property '" + propVal + "' does not exist in file " + propertiesFile);
         }
 
-        softwareDatabaseConnection = establishConnection(pv.get("driver"), pv.get("urlPref") + pv.get("url") + pv.get("urlExist") + pv.get("urlSchema"), pv.get("user"),
-        		pv.get("pw"), connectionAttempts);
+        softwareDatabaseConnection = establishConnection(pv.get("driver"), pv.get("urlPref") + pv.get("url") + 
+        		pv.get("urlExist") + pv.get("urlSchema"), pv.get("user"), pv.get("pw"), connectionAttempts);
 
         LOG.info("Setting up web services port...");
         softwarePackDAO = new H2SoftwarePackageDAO(softwareDatabaseConnection);

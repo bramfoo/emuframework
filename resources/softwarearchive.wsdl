@@ -62,46 +62,64 @@ $
 			<xs:element name="softwarePackage" type="swa:softwarePackage"/>
             <xs:element name="softwarePackageList">             
                 <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="softwarePackage" type="swa:softwarePackage" minOccurs="0" maxOccurs="unbounded"/>
-                        </xs:sequence>
+	                <xs:sequence>
+	                    <xs:element name="softwarePackage" type="swa:softwarePackage" minOccurs="0" maxOccurs="unbounded"/>
+	                </xs:sequence>
                 </xs:complexType>
             </xs:element>  
 
             <xs:element name="pathwayList">             
                 <xs:complexType>
-                        <xs:sequence>
-                            <xs:element ref="pw:pathway" minOccurs="0" maxOccurs="unbounded"/>
-                        </xs:sequence>
+	                <xs:sequence>
+	                    <xs:element ref="pw:pathway" minOccurs="0" maxOccurs="unbounded"/>
+	                </xs:sequence>
                 </xs:complexType>
             </xs:element>  
        
+            <xs:element name="swLanguageList">             
+		        <xs:complexType>
+		      		<xs:sequence>
+		      			<xs:element name="languageIds" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		      		</xs:sequence>
+		        </xs:complexType>
+	        </xs:element>
+        
             <!--
             The same element/message cannot be used for several operations
             Workaround: define multiple elements for each usage.
             See forum discussion here: http://old.nabble.com/%22Non-unique-body-parts%22-error-when-trying-to-use-same-input-message-for-2-different-operations-ts28387764.html          
             -->
-            <xs:element name="softwareID_1"     type="xs:string"/> 
-            <xs:element name="softwareID_2"     type="xs:string"/> 
+            <xs:element name="softwareID_1"    type="xs:string"/> 
+            <xs:element name="softwareID_2"    type="xs:string"/> 
                         
-            <xs:element name="softwareFile"     type="xs:base64Binary" 
+            <xs:element name="softwareFile"    type="xs:base64Binary" 
 					     xmime:expectedContentTypes="application/octet-stream"/>
 
-            <xs:element name="fileFormat"        type="xs:string"/>
+            <xs:element name="fileFormat"      type="xs:string"/>
             
-			<xs:element name="swLanguage_list" type="pw:swLanguage_list"/>
+	        <xs:complexType name="registryList">
+	      		<xs:sequence>
+	      			<xs:element name="registries" type="pw:DBRegistry" minOccurs="0" maxOccurs="unbounded"/>
+	      		</xs:sequence>
+	        </xs:complexType>				
+            
+            <xs:complexType name="EFFormatData">
+            	<xs:sequence>
+            		<xs:element name="dataElements" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            	</xs:sequence>
+            </xs:complexType>
             
             <!--
             Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)
             Apparently not supported by CXF (?)
             -->
-            <xs:element name="dummyElement_1" type="xs:string"/>
-            <xs:element name="dummyElement_2" type="xs:string"/>
+            <xs:element name="dummyElement_1"  type="xs:string"/>
+            <xs:element name="dummyElement_2"  type="xs:string"/>
        </xs:schema>
     </wsdl:types>
     
 
-    <!-- message definition -->
+    <!-- message definitions -->
     <wsdl:message name="GetSoftwarePackageInfoInput">
         <wsdl:part name="parameters" element="tns:softwareID_1"/>
     </wsdl:message>     
@@ -141,10 +159,39 @@ $
         <wsdl:part name="parameters" element="tns:dummyElement_2"/>
     </wsdl:message>   
     <wsdl:message name="GetLanguageListOutput">
-        <wsdl:part name="parameters" element="tns:swLanguage_list"/>
+        <wsdl:part name="parameters" element="tns:swLanguageList"/>
     </wsdl:message>   
     
+    <wsdl:message name="GetRegistriesInput">
+        <wsdl:part name="dummy" type="xs:int"/>
+    </wsdl:message>   
+    <wsdl:message name="GetRegistriesOutput">
+        <wsdl:part name="registries" type="tns:registryList"/>
+    </wsdl:message>   
     
+    <wsdl:message name="UpdateRegistriesInput">
+        <wsdl:part name="registries" type="tns:registryList"/>
+    </wsdl:message>   
+    <wsdl:message name="UpdateRegistriesOutput">
+        <wsdl:part name="succes" type="xs:boolean"/>
+    </wsdl:message>
+    
+    <wsdl:message name="SetRegistriesInput">
+        <wsdl:part name="registries" type="tns:registryList"/>
+    </wsdl:message>   
+    <wsdl:message name="SetRegistriesOutput">
+        <wsdl:part name="succes" type="xs:boolean"/>
+    </wsdl:message>   
+    
+    <wsdl:message name="GetFormatDataOnIdInput">
+        <wsdl:part name="pcrFormatId" type="xs:string"/>
+        <wsdl:part name="viewName" type="xs:string"/>
+    </wsdl:message>   
+    <wsdl:message name="GetFormatDataOnIdOutput">
+        <wsdl:part name="efFormatData" type="tns:EFFormatData"/>
+    </wsdl:message>   
+        
+        
     <!-- portType definition -->
     <wsdl:portType name="SoftwareArchivePortType">
         <wsdl:operation name="GetSoftwarePackageInfo">
@@ -176,6 +223,26 @@ $
            <wsdl:input message="tns:GetLanguageListInput"/>
            <wsdl:output message="tns:GetLanguageListOutput"/>
         </wsdl:operation>
+
+	    <wsdl:operation name="GetRegistries">
+           <wsdl:input message="tns:GetRegistriesInput"/>
+           <wsdl:output message="tns:GetRegistriesOutput"/>
+	    </wsdl:operation>             
+    
+	    <wsdl:operation name="UpdateRegistries">
+           <wsdl:input message="tns:UpdateRegistriesInput"/>
+           <wsdl:output message="tns:UpdateRegistriesOutput"/>
+	    </wsdl:operation>             
+    
+	    <wsdl:operation name="SetRegistries">
+           <wsdl:input message="tns:SetRegistriesInput"/>
+           <wsdl:output message="tns:SetRegistriesOutput"/>
+	    </wsdl:operation>             
+    
+	    <wsdl:operation name="GetFormatDataOnId">
+           <wsdl:input message="tns:GetFormatDataOnIdInput"/>
+           <wsdl:output message="tns:GetFormatDataOnIdOutput"/>
+	    </wsdl:operation>             
     </wsdl:portType>
     
     
@@ -187,61 +254,101 @@ $
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackageInfo" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
-           </wsdl:input>
-           <wsdl:output>
+            </wsdl:input>
+            <wsdl:output>
                <soap:body use="literal"/>
-           </wsdl:output>
+            </wsdl:output>
         </wsdl:operation>
         
         <wsdl:operation name="GetAllSoftwarePackagesInfo">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetAllSoftwarePackagesInfo" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
-           </wsdl:input>
-           <wsdl:output>
+            </wsdl:input>
+            <wsdl:output>
                <soap:body use="literal"/>
-           </wsdl:output>
+            </wsdl:output>
         </wsdl:operation>  
                       
         <wsdl:operation name="GetPathwaysByFileFormat">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetPathwaysByFileFormat" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
-           </wsdl:input>
-           <wsdl:output>
+            </wsdl:input>
+            <wsdl:output>
                <soap:body use="literal"/>
-           </wsdl:output>
+            </wsdl:output>
         </wsdl:operation>
         
         <wsdl:operation name="GetSoftwarePackagesByPathway">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackagesByPathway" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
-           </wsdl:input>
-           <wsdl:output>
+            </wsdl:input>
+            <wsdl:output>
                <soap:body use="literal"/>
-           </wsdl:output>
+            </wsdl:output>
         </wsdl:operation>
         
         <wsdl:operation name="DownloadSoftware">
             <soap:operation soapAction="http://softwarearchive.keep.eu/DownloadSoftware" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
-           </wsdl:input>
-           <wsdl:output>
+            </wsdl:input>
+            <wsdl:output>
                <soap:body use="literal"/>
-           </wsdl:output>
+            </wsdl:output>
         </wsdl:operation>             
         
         <wsdl:operation name="GetLanguageList">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetLanguageList" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
-           </wsdl:input>
-           <wsdl:output>
+            </wsdl:input>
+            <wsdl:output>
                <soap:body use="literal"/>
-           </wsdl:output>
+            </wsdl:output>
         </wsdl:operation>             
+    
+	    <wsdl:operation name="GetRegistries">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetRegistries" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+	    </wsdl:operation>             
+    
+	    <wsdl:operation name="UpdateRegistries">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/UpdateRegistries" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+	    </wsdl:operation>             
+    
+	    <wsdl:operation name="SetRegistries">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/SetRegistries" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+	    </wsdl:operation>             
+    
+	    <wsdl:operation name="GetFormatDataOnId">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetFormatDataOnId" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+	    </wsdl:operation>             
     </wsdl:binding>
     
     <!-- service definition -->

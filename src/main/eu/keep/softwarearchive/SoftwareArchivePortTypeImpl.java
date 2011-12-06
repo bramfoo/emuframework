@@ -34,20 +34,25 @@ package eu.keep.softwarearchive;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.xml.ws.Holder;
 
 import eu.keep.softwarearchive.pathway.ApplicationType;
+import eu.keep.softwarearchive.pathway.DBRegistry;
 import eu.keep.softwarearchive.pathway.HardwarePlatformType;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
 import eu.keep.softwarearchive.pathway.Pathway;
-import eu.keep.softwarearchive.pathway.SwLanguageList;
+import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 
@@ -288,6 +293,100 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     }
 
     /**
+     * Get all registries from the database
+     * @return RegistryList a list of the available registries
+     */
+	@Override
+	public RegistryList getRegistries(int dummy) {
+    	LOG.info("Retrieving all registries from database...");
+    	
+    	RegistryList registryList = new RegistryList();
+
+    	try {
+	    	registryList.getRegistries().addAll(spDAO.getRegistries());
+        }
+        catch (SQLException e) {
+        	LOG.error("Cannot get registry values from database: " + ExceptionUtils.getStackTrace(e));
+            throw new RuntimeException("Error retrieving registries from database: " + e);
+        }
+    	
+    	return registryList;
+	}
+
+    /**
+     * Inserts registries in the database
+     * @param registries The list of registries to insert into the database
+     * @return True if successful, false otherwise
+     */
+	@Override
+	public boolean setRegistries(RegistryList registries) {
+    	LOG.info("Inserting registries in the database...");
+    	
+    	boolean success = false;
+    	
+    	try {
+	    	spDAO.setRegistries(registries.getRegistries());
+	    	success = true;
+        }
+        catch (SQLException e) {
+        	// No logging needed here. Already done in spDAO.
+            throw new RuntimeException("Error inserting registries in the database: " + e);
+        }
+    	
+    	return success;
+	}
+
+    /**
+     * Updates registries in the database. These registries must already exist in the database.
+     * @param registries The list of registries to update
+     * @return True if successful, false otherwise
+     */
+	@Override
+	public boolean updateRegistries(RegistryList registries) {
+    	LOG.info("Updating registries in the database...");
+    	
+    	boolean success = false;
+    	
+    	try {
+	    	spDAO.updateRegistries(registries.getRegistries());
+	    	success = true;
+        }
+        catch (SQLException e) {
+        	// No logging needed here. Already done in spDAO.
+            throw new RuntimeException("Error updating registries in the database: " + e);
+        }
+    	
+    	return success;
+	}
+
+    /**
+     * Retrieves the EF fileformat ID and fileformat name from the database given a PCR ID
+     * @param id Unique PCR Identifier
+     * @param view View in database containing translations
+     * @return List of Strings (ID, name) of the corresponding EF fileformat ID and name
+     */
+	@Override
+	public EFFormatData getFormatDataOnId(String pcrFormatId, String viewName) {
+    	LOG.info("Retrieving EF fileformat ID and name from the database for PCR Format ID " + 
+    			pcrFormatId + ", using view " + viewName);
+    	
+    	EFFormatData formatData = new EFFormatData();
+    	
+    	try {
+    		List<String> data = spDAO.getFormatDataOnID(pcrFormatId, viewName);
+    		formatData.getDataElements().addAll(data);
+        }
+        catch (SQLException e) {
+        	LOG.error("Cannot retrieve EF fileformat ID and name from the database for PCR Format ID " + 
+    			pcrFormatId + ", using view " + viewName + ": " + ExceptionUtils.getStackTrace(e));
+            throw new RuntimeException("Error retrieving EF fileformat ID and name from the database for PCR Format ID " + 
+    			pcrFormatId + ", using view " + viewName + ": " + e);
+        }
+    	
+    	return formatData;
+	}
+
+    /**
      * Create an empty Pathway object (@code PathwaySchema.xsd) with all
      * items initialised
      * @return Pathway empty pathway object
@@ -521,7 +620,6 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
 		return hwp;
 	}
-
 	
     private class InputStreamDataSource implements DataSource {
         private InputStream is;
@@ -539,6 +637,5 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         @Override
         public String getContentType() {return null;}
     }
-
 
 }

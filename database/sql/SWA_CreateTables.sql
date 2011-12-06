@@ -187,6 +187,43 @@ CREATE TABLE opsys_images
   FOREIGN KEY (image_id) REFERENCES images (image_id)
 );
 
+-- Table for external registries
+CREATE TABLE registries
+(
+  registry_id INT(4) NOT NULL PRIMARY KEY,
+  name VARCHAR2(250) NOT NULL,
+  url VARCHAR2(250),
+  class_name VARCHAR2(500),
+  translation_view VARCHAR2(500),
+  enabled BOOLEAN DEFAULT FALSE,
+  description VARCHAR2(500),
+  comment VARCHAR2(500)
+);
+
+-- Table for CEF file formats
+-- NOTE: This is a direct copy from the Sofware Archive database
+CREATE TABLE cef_fileformats
+(
+  fileformat_id VARCHAR2(16) NOT NULL PRIMARY KEY,
+  name VARCHAR2(250) NOT NULL
+);
+
+-- Table for PCR file formats
+CREATE TABLE PCR_fileformats
+(
+  fileformat_id VARCHAR2(16) NOT NULL PRIMARY KEY,
+  name VARCHAR2(250) NOT NULL
+);
+
+-- Junction table for EF fileformats to PCR fileformats
+CREATE TABLE EF_PCR_fileformats
+(
+  PCR_ff_id VARCHAR2(16) NOT NULL,
+  EF_ff_id VARCHAR2(16) NOT NULL,
+  FOREIGN KEY (PCR_ff_id) REFERENCES PCR_fileformats (fileformat_id),
+  FOREIGN KEY (EF_ff_id) REFERENCES cef_fileformats (fileformat_id)
+);
+
 -- Views
 CREATE VIEW image_package AS
 SELECT imgs.image_id,
@@ -305,3 +342,23 @@ ON ff_apps.app_id = app_os.app_id LEFT OUTER JOIN opsys os
 ON (app_os.opsys_id = os.opsys_id OR ff_os.opsys_id = os.opsys_id) LEFT OUTER JOIN opsys_platform os_pf
 ON (os.opsys_id = os_pf.opsys_id OR ff_os.opsys_id = os_pf.opsys_id) LEFT OUTER JOIN platforms pf
 ON (os_pf.platform_id = pf.platform_id OR ff_pf.platform_id = pf.platform_id);
+
+-- Show all combinations (including nulls) between EF and PCR file formats
+CREATE VIEW EF_PCR_FORMATS AS
+SELECT ff.fileformat_id as "EF_FORMAT_ID", 
+	   ff.name as "EF_FORMAT_NAME", 
+	   pcr_ff.fileformat_id as "PCR_FORMAT_ID", 
+	   pcr_ff.name as "PCR_FORMAT_NAME"
+FROM cef_fileformats ff 
+LEFT OUTER JOIN EF_PCR_fileformats ep_ff
+ON ff.fileformat_id = ep_ff.EF_ff_id LEFT OUTER JOIN PCR_fileformats pcr_ff
+ON ep_ff.pcr_ff_id = pcr_ff.fileformat_id
+UNION
+SELECT ff.fileformat_id as "EF_FORMAT_ID", 
+	   ff.name as "EF_FORMAT_NAME", 
+	   pcr_ff.fileformat_id as "PCR_FORMAT_ID", 
+	   pcr_ff.name as "PCR_FORMAT_NAME"
+FROM cef_fileformats ff 
+RIGHT OUTER JOIN EF_PCR_fileformats ep_ff
+ON ff.fileformat_id = ep_ff.EF_ff_id RIGHT OUTER JOIN PCR_fileformats pcr_ff
+ON ep_ff.pcr_ff_id = pcr_ff.fileformat_id;
