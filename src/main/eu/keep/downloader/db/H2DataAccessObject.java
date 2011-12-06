@@ -79,7 +79,7 @@ public class H2DataAccessObject implements DataAccessObject {
     	+ EMUWHITELIST_TABLE_NAME
     	+ " WHERE emulator_id = ?";
 
-    private static final String GET_FF_ON_PCRID  = "SELECT ef_format_id, ef_format_name " + EF_PCR_FF_VIEW
+    private static final String GET_FF_ON_PCRID  = "SELECT ef_format_id, ef_format_name FROM " + EF_PCR_FF_VIEW
     	+ "	WHERE pcr_format_id=?";
     
     /**
