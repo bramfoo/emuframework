@@ -70,7 +70,7 @@ public class FileTree extends JTree {
 
     public File getSelectedFile() {
         FileTreeNode node = (FileTreeNode)((DefaultMutableTreeNode)super.getLastSelectedPathComponent()).getUserObject();
-        return node.file;
+        return node == null ? null : node.file;
     }
 
     private void initListeners() {

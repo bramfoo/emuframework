@@ -115,10 +115,13 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                 public void mouseClicked(MouseEvent e) {
                     parent.getConfigPanel().clear();
                     File selected = tree.getSelectedFile();
-                    select(selected);
 
-                    if(selected.isFile() && e.getClickCount() >= 2) {
-                        doAutoStart();
+                    if(selected != null) {
+                        select(selected);
+
+                        if(selected.isFile() && e.getClickCount() >= 2) {
+                            doAutoStart();
+                        }
                     }
                 }
             });
@@ -306,11 +309,13 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 	}
 
     void select(File file) {
-        boolean isFile = file.isFile();
-        autoStart.setEnabled(isFile);
-        checkEnvironment.setEnabled(isFile);
-        info.setEnabled(isFile);
-        selectedFile = isFile ? file : null;
+        if(file != null) {
+            boolean isFile = file.isFile();
+            autoStart.setEnabled(isFile);
+            checkEnvironment.setEnabled(isFile);
+            info.setEnabled(isFile);
+            selectedFile = isFile ? file : null;
+        }
     }
     
 
