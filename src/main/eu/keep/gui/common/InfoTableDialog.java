@@ -42,9 +42,9 @@ import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
+import java.net.URI;
 import java.util.*;
 
 public class InfoTableDialog extends JFrame {
@@ -228,7 +228,8 @@ public class InfoTableDialog extends JFrame {
 
     private void initGUI(Object[] colNames, Object[][] data) {
         TableModel model = new InfoTableModel(colNames, data);
-    	JTable table = new JTable(model);
+    	final JTable table = new JTable(model);
+        final JPopupMenu popUp = new JPopupMenu();
         table.setDefaultRenderer(Object.class, new LineWrapCellRenderer());
         table.setIntercellSpacing(new Dimension(0, 0));
         
@@ -242,7 +243,7 @@ public class InfoTableDialog extends JFrame {
             	String[] textLines = ((String)data[i][1]).split("\n"); // Individual new-line-separated lines in the cell's text
         		for (int j=0; j<textLines.length; j++) {
                  	// 62 is nominal number of characters that will fit on one row 
-                    int linesForTextLine = Math.max((int)Math.ceil((double)(textLines[j].length()) / new Double(62)), 1);   
+                    int linesForTextLine = Math.max((int)Math.ceil((double)(textLines[j].length()) / 62d), 1);
         			lines = lines + linesForTextLine;        			
         		}
         	}
@@ -250,9 +251,115 @@ public class InfoTableDialog extends JFrame {
         	totalHeight = totalHeight + rowHeight;
         	table.setRowHeight(i, rowHeight);
         }
-        
+
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                java.util.List<String> urls = getUrls(table, e.getPoint());
+
+                if(urls.isEmpty()) {
+                    // if there are no urls in the current cell, do nothing
+                    return;
+                }
+
+                for(final String u : urls) {
+                    JMenuItem url = new JMenuItem(u);
+                    url.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            popUp.setVisible(false);
+                            try {
+                                Desktop.getDesktop().browse(new URI(u));
+                            } catch(Exception ex) {
+                                JOptionPane.showMessageDialog(InfoTableDialog.this,
+                                        "The underlying operating system could not open " + u +
+                                        "\n\nMore info: " + ex.getMessage(),
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    });
+                    popUp.add(url);
+                }
+
+                JMenuItem cancel = new JMenuItem("cancel");
+                cancel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+                cancel.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        // remove all previous menu items in the
+                        popUp.removeAll();
+                        // and hide the pop-up menu
+                        popUp.setVisible(false);
+                    }
+                });
+
+                popUp.add(cancel);
+
+                popUp.setLocation(MouseInfo.getPointerInfo().getLocation());
+
+                popUp.setVisible(true);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                InfoTableDialog.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+        });
+
+        table.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                InfoTableDialog.this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                java.util.List<String> urls = getUrls(table, e.getPoint());
+                if(!urls.isEmpty()) {
+                    InfoTableDialog.this.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                }
+            }
+        });
+
         super.setSize(new Dimension(750, Math.min(totalHeight, 600)));
         super.setLayout(new BorderLayout(5, 5));
         super.add(new JScrollPane(table), BorderLayout.CENTER);
+    }
+
+    /**
+     * Returns a <code>List</code> with all sub-strings that look like an
+     * url (if it starts with "http://", case insensitively) from the cell
+     * the mouse pointer currently is hovering over (denoted by point
+     * <code>p</code>), or an empty <code>List</code> if there's no such
+     * sub-string.
+     *
+     * @param table the table
+     * @param p     the <code>Point</code> where the mouse pointer is currently
+     *              hovering over
+     * @return      a <code>List</code> with all sub-strings that look like an
+     *              url (if it starts with "http://", case insensitively), or
+     *              an empty <code>List</code> if there's no such sub-string.
+     */
+    private java.util.List<String> getUrls(JTable table, Point p) {
+        java.util.List<String> urls = new ArrayList<String>();
+
+        // get the string over which the mouse pointer is currently hovering
+        int row = table.rowAtPoint(p);
+        int col = table.columnAtPoint(p);
+        String cellValue = String.valueOf(table.getValueAt(row, col));
+
+        if (!cellValue.toLowerCase().contains("http://")) {
+            // if there's no 'http://' in the table-cell, return the empty List
+            return urls;
+        }
+
+        // split the string on its white spaces
+        String[] tokens = cellValue.split("\\s++");
+
+        // add all substring that "look like" an url
+        for (String t : tokens) {
+            if (t.toLowerCase().startsWith("http://")) {
+                urls.add(t);
+            }
+        }
+
+        return urls;
     }
 }
