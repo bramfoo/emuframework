@@ -40,7 +40,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import eu.keep.softwarearchive.SwLanguageList;
-import eu.keep.softwarearchive.pathway.DBRegistry;
+import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
  * H2 database implementation of the EmuPackageDAO interface.
@@ -454,8 +454,8 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<DBRegistry> getRegistries() throws SQLException {
-		List<DBRegistry> regList = new ArrayList<DBRegistry>();
+	public List<RegistryType> getRegistries() throws SQLException {
+		List<RegistryType> regList = new ArrayList<RegistryType>();
 
 		// Retrieve the list of registries from the database
 		PreparedStatement prepSt;
@@ -467,7 +467,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 		// Create list of results
 		resultSet.first();
 		do {
-			DBRegistry reg = new DBRegistry();
+			RegistryType reg = new RegistryType();
 			reg.setRegistryId(resultSet.getInt(1));
 			reg.setName(resultSet.getString(2));
 			reg.setUrl(resultSet.getString(3));
@@ -488,7 +488,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean setRegistries(List<DBRegistry> regList) throws SQLException {
+	public boolean setRegistries(List<RegistryType> regList) throws SQLException {
 		boolean result = true;
 
 		// Loop over each registry in the catalog, inserting it into the
@@ -502,7 +502,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 			pSt = conn.prepareStatement(DELETE_REGISTRY_ENTRIES);
 			pSt.execute();
 
-			for (DBRegistry reg : regList) {
+			for (RegistryType reg : regList) {
 				LOGGER.debug("Attempting to insert registry: " + reg + " into database");
 				pSt = conn.prepareStatement(NEW_REGISTRY_ENTRY);
 				pSt.setLong(1, reg.getRegistryId());
@@ -548,7 +548,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean updateRegistries(List<DBRegistry> regList) throws SQLException {
+	public boolean updateRegistries(List<RegistryType> regList) throws SQLException {
 		boolean result = true;
 
 		// Loop over each registry in the catalog, updating it in the
@@ -557,7 +557,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 
 		try {
 			conn.setAutoCommit(false);
-			for (DBRegistry reg : regList) {
+			for (RegistryType reg : regList) {
 				LOGGER.debug("Attempting to update registry: " + reg + " in database");
 				pSt = conn.prepareStatement(UPDATE_REGISTRY_ENTRY);
 				pSt.setString(1, reg.getName());

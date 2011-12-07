@@ -44,10 +44,8 @@ import org.apache.log4j.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.ws.Holder;
 
 import eu.keep.softwarearchive.pathway.ApplicationType;
-import eu.keep.softwarearchive.pathway.DBRegistry;
 import eu.keep.softwarearchive.pathway.HardwarePlatformType;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;

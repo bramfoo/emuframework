@@ -98,7 +98,7 @@ $header:
 			</xs:complexType>
 		</xs:element>
 
-        <xs:complexType name="DBRegistry">
+        <xs:complexType name="registryType">
 			<xs:all>
 				<xs:element name="name" type="xs:string" minOccurs="0"/>
 				<xs:element name="url" type="xs:string" minOccurs="0"/>

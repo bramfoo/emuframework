@@ -99,7 +99,7 @@ $
             
 	        <xs:complexType name="registryList">
 	      		<xs:sequence>
-	      			<xs:element name="registries" type="pw:DBRegistry" minOccurs="0" maxOccurs="unbounded"/>
+	      			<xs:element name="registries" type="pw:registryType" minOccurs="0" maxOccurs="unbounded"/>
 	      		</xs:sequence>
 	        </xs:complexType>				
             

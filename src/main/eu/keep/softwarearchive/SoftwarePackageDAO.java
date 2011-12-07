@@ -36,7 +36,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import eu.keep.softwarearchive.SwLanguageList;
-import eu.keep.softwarearchive.pathway.DBRegistry;
+import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
  * Interface definition for DAOs for software packages.
@@ -114,21 +114,21 @@ public interface SoftwarePackageDAO {
      * Get all registries from the database
      * @return List<DBRegistry> a list of registries
      */
-    public List<DBRegistry> getRegistries() throws SQLException;
+    public List<RegistryType> getRegistries() throws SQLException;
 
     /**
      * Updates registries in the database. These registries must already exist in the database.
      * @param regList The list of registries to update
      * @return True if successful, false otherwise
      */
-    public boolean updateRegistries(List<DBRegistry> regList) throws SQLException;
+    public boolean updateRegistries(List<RegistryType> regList) throws SQLException;
 
     /**
      * Inserts registries in the database
      * @param regList The list of registries to insert into the database
      * @return True if successful, false otherwise
      */
-    public boolean setRegistries(List<DBRegistry> regList) throws SQLException;
+    public boolean setRegistries(List<RegistryType> regList) throws SQLException;
 
     /**
      * Retrieves the EF fileformat ID and fileformat name from the database given a PCR ID
