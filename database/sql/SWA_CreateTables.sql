@@ -200,14 +200,6 @@ CREATE TABLE registries
   comment VARCHAR2(500)
 );
 
--- Table for CEF file formats
--- NOTE: This is a direct copy from the Sofware Archive database
-CREATE TABLE cef_fileformats
-(
-  fileformat_id VARCHAR2(16) NOT NULL PRIMARY KEY,
-  name VARCHAR2(250) NOT NULL
-);
-
 -- Table for PCR file formats
 CREATE TABLE PCR_fileformats
 (
@@ -221,7 +213,7 @@ CREATE TABLE EF_PCR_fileformats
   PCR_ff_id VARCHAR2(16) NOT NULL,
   EF_ff_id VARCHAR2(16) NOT NULL,
   FOREIGN KEY (PCR_ff_id) REFERENCES PCR_fileformats (fileformat_id),
-  FOREIGN KEY (EF_ff_id) REFERENCES cef_fileformats (fileformat_id)
+  FOREIGN KEY (EF_ff_id) REFERENCES fileformats (fileformat_id)
 );
 
 -- Views
@@ -349,7 +341,7 @@ SELECT ff.fileformat_id as "EF_FORMAT_ID",
 	   ff.name as "EF_FORMAT_NAME", 
 	   pcr_ff.fileformat_id as "PCR_FORMAT_ID", 
 	   pcr_ff.name as "PCR_FORMAT_NAME"
-FROM cef_fileformats ff 
+FROM fileformats ff 
 LEFT OUTER JOIN EF_PCR_fileformats ep_ff
 ON ff.fileformat_id = ep_ff.EF_ff_id LEFT OUTER JOIN PCR_fileformats pcr_ff
 ON ep_ff.pcr_ff_id = pcr_ff.fileformat_id
@@ -358,7 +350,7 @@ SELECT ff.fileformat_id as "EF_FORMAT_ID",
 	   ff.name as "EF_FORMAT_NAME", 
 	   pcr_ff.fileformat_id as "PCR_FORMAT_ID", 
 	   pcr_ff.name as "PCR_FORMAT_NAME"
-FROM cef_fileformats ff 
+FROM fileformats ff 
 RIGHT OUTER JOIN EF_PCR_fileformats ep_ff
 ON ff.fileformat_id = ep_ff.EF_ff_id RIGHT OUTER JOIN PCR_fileformats pcr_ff
 ON ep_ff.pcr_ff_id = pcr_ff.fileformat_id;
