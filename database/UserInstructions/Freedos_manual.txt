@@ -1,0 +1,31 @@
+FreeDOS is a free DOS-compatible operating system for IBM-PC compatible systems. Below is a list of some basic DOS commands:
+
+Command: cd or chdir
+  Change current working directory. Displays the current working directory when used without a path parameter.
+
+Command: cd
+  displays the current working directory on the current drive.
+
+Command: cd directory
+  changes the working directory on the current drive to directory.
+
+Command: chdir e:directory
+  changes the working directory on E: to directory.
+
+Command: cd ..
+  changes the working directory to the parent directory (up one directory level).
+
+Command: cd \
+  changes the working directory to the root (top level) directory of the current drive.
+
+Command: copy
+  Copies files from one location to another. The destination defaults to the current directory. If multiple source files are indicated, the destination must be a directory, or an error will result.
+  Syntax: copy [source\filename] [destination\folder]
+
+Command: del or erase
+  Deletes one or more files. This command is used to delete a particular or more files.
+  Syntax: del filename
+          erase filename
+
+Command: help
+  Gives help about DOS.

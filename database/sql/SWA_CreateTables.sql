@@ -83,6 +83,7 @@ CREATE TABLE opsys
   license VARCHAR2(500),
   language_id VARCHAR2(2),
   reference VARCHAR2(500),
+  user_instructions CLOB,
   FOREIGN KEY (language_id) REFERENCES languages (language_id), 
 );
 

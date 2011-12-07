@@ -55,8 +55,8 @@ INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, r
 -- OpSys table
 -- Contains the name, version and description of each Operating System in the Software Archive
 -- Example: OPS-1000 (ID), FreeDOS (name), 0.9 (version), Open source DOS for x86 (description)
-INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference) VALUES('OPS-1000', 'FreeDOS','0.9','Open source DOS for x86', 'Jim Hall & The FreeDOS team', '3 September 2006', 'GNU GPL with some freeware and shareware licensed utils', 'en', 'http://en.wikipedia.org/wiki/FreeDOS http://www.freedos.org/');
-INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference) VALUES('OPS-1001', 'Damn Small Linux','4.4.10','Versatile mini desktop oriented Linux distribution', 'John Andrews, et al.', 'November 18, 2008', 'GNU General Public License (GPL)', 'en', 'http://www.damnsmalllinux.org');
+INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('OPS-1000', 'FreeDOS','0.9','Open source DOS for x86', 'Jim Hall & The FreeDOS team', '3 September 2006', 'GNU GPL with some freeware and shareware licensed utils', 'en', 'http://en.wikipedia.org/wiki/FreeDOS http://www.freedos.org/', FILE_READ('./database/UserInstructions/Freedos_manual.txt', NULL));
+INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('OPS-1001', 'Damn Small Linux','4.4.10','Versatile mini desktop oriented Linux distribution', 'John Andrews, et al.', 'November 18, 2008', 'GNU General Public License (GPL)', 'en', 'http://www.damnsmalllinux.org', FILE_READ('./database/UserInstructions/Damn_Small_Linux_manual.txt', NULL));
 
 -- (Disk) Images table
 -- Contains the ID, description, image format and platform of the disk images in the database 
