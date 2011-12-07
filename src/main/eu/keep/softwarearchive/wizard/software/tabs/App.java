@@ -1,7 +1,7 @@
-package eu.keep.softwarearchive.wizard.tabs;
+package eu.keep.softwarearchive.wizard.software.tabs;
 
 import eu.keep.gui.util.DBUtil;
-import eu.keep.softwarearchive.wizard.SWAGUI;
+import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
@@ -27,12 +27,12 @@ public class App extends JPanel {
 
     private final String insertFormatApp = "INSERT INTO softwarearchive.fileformats_apps (fileformat_id, app_id) VALUES(?, ?)";
 
-    private final SWAGUI parent;
+    private final SoftwareWizard parent;
 
     public String appID;
     public String appName;
 
-    public App(SWAGUI p) {
+    public App(SoftwareWizard p) {
         parent = p;
         initGUI();
     }

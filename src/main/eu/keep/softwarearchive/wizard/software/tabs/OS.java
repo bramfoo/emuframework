@@ -1,7 +1,7 @@
-package eu.keep.softwarearchive.wizard.tabs;
+package eu.keep.softwarearchive.wizard.software.tabs;
 
 import eu.keep.gui.util.DBUtil;
-import eu.keep.softwarearchive.wizard.SWAGUI;
+import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
@@ -33,12 +33,12 @@ public class OS extends JPanel {
 
     private final String insertAppOS = "INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES(?, ?)";
 
-    private final SWAGUI parent;
+    private final SoftwareWizard parent;
 
     public String osID;
     public String osName;
 
-    public OS(SWAGUI p) {
+    public OS(SoftwareWizard p) {
         parent = p;
         initGUI();
     }

@@ -1,4 +1,4 @@
-package eu.keep.softwarearchive.wizard.tabs;
+package eu.keep.softwarearchive.wizard.software.tabs;
 
 import eu.keep.util.Language;
 

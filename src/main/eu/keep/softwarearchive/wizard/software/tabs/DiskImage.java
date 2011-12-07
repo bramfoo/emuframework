@@ -1,7 +1,7 @@
-package eu.keep.softwarearchive.wizard.tabs;
+package eu.keep.softwarearchive.wizard.software.tabs;
 
 import eu.keep.gui.util.DBUtil;
-import eu.keep.softwarearchive.wizard.SWAGUI;
+import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -27,6 +27,7 @@ public class DiskImage extends JPanel {
     private final String getImageFormats = "SELECT imageformat_id, name FROM softwarearchive.imageformats";
     private final String getPlatforms = "SELECT platform_id, name, description FROM softwarearchive.platforms";
 
+    // TODO remove, just for reference...
     private final String insertImage = "INSERT INTO softwarearchive.images (image_id, description, imageformat_id, platform_id) VALUES(?, ?, ?, ?)";
     private final String insertImageBlob = "INSERT INTO softwarearchive.imageblobs (image_id, image) VALUES(?, FILE_READ(?))";
     private final String insertAppImage = "INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES(?, ?)";
@@ -38,9 +39,9 @@ public class DiskImage extends JPanel {
     // INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1000','IMG-1000')
     // INSERT INTO softwarearchive.opsys_images (opsys_id, image_id) VALUES('OPS-1000','IMG-1000')
 
-    private final SWAGUI parent;
+    private final SoftwareWizard parent;
 
-    public DiskImage(SWAGUI p) {
+    public DiskImage(SoftwareWizard p) {
         parent = p;
         initGUI();
     }

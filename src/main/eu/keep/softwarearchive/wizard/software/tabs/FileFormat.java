@@ -1,10 +1,10 @@
-package eu.keep.softwarearchive.wizard.tabs;
+package eu.keep.softwarearchive.wizard.software.tabs;
 
 import edu.harvard.hul.ois.fits.FitsOutput;
 import eu.keep.characteriser.FitsTool;
 import eu.keep.characteriser.Format;
 import eu.keep.gui.util.DBUtil;
-import eu.keep.softwarearchive.wizard.SWAGUI;
+import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -43,7 +43,7 @@ public class FileFormat extends JPanel {
 
     private final String matchFileFormat = "SELECT fileformat_id FROM softwarearchive.fileformats WHERE name = ?";
 
-    private final SWAGUI parent;
+    private final SoftwareWizard parent;
     private JComboBox formats;
     private JComboBox fitsFormats;
 
@@ -51,7 +51,7 @@ public class FileFormat extends JPanel {
     public String formatName;
     public String formatIDSwa;
 
-    public FileFormat(SWAGUI p) {
+    public FileFormat(SoftwareWizard p) {
         parent = p;
         formatIDCef = null;
         formatName = null;

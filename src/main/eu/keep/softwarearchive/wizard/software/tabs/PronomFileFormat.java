@@ -1,7 +1,7 @@
-package eu.keep.softwarearchive.wizard.tabs;
+package eu.keep.softwarearchive.wizard.software.tabs;
 
 import eu.keep.gui.util.DBUtil;
-import eu.keep.softwarearchive.wizard.SWAGUI;
+import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -30,9 +30,9 @@ public class PronomFileFormat extends JPanel {
     private final String insertPronomFormatQuery = "INSERT INTO engine.PCR_fileformats (fileformat_id, name) VALUES(?, ?)";
     private final String insertEFPronomFormatQuery = "INSERT INTO engine.EF_PCR_fileformats (EF_ff_id, PCR_ff_id) VALUES(?, ?)";
 
-    private final SWAGUI parent;
+    private final SoftwareWizard parent;
 
-    public PronomFileFormat(SWAGUI p) {
+    public PronomFileFormat(SoftwareWizard p) {
         parent = p;
         initGUI();
     }

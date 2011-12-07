@@ -28,14 +28,14 @@
  *   KEEP <www.keep-project.eu>
  * Project Title: Core Emulation Framework (Core EF)$
  */
-package eu.keep.softwarearchive.wizard;
+package eu.keep.softwarearchive.wizard.software;
 
-import eu.keep.softwarearchive.wizard.tabs.*;
+import eu.keep.softwarearchive.wizard.software.tabs.*;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SWAGUI extends JFrame {
+public class SoftwareWizard extends JFrame {
 
     private JLabel logLabel;
     private JTabbedPane tabs;
@@ -46,7 +46,7 @@ public class SWAGUI extends JFrame {
     private OS os;
     private DiskImage diskImage;
 
-    public SWAGUI() {
+    public SoftwareWizard() {
         super("Add software to the SWA");
 
         super.setDefaultCloseOperation(EXIT_ON_CLOSE); // TODO dispose instead
@@ -128,7 +128,7 @@ public class SWAGUI extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SWAGUI();
+                new SoftwareWizard();
             }
         });
     }
