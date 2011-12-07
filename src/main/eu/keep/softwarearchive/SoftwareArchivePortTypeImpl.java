@@ -38,6 +38,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -46,6 +47,7 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 
 import eu.keep.softwarearchive.pathway.ApplicationType;
+import eu.keep.softwarearchive.pathway.EfFormat;
 import eu.keep.softwarearchive.pathway.HardwarePlatformType;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
@@ -368,11 +370,16 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     	LOG.info("Retrieving EF fileformat ID and name from the database for PCR Format ID " + 
     			pcrFormatId + ", using view " + viewName);
     	
-    	EFFormatData formatData = new EFFormatData();
+    	EFFormatData efFormatData = new EFFormatData();
     	
     	try {
-    		List<String> data = spDAO.getFormatDataOnID(pcrFormatId, viewName);
-    		formatData.getDataElements().addAll(data);
+    		Map<String, String> formatData = spDAO.getFormatDataOnID(pcrFormatId, viewName);
+    		for (Map.Entry<String, String> formatDataEntry : formatData.entrySet()) {
+    			EfFormat efFormat = new EfFormat();
+    			efFormat.setId(formatDataEntry.getKey());
+    			efFormat.setName(formatDataEntry.getValue());
+    			efFormatData.getEfFormat().add(efFormat);
+    		}
         }
         catch (SQLException e) {
         	LOG.error("Cannot retrieve EF fileformat ID and name from the database for PCR Format ID " + 
@@ -381,7 +388,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     			pcrFormatId + ", using view " + viewName + ": " + e);
         }
     	
-    	return formatData;
+    	return efFormatData;
 	}
 
     /**

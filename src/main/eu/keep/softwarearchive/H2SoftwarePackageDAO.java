@@ -34,7 +34,9 @@ package eu.keep.softwarearchive;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
@@ -605,8 +607,8 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<String> getFormatDataOnID(String id, String view) throws SQLException {
-		List<String> data = new ArrayList<String>();
+	public Map<String, String> getFormatDataOnID(String id, String view) throws SQLException {
+		Map<String, String> data = new HashMap<String, String>();
 
 		// Retrieve the ID, name from the database
 		PreparedStatement prepSt;
@@ -628,8 +630,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 		}
 		else {
 			do {
-				data.add(resultSet.getString("EF_FORMAT_ID"));
-				data.add(resultSet.getString("EF_FORMAT_NAME"));
+				data.put(resultSet.getString("EF_FORMAT_ID"), resultSet.getString("EF_FORMAT_NAME"));
 			}
 			while (resultSet.next());
 		}

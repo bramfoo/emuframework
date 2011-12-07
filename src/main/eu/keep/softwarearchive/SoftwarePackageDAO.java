@@ -34,6 +34,7 @@ package eu.keep.softwarearchive;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.RegistryType;
@@ -134,8 +135,8 @@ public interface SoftwarePackageDAO {
      * Retrieves the EF fileformat ID and fileformat name from the database given a PCR ID
      * @param id Unique Identifier
      * @param view View in database containing translations
-     * @return List of Strings (ID, name) of the corresponding EF fileformat ID and name
+     * @return Map of (ID, name)-pairs of the corresponding EF fileformats
      * @throws SQLException
      */
-	public List<String> getFormatDataOnID(String id, String view) throws SQLException;
+	public Map<String, String> getFormatDataOnID(String id, String view) throws SQLException;
 }

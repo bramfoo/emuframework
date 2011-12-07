@@ -110,5 +110,12 @@ $header:
 			</xs:all>
 			<xs:attribute name="registryId" type="xs:int" use="required"/>
         </xs:complexType>
-                        
+        
+        <xs:complexType name="efFormat">
+			<xs:all>
+				<xs:element name="name" type="xs:string"/>
+				<xs:element name="id" type="xs:string"/>
+			</xs:all>        	
+        </xs:complexType>
+                     
 </xs:schema>

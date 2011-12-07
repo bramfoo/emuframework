@@ -105,7 +105,7 @@ $
             
             <xs:complexType name="EFFormatData">
             	<xs:sequence>
-            		<xs:element name="dataElements" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+            		<xs:element name="efFormat" type="pw:efFormat" minOccurs="0" maxOccurs="unbounded"/>
             	</xs:sequence>
             </xs:complexType>
             
