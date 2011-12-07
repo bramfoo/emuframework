@@ -59,7 +59,7 @@ CREATE TABLE emulators
   package_type VARCHAR2(250),
   package_version VARCHAR2(250),
   package BLOB,
-  user_instructions VARCHAR2(2000),
+  user_instructions CLOB,
   FOREIGN KEY (language_id) REFERENCES languages (language_id)
 );
 
