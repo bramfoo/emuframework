@@ -100,7 +100,7 @@ public class Kernel implements CoreEngineModel {
         	throw new IOException("Failed to initialise Kernel properly");
 
         // Both the properties and db connection are working so no errors expected here
-        characteriser = new Characteriser(localDBConnection);
+        characteriser = new Characteriser(props);
         controller = new Controller();
         downloader = createDownloader(props, localDBConnection);
         
@@ -1060,10 +1060,8 @@ public class Kernel implements CoreEngineModel {
     @Override
     public List<DBRegistry> setRegistries(List<DBRegistry> listReg) throws IOException {
 
-        boolean result = true;
         List<DBRegistry> regList = new ArrayList<DBRegistry>();
-
-        result &= characteriser.setRegistries(listReg);
+        characteriser.setRegistries(listReg);
         regList = characteriser.getRegistries();
 
         return new ArrayList<DBRegistry>(regList);

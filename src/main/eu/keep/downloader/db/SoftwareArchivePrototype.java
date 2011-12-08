@@ -33,6 +33,7 @@ package eu.keep.downloader.db;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
@@ -53,11 +54,15 @@ import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 
+import eu.keep.softwarearchive.EFFormatData;
 import eu.keep.softwarearchive.PathwayList;
+import eu.keep.softwarearchive.RegistryList;
 import eu.keep.softwarearchive.SoftwareArchivePortType;
 import eu.keep.softwarearchive.SoftwareArchiveService;
-import eu.keep.softwarearchive.pathway.SwLanguageList;
+import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.EfFormat;
 import eu.keep.softwarearchive.pathway.Pathway;
+import eu.keep.softwarearchive.pathway.RegistryType;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 import eu.keep.downloader.SoftwareArchive;
@@ -141,26 +146,9 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
              logger.debug("Retrieved list of size: " + pwl.getPathway().size());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                logger.warn("Error retrieving software package list by OS/app: " + e.toString());
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-            	logger.warn("Error retrieving software package list by OS/app: " + e.toString());
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-            {
-            	logger.warn("Error retrieving software package list by OS/app: " + e.toString());
-                throw e;
-            }
+            processWebServiceException(e, "Error retrieving pathway by file format: ");       	
         }
-        finally
-        {
+        finally {
             // Stop the timer
             t.cancel();
         }
@@ -186,26 +174,9 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
              logger.debug("Retrieved list of size: " + swl.getSoftwarePackage().size());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                logger.warn("Error retrieving software package list by OS/app: " + e.toString());
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-            	logger.warn("Error retrieving software package list by OS/app: " + e.toString());
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-            {
-            	logger.warn("Error retrieving software package list by OS/app: " + e.toString());
-                throw e;
-            }
+            processWebServiceException(e, "Error retrieving software package list by pathway: ");       	
         }
-        finally
-        {
+        finally {
             // Stop the timer
             t.cancel();
         }
@@ -220,7 +191,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
     @Override
     public InputStream downloadSoftware(String imageID) throws IOException, WebServiceException {
         logger.info("Downloading software file for ID: " + imageID + "...");
-        DataHandler swHandler;
+        DataHandler swHandler = null;
         
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, ":::");
@@ -230,26 +201,9 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
             logger.debug("Got handler to software img ID: " + imageID);
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                logger.warn("Error retrieving software package file: " + e.toString());
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                logger.warn("Error retrieving software package file: " + e.toString());
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-            {
-                logger.warn("Error retrieving software package file: " + e.toString());
-                throw e;
-            }
+            processWebServiceException(e, "Error retrieving software package file: ");       	
         }
-        finally
-        {
+        finally {
             // Stop the timer
             t.cancel();
         }
@@ -265,7 +219,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
     @Override
     public String getSoftwareFormat(String imageID) throws ConnectException, SocketTimeoutException, WebServiceException {
         logger.info("Retrieving format for sw package " + imageID + "...");
-        String format;
+        String format = null;
         
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
@@ -276,26 +230,9 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
             logger.debug("Format for sw package " + imageID + " is: " + format);
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                logger.warn("Error retrieving software format: " + e.toString());
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                logger.warn("Error retrieving software format: " + e.toString());
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-            {
-            	logger.warn("Error retrieving software format: " + e.toString());
-                throw e;
-            }
+            processWebServiceException(e, "Error retrieving software format: ");       	
         }
-        finally
-        {
+        finally {
             // Stop the timer
             t.cancel();
         }
@@ -311,7 +248,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
     public List<SoftwarePackage> getSoftwarePackageList() throws ConnectException, SocketTimeoutException, WebServiceException {
         logger.info("Retrieving sw package list...");
         String dummy = "0"; // dummy input argument
-        SoftwarePackageList swPackList;
+        SoftwarePackageList swPackList = null;
 
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
@@ -321,26 +258,9 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
             logger.debug("Retrieved sw package list of size " + swPackList.getSoftwarePackage().size());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                logger.warn("Error retrieving software package list: " + e.toString());
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                logger.warn("Error retrieving software package list: " + e.toString());
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-            {
-                logger.warn("Error retrieving software package list: " + e.toString());
-                throw e;
-            }
+            processWebServiceException(e, "Error retrieving software package list: ");
         }
-        finally
-        {
+        finally {
             // Stop the timer
             t.cancel();
         }
@@ -355,7 +275,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
     @Override
     public SoftwarePackage getSoftwarePackage(String imageID) throws ConnectException, SocketTimeoutException, WebServiceException {
         logger.info("Retrieving sw package for ID " + imageID + "...");
-        SoftwarePackage swPack;
+        SoftwarePackage swPack = null;
 
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
@@ -365,23 +285,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
             logger.debug("Retrieved sw package: " + swPack.getDescription());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                logger.warn("Error retrieving software package: " + e.toString());
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                logger.warn("Error retrieving software package: " + e.toString());
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-            {
-                logger.warn("Error retrieving software package: " + e.toString());
-                throw e;
-            }
+            processWebServiceException(e, "Error retrieving software package: ");
         }
         finally
         {
@@ -396,6 +300,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
     /**
      * {@inheritDoc}
      */
+	@Override
 	public SwLanguageList getSoftwareLanguages() throws ConnectException, SocketTimeoutException, WebServiceException {
 
 		SwLanguageList languageList = null;
@@ -409,18 +314,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
             logger.debug("Downloaded " + languageList.getLanguageIds().size() + " language IDs referenced in Software Archive.");
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+			processWebServiceException(e, "Error downloading languages from the SWA database: ");		
         }
         finally
         {
@@ -430,4 +324,143 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
 
         return languageList;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<DBRegistry> getRegistries() throws ConnectException, SocketTimeoutException, WebServiceException {
+
+		// Request a timer to display progress
+		Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+		List<DBRegistry> dbRegistries = new ArrayList<DBRegistry>();
+
+		// Retrieve the available registries from the SWA using the WS interface
+		try {
+			int dummy = 0;
+			RegistryList registries = port.getRegistries(dummy);
+			logger.debug("Retrieved Registries list of size " + registries.getRegistries().size());
+
+			for (RegistryType registry : registries.getRegistries()) {
+				DBRegistry dbRegistry = new DBRegistry(registry);
+				dbRegistries.add(dbRegistry);
+			}
+		}
+		catch (WebServiceException e) {
+			processWebServiceException(e, "Error retrieving registries from the SWA database: ");		
+		}
+		finally {
+			// Stop the timer
+			t.cancel();
+		}
+		
+		return dbRegistries;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public boolean updateRegistries(List<DBRegistry> registries) throws ConnectException, SocketTimeoutException, WebServiceException {
+
+		// Request a timer to display progress
+		Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+		RegistryList registryList = new RegistryList();
+		registryList.getRegistries().addAll(registries);
+		boolean success = false;
+				
+		// Update the registries in the SWA using the WS interface
+		try {
+			success = port.updateRegistries(registryList);
+			logger.debug("Updated registries in the database.");
+		}
+		catch (WebServiceException e) {
+			processWebServiceException(e, "Error Updating registries in the SWA database: ");		
+		}
+		finally {
+			// Stop the timer
+			t.cancel();
+		}
+		
+		return success;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public boolean setRegistries(List<DBRegistry> registries) throws ConnectException, SocketTimeoutException, WebServiceException {
+
+		// Request a timer to display progress
+		Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+		RegistryList registryList = new RegistryList();
+		registryList.getRegistries().addAll(registries);
+		boolean success = false;
+				
+		// Insert the registries in the SWA using the WS interface
+		try {
+			success = port.setRegistries(registryList);
+			logger.debug("Inserted registries in the database.");
+		}
+		catch (WebServiceException e) {
+			processWebServiceException(e, "Error inserting registries in the SWA database: ");		
+		}
+		finally {
+			// Stop the timer
+			t.cancel();
+		}
+		
+		return success;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+	public List<EfFormat> getFormatDataOnID(String id, String view)
+			throws ConnectException, SocketTimeoutException, WebServiceException {
+
+		// Request a timer to display progress
+		Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+					
+		// Retrieve EF fileformat ID and name from the SWA database
+		List<EfFormat> efFormats = new ArrayList<EfFormat>();
+		try {
+			EFFormatData formatData = port.getFormatDataOnId(id, view);
+			efFormats.addAll(formatData.getEfFormat());
+			logger.debug("Retrieved EF fileformat ID and name from the SWA database given PCR ID " + id);
+		}
+		catch (WebServiceException e) {
+			processWebServiceException(e, "Error retrieving EF fileformat ID and name from the SWA database: ");		
+		}
+		finally {
+			// Stop the timer
+			t.cancel();
+		}
+		
+		return efFormats;
+	}
+
+
+	private void processWebServiceException(WebServiceException e, String message)
+			throws SocketTimeoutException, ConnectException, WebServiceException {
+		if (e.getCause() instanceof SocketTimeoutException) {
+		    logger.warn(message + e.toString());
+		    SocketTimeoutException se = (SocketTimeoutException) e.getCause();
+		    throw se;
+		}
+		else if (e.getCause() instanceof ConnectException) {
+		    logger.warn(message + e.toString());
+		    ConnectException ce = (ConnectException) e.getCause();
+		    throw ce;
+		}
+		else {
+		    logger.warn(message + e.toString());
+		    throw e;
+		}
+	}
+
 }

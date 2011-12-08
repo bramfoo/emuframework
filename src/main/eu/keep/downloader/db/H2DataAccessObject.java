@@ -35,9 +35,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -54,33 +52,15 @@ public class H2DataAccessObject implements DataAccessObject {
     private Connection          conn;
 
     // Registry table
-    private static final String REGISTRY_TABLE_NAME   = "REGISTRIES";
-	private static final String EMUWHITELIST_TABLE_NAME = "EMULATOR_WHITELIST";
-	private static final String EF_PCR_FF_VIEW = "EF_PCR_FORMATS";
+	private static final String EMUWHITELIST_TABLE_NAME   = "EMULATOR_WHITELIST";
 	
-
-    private static final String NEW_REGISTRY_ENTRY    = "INSERT INTO "
-                                                              + REGISTRY_TABLE_NAME
-                                                              + " (registry_id, name, url, class_name, translation_view, enabled, description, comment) "
-                                                              + " VALUES (?,?,?,?,?,?,?,?)";
-    private static final String GET_REGISTRY_ENTRIES  = "SELECT * FROM " + REGISTRY_TABLE_NAME;
-    private static final String UPDATE_REGISTRY_ENTRY    = "UPDATE "
-        + REGISTRY_TABLE_NAME
-        + " SET name = ?, url = ?, class_name = ?, translation_view = ?, enabled = ?, description = ?, comment = ?"
-        + " WHERE registry_id = ?";
-    private static final String DELETE_REGISTRY_ENTRIES  = "DELETE FROM " + REGISTRY_TABLE_NAME;
-
-    private static final String NEW_EMUWHITELIST_ENTRY    = "INSERT INTO "
-        + EMUWHITELIST_TABLE_NAME
-        + " (emulator_id, emulator_descr) "
-        + " VALUES (?, ?)";
+    private static final String NEW_EMUWHITELIST_ENTRY    = "INSERT INTO " + EMUWHITELIST_TABLE_NAME + 
+    													    " (emulator_id, emulator_descr) " + 
+    													    " VALUES (?, ?)";
     private static final String GET_EMUWHITELIST_ENTRIES  = "SELECT * FROM " + EMUWHITELIST_TABLE_NAME;
-    private static final String DELETE_EMUWHITELIST_ENTRY  = "DELETE FROM "
-    	+ EMUWHITELIST_TABLE_NAME
-    	+ " WHERE emulator_id = ?";
+    private static final String DELETE_EMUWHITELIST_ENTRY = "DELETE FROM " + EMUWHITELIST_TABLE_NAME + 
+    														" WHERE emulator_id = ?";
 
-    private static final String GET_FF_ON_PCRID  = "SELECT ef_format_id, ef_format_name FROM " + EF_PCR_FF_VIEW
-    	+ "	WHERE pcr_format_id=?";
     
     /**
      * Constructor
@@ -88,155 +68,6 @@ public class H2DataAccessObject implements DataAccessObject {
      */
     public H2DataAccessObject(Connection conn) {
         this.conn = conn;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-    public List<DBRegistry> getRegistries() throws SQLException {
-        List<DBRegistry> regList = new ArrayList<DBRegistry>();
-
-        // Retrieve the list of registries from the database
-        PreparedStatement prepSt;
-        ResultSet resultSet;
-
-        try {
-            prepSt = conn.prepareStatement(GET_REGISTRY_ENTRIES);
-            resultSet = prepSt.executeQuery();
-
-            // Create list of results
-            resultSet.first();
-            do {
-                DBRegistry reg = new DBRegistry();
-                reg.setRegistryID(resultSet.getInt(1));
-                reg.setName(resultSet.getString(2));
-                reg.setUrl(resultSet.getString(3));
-                reg.setClassName(resultSet.getString(4));
-                reg.setTranslationView(resultSet.getString(5));
-                reg.setEnabled(resultSet.getBoolean(6));
-                reg.setDescription(resultSet.getString(7));
-                reg.setComment(resultSet.getString(8));
-                regList.add(reg);
-            }
-            while (resultSet.next());
-        }
-        catch (SQLException e) {
-            logger.error("Cannot get registry values from database: " + e.toString());
-            throw e;
-        }
-
-        // Return the list
-        return regList;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean setRegistries(List<DBRegistry> regList) throws SQLException {
-        boolean result = true;
-
-        // Loop over each registry in the catalog, inserting it into the
-        // database
-        PreparedStatement pSt;
-
-        try {
-            conn.setAutoCommit(false);
-            
-            // Delete the existing registries
-            pSt = conn.prepareStatement(DELETE_REGISTRY_ENTRIES);
-            pSt.execute();
-                        
-            for (DBRegistry reg : regList) {
-                logger.debug("Attempting to insert registry: " + reg + " into database");
-                pSt = conn.prepareStatement(NEW_REGISTRY_ENTRY);
-                pSt.setLong(1, reg.getRegistryID());
-                pSt.setString(2, reg.getName());
-                pSt.setString(3, reg.getUrl());
-                pSt.setString(4, reg.getClassName());
-                pSt.setString(5, reg.getTranslationView());
-                pSt.setBoolean(6, reg.isEnabled());
-                pSt.setString(7, reg.getDescription());
-                pSt.setString(8, reg.getComment());
-                pSt.execute();
-                result &= pSt.getUpdateCount() > 0 ? true : false;
-            }
-            conn.commit();
-            logger.debug("Registries committed");
-        }
-        catch (SQLException e) {
-            logger.warn("Cannot update registries: " + e.toString());
-            try {
-                conn.rollback();
-            }
-            catch (SQLException e2)
-            {
-                logger.fatal("Rollback failed: " + e2.toString());
-                throw e2;
-            }
-            logger.error("Cannot get registry values from database: " + e.toString());
-            throw e;
-        }
-        finally {
-            try {
-                conn.setAutoCommit(false);
-            }
-            catch (SQLException e)
-            {
-                logger.fatal("Cannot set autocommit: " + e.toString());
-                throw e;
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-    public boolean updateRegistries(List<DBRegistry> regList) throws SQLException {
-        boolean result = true;
-
-        // Loop over each registry in the catalog, updating it in the
-        // database
-        PreparedStatement pSt;
-
-        try {
-            conn.setAutoCommit(false);
-            for (DBRegistry reg : regList) {
-                logger.debug("Attempting to update registry: " + reg + " into database");
-                pSt = conn.prepareStatement(UPDATE_REGISTRY_ENTRY);
-                pSt.setString(1, reg.getName());
-                pSt.setString(2, reg.getUrl());
-                pSt.setString(3, reg.getClassName());
-                pSt.setString(4, reg.getTranslationView());
-                pSt.setBoolean(5, reg.isEnabled());
-                pSt.setString(6, reg.getDescription());
-                pSt.setString(7, reg.getComment());
-                pSt.setLong(8, reg.getRegistryID());
-                pSt.execute();
-                result &= pSt.getUpdateCount() > 0 ? true : false;
-            }
-            conn.commit();
-            logger.debug("Registries committed");
-        }
-        catch (SQLException e) {
-            logger.warn("Cannot update registries: " + e.toString());
-            try {
-                conn.rollback();
-            }
-            catch (SQLException e2)
-            {
-                logger.fatal("Rollback failed: " + e2.toString());
-                throw e2;
-
-            }
-            logger.error("Cannot get registry values from database: " + e.toString());
-            throw e;
-        }
-
-        return result;
     }
 
     /**
@@ -366,46 +197,4 @@ public class H2DataAccessObject implements DataAccessObject {
         return emuList;
 	}
 	
-	/**
-     * {@inheritDoc}
-     */
-	@Override
-	public List<String> getFormatDataOnID(String id, String view) throws SQLException {
-        List<String> data = new ArrayList<String>();
-
-        // Retrieve the ID, name from the database
-        PreparedStatement prepSt;
-        ResultSet resultSet;
-
-        try {
-        	if (view.equalsIgnoreCase("EF_PCR_FORMATS"))
-        		prepSt = conn.prepareStatement(GET_FF_ON_PCRID); // Only supported view
-        	else
-        		return data;
-            prepSt.setString(1, id);
-            resultSet = prepSt.executeQuery();
-
-            // Create list of results
-            if (!resultSet.first())
-            	{
-            	logger.debug("PCR ID not found in database");
-            	return data;
-            	}
-            else
-            {
-	            do {
-	            	data.add(resultSet.getString("EF_FORMAT_ID"));
-	            	data.add(resultSet.getString("EF_FORMAT_NAME"));
-	            }
-	            while (resultSet.next());
-            }
-        }
-        catch (SQLException e) {
-            logger.error("Cannot get EF values from database: " + e.toString());
-            throw e;
-        }
-
-        // Return the list
-        return data;
-	}
 }

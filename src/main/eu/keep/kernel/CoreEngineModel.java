@@ -40,9 +40,7 @@ import java.util.Set;
 
 import eu.keep.characteriser.Format;
 import eu.keep.downloader.db.DBRegistry;
-import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
-import eu.keep.softwarearchive.pathway.SwLanguageList;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.Language;

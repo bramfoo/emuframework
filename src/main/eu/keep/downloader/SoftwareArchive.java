@@ -30,7 +30,9 @@
 */
 package eu.keep.downloader;
 
-import eu.keep.softwarearchive.pathway.SwLanguageList;
+import eu.keep.downloader.db.DBRegistry;
+import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.EfFormat;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.xml.ws.WebServiceException;
@@ -123,4 +126,33 @@ public interface SoftwareArchive {
      */
     public abstract SwLanguageList getSoftwareLanguages() throws ConnectException, SocketTimeoutException, WebServiceException;
     
+    /**
+     * Get all registries from the database
+     * @return List<DBRegistry> a list of registries
+     */
+    public List<DBRegistry> getRegistries() throws ConnectException, SocketTimeoutException, WebServiceException;
+
+    /**
+     * Updates registries in the database. These registries must already exist in the database.
+     * @param registries The list of registries to update
+     * @return True if successful, false otherwise
+     */
+    public boolean updateRegistries(List<DBRegistry> registries) throws ConnectException, SocketTimeoutException, WebServiceException;
+
+    /**
+     * Inserts registries in the database
+     * @param registries The list of registries to insert into the database
+     * @return True if successful, false otherwise
+     */
+    public boolean setRegistries(List<DBRegistry> registries) throws ConnectException, SocketTimeoutException, WebServiceException;
+
+    /**
+     * Retrieves the EF fileformat ID and fileformat name from the database given a PCR ID
+     * @param id Unique Identifier
+     * @param view View in database containing translations
+     * @return List of EfFormat objects, containing the corresponding EF fileformat IDs and names
+     * @throws SQLException
+     */
+	public List<EfFormat> getFormatDataOnID(String id, String view) throws ConnectException, SocketTimeoutException, WebServiceException;
+
 }

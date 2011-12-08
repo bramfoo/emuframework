@@ -33,29 +33,32 @@ package eu.keep.characteriser;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.Source;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import edu.harvard.hul.ois.fits.FitsOutput;
 import edu.harvard.hul.ois.fits.exceptions.FitsException;
 import eu.keep.characteriser.registry.Registry;
-import eu.keep.downloader.DataAccessObject;
+import eu.keep.downloader.SoftwareArchive;
 import eu.keep.downloader.db.DBRegistry;
-import eu.keep.downloader.db.H2DataAccessObject;
+import eu.keep.downloader.db.SoftwareArchivePrototype;
 import eu.keep.softwarearchive.pathway.ApplicationType;
+import eu.keep.softwarearchive.pathway.EfFormat;
 import eu.keep.softwarearchive.pathway.HardwarePlatformType;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
@@ -74,52 +77,61 @@ import eu.keep.util.XMLUtilities;
 public class Characteriser {
 
     private static final Logger logger = Logger.getLogger(Characteriser.class.getName());
-    private DataAccessObject         dao;
     private Map<File, FitsOutput> fitsCache;		// Cache of FITS results (optimisation)
     private FitsTool fitsTool;
+    private SoftwareArchive softwareArchive;
     
     private static final String fitsHome = "eu/keep/resources/fits";
 
     /**
      * Constructor
-     * @param conn Connection to the local database
+     * @param props Properties (from user.properties) specifying the URL for the SWA webservice server.
      * @throws IOException If FITS connection cannot be set up properly
      */
-    public Characteriser(Connection conn) throws IOException {
-        dao = new H2DataAccessObject(conn);
-        fitsCache = new HashMap<File, FitsOutput>();
+    public Characteriser(Properties props) throws IOException {
+    	fitsCache = new HashMap<File, FitsOutput>();
 
-        String fitsHomePath = "";
-        URL url = null;
-        logger.warn("Attempting to read FITShome from file...");
-		try {
-			File fitsLoc = new File(fitsHome);
-			logger.debug("Using FITShome file location: " + fitsLoc);
-			if (fitsLoc.exists())
-				url = fitsLoc.toURI().toURL();
-		}
-		catch (MalformedURLException me)
-		{
-			logger.debug("Invalid URL created for FITShome (file): " + me);
-		}
-        // If it's not found, try as resource
-        if (url == null) {
-                logger.info("FITShome not found in file, attempting to read as resource...");
-                url = this.getClass().getClassLoader().getResource(fitsHome);
-        	}
-        if (url == null)
-        {
-        	logger.warn("No valid FITS home file found (as resource or file)");
-        	throw new IOException("No valid FITS home file found (as resource or file)");
-        }
-        try {
-        	logger.info("FITShome found as url: " + url.toString());
-            fitsHomePath = url.toURI().getRawPath().replaceAll("%20"," ");
-        } catch (URISyntaxException e) {
-            throw new IOException("Cannot read resources directory: " + fitsHomePath);
-        }
-        fitsTool = new FitsTool(fitsHomePath);
-        logger.info("FITS home succesfully set");
+    	// Get FITShome url
+    	URL url = null;
+    	logger.info("Attempting to read FITShome from file...");
+    	try {
+    		File fitsLoc = new File(fitsHome);
+    		logger.debug("Using FITShome file location: " + fitsLoc);
+    		if (fitsLoc.exists()) {
+    			url = fitsLoc.toURI().toURL();
+    		}
+    	}
+    	catch (MalformedURLException me) {
+    		logger.debug("Invalid URL created for FITShome (file): " + me);
+    	}    	
+    	// If it's not found, try as resource
+    	if (url == null) {
+    		logger.info("FITShome not found in file, attempting to read as resource...");
+    		url = this.getClass().getClassLoader().getResource(fitsHome);
+    	}    	
+    	// If still not found, throw exception
+    	if (url == null) {
+    		logger.warn("No valid FITS home file found (as resource or file)");
+    		throw new IOException("No valid FITS home file found (as resource or file)");
+    	}
+    	
+    	// get the FITShome path, and start FITS
+    	String fitsHomePath = "";
+    	try {
+    		logger.info("FITShome found as url: " + url.toString());
+    		fitsHomePath = url.toURI().getRawPath().replaceAll("%20"," ");
+    	} catch (URISyntaxException e) {
+    		throw new IOException("Cannot read resources directory: " + fitsHomePath);
+    	}
+    	fitsTool = new FitsTool(fitsHomePath);
+    	logger.info("FITS home succesfully set");
+    	
+    	// Create a webservice client to communicate with the SWA
+    	softwareArchive = createSWA(props); 
+    }
+
+    protected SoftwareArchive createSWA(Properties props) {
+    	return new SoftwareArchivePrototype(props);
     }
 
     /**
@@ -173,26 +185,28 @@ public class Characteriser {
      * @param databaseView name of view to use to translate the IDs 
      * @return List of Pathways using EF names and IDs
      */
-    private List<Pathway> translatePathways(List<Pathway> foreignPathways, String databaseView) {
+    private List<Pathway> translatePathways(List<Pathway> foreignPathways, String databaseView) 
+    		throws IOException {
     	
     	List<Pathway> localPathways = new ArrayList<Pathway>();
     	
     	logger.info("Translating " + foreignPathways.size() + " pathways to EF IDs/names...");
-    	for (Pathway pathway : foreignPathways)
-    	{
+    	for (Pathway pathway : foreignPathways) {
     		Pathway pw = new Pathway();
     		ObjectFormatType objF = new ObjectFormatType();
-
+    		
 			try {
-	    		List<String> formatData;
-				formatData = dao.getFormatDataOnID(pathway.getObjectFormat().getId(), databaseView);
+	    		List<EfFormat> formatData;
+				formatData = softwareArchive.getFormatDataOnID(pathway.getObjectFormat().getId(), databaseView);
 				if (!formatData.isEmpty()) {
-					objF.setId(formatData.get(0));
-		    		objF.setName(formatData.get(1));
-		    		objF.setDescription(""); // Not in database
+					EfFormat format = formatData.get(0); // Take the first returned format					
+					objF.setId(format.getId());
+		    		objF.setName(format.getName());
+		    		objF.setDescription(""); // Not returned by webservice
 				}
-			} catch (SQLException e) {
-				logger.error("Database error while translating file format: " + e.toString());
+			} 
+			catch (Exception e) {
+				processSWAExceptions(e, "retrieve EF fileformat information", false);
 			}
 
 			// Only file formats are currently supported 
@@ -298,7 +312,7 @@ public class Characteriser {
 	        	FitsOutput fitsOut = fitsTool.examine(file);
 	            // Cache the results for fast retrieval if operation is repeated
 	            // Ensure hashmap size doesn't get out of hand
-	            if (fitsCache.size() > 100);	// Randomly selected number
+	            if (fitsCache.size() > 100)	// Randomly selected number
 	            {
 	            	logger.debug("Limiting FITS cache size (currently " + fitsCache.size() + "); clearing cache");
 	            	fitsCache.clear();
@@ -327,8 +341,8 @@ public class Characteriser {
     public List<Pathway> generatePathway(Format format) throws IOException {
 
         // sanity checks
-        if(dao == null) {
-            throw new IllegalStateException("RegistryDAO not set");
+        if(softwareArchive == null) {
+            throw new IllegalStateException("SoftwareArchive not set");
         }
 
         List<Pathway> pathList = new ArrayList<Pathway>();
@@ -338,11 +352,12 @@ public class Characteriser {
         // implementation of Registry
         List<DBRegistry> regList = new ArrayList<DBRegistry>();
         try {
-            regList.addAll(dao.getRegistries());
-        }
-        catch (SQLException e) {
-            throw new IOException("Database SQL error " + e.getErrorCode() + " " + e.getSQLState());
-        }
+            regList.addAll(softwareArchive.getRegistries());
+            logger.info("Retrieved " + regList.size() + "registries from SWA");
+		} 
+        catch (Exception e) {
+			processSWAExceptions(e, "retrieve the list of Registries", true);
+		}
 
         for (DBRegistry reg : regList) {
             if (reg.isEnabled()) {
@@ -362,11 +377,12 @@ public class Characteriser {
      */
     public List<DBRegistry> getRegistries() throws IOException  {
         try {
-            return dao.getRegistries();
-        }
-        catch (SQLException e) {
-            throw new IOException("Database SQL error " + e.getErrorCode() + " " + e.getSQLState());
-        }
+            return softwareArchive.getRegistries();
+		} 
+        catch (Exception e) {
+			processSWAExceptions(e, "retrieve the list of Registries", true);
+		}
+		return null;
     }
 
     /**
@@ -377,11 +393,12 @@ public class Characteriser {
      */
     public boolean setRegistries(List<DBRegistry> regList) throws IOException {
         try {
-            return dao.setRegistries(regList);
+            return softwareArchive.setRegistries(regList);
         }
-        catch (SQLException e) {
-            throw new IOException("Database SQL error " + e.getErrorCode() + " " + e.getSQLState());
-        }
+        catch (Exception e) {
+			processSWAExceptions(e, "insert a new list of Registries", true);
+		}
+		return false;
     }
     
     /**
@@ -420,4 +437,29 @@ public class Characteriser {
 
         return pathway;
     }
+
+    /**
+     * Process exceptions that can be thrown during a call to the SWA webservice
+     * @param e the exception that was thrown 
+     * @param rethrow true to rethrow the exception as a IOException, false to only log an error message.
+     * @throws IOException
+     */
+	private void processSWAExceptions(Exception e, String detailedMessage, boolean rethrow) throws IOException {
+		String message = "";
+		if (e instanceof ConnectException) {
+			message = "Cannot connect to software archive to " + detailedMessage + ": ";					
+		}
+		else if (e instanceof SocketTimeoutException) {
+			message = "Connection to software archive to " + detailedMessage + " timed out: ";					
+		}
+		else {
+			message = "Connection to software archive to " + detailedMessage + " failed (unknown error): ";					
+		}
+		logger.error(message + ExceptionUtils.getStackTrace(e));
+		
+		if (rethrow) {
+			throw new IOException(message, e);
+		}
+	}
+	
 }

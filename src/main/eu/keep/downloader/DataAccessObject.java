@@ -32,36 +32,13 @@
 package eu.keep.downloader;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
-
-import eu.keep.downloader.db.DBRegistry;
 
 /**
  * Interface definition for DAOs for the local database.
  * @author Bram Lohman
  */
 public interface DataAccessObject {
-
-    /**
-     * Get all registries from the database
-     * @return List<DBRegistry> a list of registries
-     */
-    public List<DBRegistry> getRegistries() throws SQLException;
-
-    /**
-     * Updates registries in the database. These registries must already exist in the database.
-     * @param regList The list of registries to update
-     * @return True if successful, false otherwise
-     */
-    public boolean updateRegistries(List<DBRegistry> regList) throws SQLException;
-
-    /**
-     * Inserts registries in the database
-     * @param regList The list of registries to insert into the database
-     * @return True if successful, false otherwise
-     */
-    public boolean setRegistries(List<DBRegistry> regList) throws SQLException;
 
     /**
      * Select the whitelisted emulator IDs from the database
@@ -88,12 +65,4 @@ public interface DataAccessObject {
      */
     public boolean unListEmulator(Integer i) throws SQLException;
 
-    /**
-     * Retrieves the EF fileformat ID and fileformat name from the database given a PCR ID
-     * @param id Unique Identifier
-     * @param view View in database containing translations
-     * @return List of Strings (ID, name) of the corresponding EF fileformat ID and name
-     * @throws SQLException
-     */
-	public List<String> getFormatDataOnID(String id, String view) throws SQLException;
 }
