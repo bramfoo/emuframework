@@ -31,6 +31,8 @@
 
 package eu.keep.softwarearchive;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -51,7 +53,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
 /**
@@ -79,8 +80,6 @@ public class TestSoftwareArchive {
 
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("eu/keep/" + propertiesFile);
             props = getProperties(is);
-//          props = getProperties(propertiesFile);
-
         }
         catch(IOException e){
             e.printStackTrace();
@@ -116,6 +115,7 @@ public class TestSoftwareArchive {
         try {
             String ff = "Plain text";
             PathwayList result = port.getPathwaysByFileFormat(ff);
+            assertEquals("Incorrect number of pathways returned. ", 2, result.getPathway().size());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -130,6 +130,7 @@ public class TestSoftwareArchive {
         	String ff = "Plain text";
         	PathwayList pwList = port.getPathwaysByFileFormat(ff);
             SoftwarePackageList result = port.getSoftwarePackagesByPathway(pwList.getPathway().get(0));
+            assertEquals("Incorrect number of software packages returned. ", 1, result.getSoftwarePackage().size());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -141,8 +142,9 @@ public class TestSoftwareArchive {
     public void testDownloadSoftware() {
 
         try {
-            String id = "IMG-1";
+            String id = "IMG-1000";
             DataHandler result = port.downloadSoftware(id);
+            assertNotNull("Empty software image returned", result);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -156,6 +158,12 @@ public class TestSoftwareArchive {
         try {
             String id = "IMG-1";
             SoftwarePackage result = port.getSoftwarePackageInfo(id);
+            assertNotNull("Empty software image returned", result);
+            assertEquals("Empty software image returned", id, result.getId());
+            assertNotNull("Empty software image returned", result.getApp());
+            assertNotNull("Empty software image returned", result.getOs());
+            assertNotNull("Empty software image returned", result.getDescription());
+            assertNotNull("Empty software image returned", result.getFormat());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -169,6 +177,7 @@ public class TestSoftwareArchive {
         try {
             String dummy = "0";
             SoftwarePackageList result = port.getAllSoftwarePackagesInfo(dummy);
+            assertEquals("Incorrect number of software packages returned. ", 2, result.getSoftwarePackage().size());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -205,7 +214,6 @@ public class TestSoftwareArchive {
     private Properties getProperties(String userPropertiesFileName) throws IOException {
 
         // Read the properties file
-        Properties props = new Properties();
         FileInputStream fis = null;
 
         try {

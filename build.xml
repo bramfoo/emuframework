@@ -233,6 +233,16 @@ $
 		</H2RunScript>
 	</target>	
 	
+	<target name="db.populate.proprietary" description="Populates the proprietary software in the database" 
+		depends="check.user.properties" if="user.properties.present">
+		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
+			     user="${h2.db.user}"
+				 password="${h2.db.userpassw}"
+				 script="${sqlscript.dir}/SWA_PopulateTablesProprietary.sql"
+				 failonerror="true">
+		</H2RunScript>
+	</target>	
+
 	<target name="db.drop" description="Drops the database users/schemas/tables" depends="check.user.properties" if="user.properties.present">
 		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
 			     user="${h2.db.admin}"
@@ -278,7 +288,7 @@ $
     </target>
 	
     <!-- Copy database to testData directory -->
-	<target name="copy.testDB">
+	<target name="copy.testDB" depends="db.drop, db.create, db.populate">
 		<copy todir="${test.database.dir}" overwrite="yes">
 	        <fileset dir="${database.dir}/db">
 	            <include name="EF_swa.lobs.db/*.*"/>

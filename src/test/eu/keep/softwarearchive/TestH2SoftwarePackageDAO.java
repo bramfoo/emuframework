@@ -34,6 +34,7 @@ package eu.keep.softwarearchive;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -70,7 +71,6 @@ public class TestH2SoftwarePackageDAO {
         try {
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("eu/keep/" + propertiesFile);
             props = getProperties(is);
-//            props = getProperties(propertiesFile);
         }
         catch(IOException e){
             e.printStackTrace();
@@ -106,7 +106,7 @@ public class TestH2SoftwarePackageDAO {
     public void testGetImageCount() {
         try {
             int result = dao.getImageIDs().size();
-            assertEquals("software image count is incorrect", 7, result);
+            assertEquals("software image count is incorrect", 2, result);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -130,11 +130,13 @@ public class TestH2SoftwarePackageDAO {
         try {
             List<String> listIds = dao.getImageIDs();
 
-            assertEquals("Incorrect size of image ID list", 7, listIds.size());
+            assertEquals("Incorrect size of image ID list", 2, listIds.size());
             assertEquals("Incorrect Image ID number", "IMG-1000", listIds.get(0));
             assertEquals("Incorrect Image ID number", "IMG-1001", listIds.get(1));
-            assertEquals("Incorrect Image ID number", "IMG-2000", listIds.get(2));
-            assertEquals("Incorrect Image ID number", "IMG-2001", listIds.get(3));
+            
+//	These are proprietary software.
+//            assertEquals("Incorrect Image ID number", "IMG-2000", listIds.get(2));
+//            assertEquals("Incorrect Image ID number", "IMG-2001", listIds.get(3));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -145,10 +147,10 @@ public class TestH2SoftwarePackageDAO {
     @Test
     public void testGetImageIDs2() {
         try {
-            List<String> listIds1 = dao.getImageIDs("MS-DOS");
+            List<String> listIds1 = dao.getImageIDs("FreeDOS");
 
-            assertEquals("Incorrect size of image ID list", 2, listIds1.size());
-            assertEquals("Incorrect Image ID number", "IMG-2000", listIds1.get(0));
+            assertEquals("Incorrect size of image ID list", 1, listIds1.size());
+            assertEquals("Incorrect Image ID number", "IMG-1000", listIds1.get(0));
 
             List<String> listIds2 = dao.getImageIDs("MSDOS");
             assertEquals("Incorrect size of image ID list",0, listIds2.size());
@@ -162,10 +164,10 @@ public class TestH2SoftwarePackageDAO {
     @Test
     public void testGetImageIDs3() {
         try {
-            List<String> listIds1 = dao.getImageIDs("QBasic", "MS-DOS");
+            List<String> listIds1 = dao.getImageIDs("FreeDOS Edit", "FreeDOS");
 
             assertEquals("Incorrect size of image ID list", 1, listIds1.size());
-            assertEquals("Incorrect Image ID number", "IMG-2000", listIds1.get(0));
+            assertEquals("Incorrect Image ID number", "IMG-1000", listIds1.get(0));
 
             List<String> listIds2 = dao.getImageIDs("MSDOS", "Edit");
             assertEquals("Incorrect size of image ID list",0, listIds2.size());
@@ -187,14 +189,14 @@ public class TestH2SoftwarePackageDAO {
             assertEquals("Incorrect Image description for image id=1", "FreeDOS version 0.9", ImageDesc1.get(0).get(0));
             assertEquals("Incorrect Image format for image id=1", "FAT16", ImageDesc1.get(0).get(1));
 
-            List<List<String>> ImageDesc2 = dao.getViewData("IMG-2000", true, "img", col);
-            assertEquals("Incorrect Image description for image id=1", "MS-DOS version 5.0", ImageDesc2.get(0).get(0));
-            assertEquals("Incorrect Image description for image id=1", "FAT16", ImageDesc2.get(0).get(1));
+            List<List<String>> ImageDesc2 = dao.getViewData("IMG-1001", true, "img", col);
+            assertEquals("Incorrect Image description for image id=1", "Damn Small Linux version 4.4.10", ImageDesc2.get(0).get(0));
+            assertEquals("Incorrect Image description for image id=1", "EXT3", ImageDesc2.get(0).get(1));
 
-            List<List<String>> ImageDesc3 = dao.getViewData("IMG-2002", true, "img", col);
-            assertEquals("Incorrect Image description for image id=1", "Amiga KickStart ROM", ImageDesc3.get(0).get(0));
-            assertEquals("Incorrect Image description for image id=1", "ROM", ImageDesc3.get(0).get(1));
-
+//        	This is proprietary software.
+//            List<List<String>> ImageDesc3 = dao.getViewData("IMG-2002", true, "img", col);
+//            assertEquals("Incorrect Image description for image id=1", "Amiga KickStart ROM", ImageDesc3.get(0).get(0));
+//            assertEquals("Incorrect Image description for image id=1", "ROM", ImageDesc3.get(0).get(1));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -210,20 +212,25 @@ public class TestH2SoftwarePackageDAO {
     	col.add("OS_VERSION");
         try {
             List<List<String>> OsName1 = dao.getViewData("IMG-1000", true, "os", col);
-            System.out.println("Map: " + OsName1);
-            assertEquals("Incorrect OS name for image id=1", "FreeDOS", OsName1.get(0).get(0));
-            assertEquals("Incorrect OS description for image id=1", "Open source DOS for x86", OsName1.get(0).get(1));
-            assertEquals("Incorrect OS version for image id=1", "0.9", OsName1.get(0).get(2));
+            assertEquals("Incorrect number of OS's returned. ", 1, OsName1.size());
+            assertEquals("Incorrect OS name for image id=IMG-1000", "FreeDOS", OsName1.get(0).get(0));
+            assertEquals("Incorrect OS description for image id=IMG-1000", 
+            		"Open source DOS for x86", OsName1.get(0).get(1));
+            assertEquals("Incorrect OS version for image id=IMG-1000", "0.9", OsName1.get(0).get(2));
 
-            List<List<String>> OsName2 = dao.getViewData("IMG-2000", true, "os", col);
-            assertEquals("Incorrect OS name for image id=2", "MS-DOS", OsName2.get(0).get(0));
-            assertEquals("Incorrect OS description for image id=2", "Microsoft DOS for x86", OsName2.get(0).get(1));
-            assertEquals("Incorrect OS version for image id=2", "5.0", OsName2.get(0).get(2));
+            List<List<String>> OsName2 = dao.getViewData("IMG-1001", true, "os", col);
+            assertEquals("Incorrect number of OS's returned. ", 1, OsName2.size());
+            assertEquals("Incorrect OS name for image id=IMG-1001", "Damn Small Linux", OsName2.get(0).get(0));
+            assertEquals("Incorrect OS description for image id=IMG-1001", 
+            		"Versatile mini desktop oriented Linux distribution", OsName2.get(0).get(1));
+            assertEquals("Incorrect OS version for image id=IMG-1001", "4.4.10", OsName2.get(0).get(2));
 
-            List<List<String>> OsName3 = dao.getViewData("IMG-2001", true, "os", col);
-            assertEquals("Incorrect OS name for image id=3", "Windows 98", OsName3.get(0).get(0));
-            assertEquals("Incorrect OS description for image id=3", "Microsoft Windows for x86", OsName3.get(0).get(1));
-            assertEquals("Incorrect OS version for image id=3", "1.0", OsName3.get(0).get(2));
+//        	This is proprietary software.
+//            List<List<String>> OsName3 = dao.getViewData("IMG-2001", true, "os", col);
+//            assertEquals("Incorrect number of OS's returned. ", 1, OsName3.size());
+//            assertEquals("Incorrect OS name for image id=3", "Windows 98", OsName3.get(0).get(0));
+//            assertEquals("Incorrect OS description for image id=3", "Microsoft Windows for x86", OsName3.get(0).get(1));
+//            assertEquals("Incorrect OS version for image id=3", "1.0", OsName3.get(0).get(2));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -242,49 +249,52 @@ public class TestH2SoftwarePackageDAO {
             assertEquals("Incorrect size of app name list for image id=1", 2, appNames1.size());
             assertEquals("Incorrect app name", "FreeDOS Edit", appNames1.get(0).get(0));
             assertEquals("Incorrect app name", "Blocek", appNames1.get(1).get(0));
-            assertEquals("Incorrect size of app version list for image id=1", 2, appNames1.size());
             assertEquals("Incorrect app version", "1.0", appNames1.get(0).get(1));
             assertEquals("Incorrect app verion", "1.33b", appNames1.get(1).get(1));
-            assertEquals("Incorrect size of app description list for image id=1", 2, appNames1.size());
             assertEquals("Incorrect app description", "FreeDOS improved clone of MS-DOS Edit", appNames1.get(0).get(2));
             assertEquals("Incorrect app description", "Image viewer for DOS", appNames1.get(1).get(2));
 
-            List<List<String>> appNames2 = dao.getViewData("IMG-2000", true, "app", col);
-            assertEquals("Incorrect size of app name list for image id=2", 4, appNames2.size());
-            assertEquals("Incorrect app name", "ARJ", appNames2.get(0).get(0));
-            assertEquals("Incorrect app name", "Acrobat Reader", appNames2.get(1).get(0));
-            assertEquals("Incorrect app name", "QBasic", appNames2.get(2).get(0));
-            assertEquals("Incorrect app name", "LHarc", appNames2.get(3).get(0));
-            assertEquals("Incorrect size of app version list for image id=2", 4, appNames2.size());
-            assertEquals("Incorrect app version", "1.0", appNames2.get(0).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames2.get(1).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames2.get(2).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames2.get(3).get(1));
-            assertEquals("Incorrect size of app description list for image id=2", 4, appNames2.size());
-            assertEquals("Incorrect app description", "Compression utility for DOS", appNames2.get(0).get(2));
-            assertEquals("Incorrect app description", "PDF reader for DOS", appNames2.get(1).get(2));
-            assertEquals("Incorrect app description", "Text editor for DOS", appNames2.get(2).get(2));
-            assertEquals("Incorrect app description", "Compression utility for DOS", appNames2.get(3).get(2));
+            List<List<String>> appNames2 = dao.getViewData("IMG-1001", true, "app", col);
+            assertEquals("Incorrect size of app name list for image id=2", 5, appNames2.size());
+            assertEquals("Incorrect app name", "Xzgv", appNames2.get(0).get(0));
+            assertEquals("Incorrect app name", "Xpdf", appNames2.get(1).get(0));
+            assertEquals("Incorrect app name", "Beaver", appNames2.get(2).get(0));
+            assertEquals("Incorrect app name", "Firefox", appNames2.get(3).get(0));
+            assertEquals("Incorrect app name", "MS Office Viewer", appNames2.get(4).get(0));
+            assertNull("Incorrect app version", appNames2.get(0).get(1));
+            assertNull("Incorrect app version", appNames2.get(1).get(1));
+            assertNull("Incorrect app version", appNames2.get(2).get(1));
+            assertNull("Incorrect app version", appNames2.get(3).get(1));
+            assertNull("Incorrect app version", appNames2.get(4).get(1));
+            assertTrue("Incorrect app description", 
+            		appNames2.get(0).get(2).startsWith("Xzgv is a picture viewer for X, "));
+            assertTrue("Incorrect app description", 
+            		appNames2.get(1).get(2).startsWith("Xpdf is an open source viewer for Portable Document Format (PDF) files. "));
+            assertEquals("Incorrect app description", "Beaver is an Early AdVanced (text) EditoR. ", appNames2.get(2).get(2));
+            assertTrue("Incorrect app description", 
+            		appNames2.get(3).get(2).startsWith("Mozilla Firefox is a free and open source web browser descended from "));
+            assertNull("Incorrect app description", appNames2.get(4).get(2));
 
-            List<List<String>> appNames3 = dao.getViewData("IMG-2001", true, "app", col);
-            System.out.println(appNames3.toString());
-            assertEquals("Incorrect size of app name list for image id=3", 6, appNames3.size());
-            assertEquals("Incorrect app name", "Acrobat Reader", appNames3.get(0).get(0));
-            assertEquals("Incorrect app name", "Internet Explorer", appNames3.get(1).get(0));
-            assertEquals("Incorrect app name", "Microsoft Word", appNames3.get(2).get(0));
-            assertEquals("Incorrect app name", "Paint", appNames3.get(3).get(0));      
-            assertEquals("Incorrect app name", "Quark Express", appNames3.get(4).get(0));      
-            assertEquals("Incorrect app name", "Wordpad", appNames3.get(5).get(0));      
-            assertEquals("Incorrect size of app version list for image id=3", 6, appNames3.size());
-            assertEquals("Incorrect app version", "2.0", appNames3.get(0).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames3.get(1).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames3.get(2).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames3.get(3).get(1));
-            assertEquals("Incorrect app version", "3.1", appNames3.get(4).get(1));
-            assertEquals("Incorrect app version", "1.0", appNames3.get(5).get(1));
-            assertEquals("Incorrect size of app description list for image id=3", 6, appNames3.size());
-            assertEquals("Incorrect app description", "Page layout software", appNames3.get(4).get(2));
-            assertEquals("Incorrect app description", "Text editor for Windows", appNames3.get(5).get(2));
+//        	This is proprietary software.
+//            List<List<String>> appNames3 = dao.getViewData("IMG-2001", true, "app", col);
+//            System.out.println(appNames3.toString());
+//            assertEquals("Incorrect size of app name list for image id=3", 6, appNames3.size());
+//            assertEquals("Incorrect app name", "Acrobat Reader", appNames3.get(0).get(0));
+//            assertEquals("Incorrect app name", "Internet Explorer", appNames3.get(1).get(0));
+//            assertEquals("Incorrect app name", "Microsoft Word", appNames3.get(2).get(0));
+//            assertEquals("Incorrect app name", "Paint", appNames3.get(3).get(0));      
+//            assertEquals("Incorrect app name", "Quark Express", appNames3.get(4).get(0));      
+//            assertEquals("Incorrect app name", "Wordpad", appNames3.get(5).get(0));      
+//            assertEquals("Incorrect size of app version list for image id=3", 6, appNames3.size());
+//            assertEquals("Incorrect app version", "2.0", appNames3.get(0).get(1));
+//            assertEquals("Incorrect app version", "1.0", appNames3.get(1).get(1));
+//            assertEquals("Incorrect app version", "1.0", appNames3.get(2).get(1));
+//            assertEquals("Incorrect app version", "1.0", appNames3.get(3).get(1));
+//            assertEquals("Incorrect app version", "3.1", appNames3.get(4).get(1));
+//            assertEquals("Incorrect app version", "1.0", appNames3.get(5).get(1));
+//            assertEquals("Incorrect size of app description list for image id=3", 6, appNames3.size());
+//            assertEquals("Incorrect app description", "Page layout software", appNames3.get(4).get(2));
+//            assertEquals("Incorrect app description", "Text editor for Windows", appNames3.get(5).get(2));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -301,14 +311,16 @@ public class TestH2SoftwarePackageDAO {
 
         try {
         	List<List<String>> appName = dao.getPathwaysView("BBC Micro Image", col);
+            assertEquals("Incorrect number of pathways", 1, appName.size());
             assertNull("Incorrect app name image format BBC Micro Image", appName.get(0).get(0));
             assertNull("Incorrect app name image format BBC Micro Image", appName.get(0).get(1));
             assertEquals("Incorrect platform name image format BBC Micro Image", "BBCMICRO", appName.get(0).get(2));
 
             List<List<String>> appName2 = dao.getPathwaysView("Portable Document Format", col);
-            assertEquals("Incorrect app name image format Portable Document Format", "Acrobat Reader", appName2.get(1).get(0));
-            assertEquals("Incorrect app name image format Portable Document Format", "Windows 98", appName2.get(1).get(1));
-            assertEquals("Incorrect platform name image format Portable Document Format", "x86", appName2.get(1).get(2));
+            assertEquals("Incorrect number of pathways", 1, appName2.size());
+            assertEquals("Incorrect app name image format Portable Document Format", "Xpdf", appName2.get(0).get(0));
+            assertEquals("Incorrect app name image format Portable Document Format", "Damn Small Linux", appName2.get(0).get(1));
+            assertEquals("Incorrect platform name image format Portable Document Format", "x86", appName2.get(0).get(2));
 
         }
         catch (Exception e) {

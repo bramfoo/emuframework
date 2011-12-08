@@ -82,10 +82,10 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	private static final String SELECT_OS_VIEW_ON_OS           = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_name=?";
 
 	// Joins
-	private static final String SELECT_IMG_ON_APP_OS           = "SELECT " + APP_PACK_VIEW + ".IMAGE_ID FROM " + OS_PACK_VIEW + 
-			" INNER JOIN " + APP_PACK_VIEW + 
-			" ON " + OS_PACK_VIEW + ".image_id = " + APP_PACK_VIEW + ".image_id" +
-			" WHERE app_name=? AND os_name=?";
+	private static final String SELECT_IMG_ON_APP_OS           = "SELECT " + APP_PACK_VIEW + ".IMAGE_ID FROM " + 
+																  OS_PACK_VIEW + " INNER JOIN " + APP_PACK_VIEW + 
+																 " ON " + OS_PACK_VIEW + ".image_id = " + APP_PACK_VIEW + ".image_id" +
+																 " WHERE app_name=? AND os_name=?";
 
 	private static final String SELECT_IMAGE_IDS                = "SELECT image_id FROM " + IMAGE_TABLE_NAME;
 

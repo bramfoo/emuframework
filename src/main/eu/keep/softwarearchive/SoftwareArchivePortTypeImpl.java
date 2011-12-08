@@ -89,8 +89,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         
     	// Ensure ID exists
     	List<String> ids = spDAO.getImageIDs();
-    	if (!ids.contains(id))
-    	{
+    	if (!ids.contains(id)) {
     		// Return an empty sw package (set the items that were returned null)
     		SoftwarePackage swPack = createSoftwarePack(id);
     		swPack.setDescription("N/A");
