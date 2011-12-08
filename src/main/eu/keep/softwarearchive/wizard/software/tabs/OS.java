@@ -1,6 +1,6 @@
 package eu.keep.softwarearchive.wizard.software.tabs;
 
-import eu.keep.gui.util.DBUtil;
+import eu.keep.softwarearchive.util.DBUtil;
 import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;

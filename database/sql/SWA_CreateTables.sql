@@ -188,6 +188,7 @@ CREATE TABLE opsys_images
   FOREIGN KEY (image_id) REFERENCES images (image_id)
 );
 
+-- ADDED from Core
 -- Table for external registries
 CREATE TABLE registries
 (
@@ -201,6 +202,7 @@ CREATE TABLE registries
   comment VARCHAR2(500)
 );
 
+-- ADDED from Core
 -- Table for PCR file formats
 CREATE TABLE PCR_fileformats
 (
@@ -208,6 +210,7 @@ CREATE TABLE PCR_fileformats
   name VARCHAR2(250) NOT NULL
 );
 
+-- ADDED from Core
 -- Junction table for EF fileformats to PCR fileformats
 CREATE TABLE EF_PCR_fileformats
 (
@@ -336,6 +339,7 @@ ON (app_os.opsys_id = os.opsys_id OR ff_os.opsys_id = os.opsys_id) LEFT OUTER JO
 ON (os.opsys_id = os_pf.opsys_id OR ff_os.opsys_id = os_pf.opsys_id) LEFT OUTER JOIN platforms pf
 ON (os_pf.platform_id = pf.platform_id OR ff_pf.platform_id = pf.platform_id);
 
+-- ADDED from Core
 -- Show all combinations (including nulls) between EF and PCR file formats
 CREATE VIEW EF_PCR_FORMATS AS
 SELECT ff.fileformat_id as "EF_FORMAT_ID", 

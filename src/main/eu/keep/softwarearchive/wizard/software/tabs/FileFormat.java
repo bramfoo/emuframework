@@ -3,7 +3,7 @@ package eu.keep.softwarearchive.wizard.software.tabs;
 import edu.harvard.hul.ois.fits.FitsOutput;
 import eu.keep.characteriser.FitsTool;
 import eu.keep.characteriser.Format;
-import eu.keep.gui.util.DBUtil;
+import eu.keep.softwarearchive.util.DBUtil;
 import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import net.miginfocom.swing.MigLayout;
 
@@ -35,8 +35,8 @@ public class FileFormat extends JPanel {
             "wizard to start over. The incorrectly added data can be removed at a " +
             "later stage. <br><br>";
 
-    private final String getFormatQueryCEF = "SELECT fileformat_id, name FROM engine.fileformats";
-    private final String insertFormatQueryCEF = "INSERT INTO engine.fileformats (fileformat_id, name) VALUES(?, ?)";
+    private final String getPCRFormatQuerySWA = "SELECT fileformat_id, name FROM softwarearchive.fileformats";
+    private final String insertPCRFormatQuerySWA = "INSERT INTO softwarearchive.fileformats (fileformat_id, name) VALUES(?, ?)";
 
     private final String getFormatQuerySWA = "SELECT fileformat_id FROM softwarearchive.fileformats";
     private final String insertFormatQuerySWA = "INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES(?, ?, ?, ?, ?)";
@@ -61,7 +61,7 @@ public class FileFormat extends JPanel {
     private void initGUI() {
         super.setLayout(new MigLayout());
 
-        final Vector<Vector<String>> data = DBUtil.query(DBUtil.DB.CEF, getFormatQueryCEF);
+        final Vector<Vector<String>> data = DBUtil.query(DBUtil.DB.SWA, getPCRFormatQuerySWA);
         final Vector<FormatIDName> existingFormats = new Vector<FormatIDName>();
         final FormatIDName first = new FormatIDName(null, null);
         existingFormats.add(first);
@@ -208,9 +208,10 @@ public class FileFormat extends JPanel {
 
                     int records = 0;
 
-                    records += DBUtil.insert(DBUtil.DB.CEF, insertFormatQueryCEF, formatIDCef, formatName);
+                    //records += DBUtil.insert(DBUtil.DB.SWA, insertPCRFormatQuerySWA, formatIDCef, formatName);
 
                     Vector<Vector<String>> ids = DBUtil.query(DBUtil.DB.SWA, getFormatQuerySWA);
+
                     formatIDSwa = DBUtil.createUniqueStringID(ids, 0);
 
                     records += DBUtil.insert(DBUtil.DB.SWA, insertFormatQuerySWA,
@@ -221,12 +222,11 @@ public class FileFormat extends JPanel {
                             reference.getText().trim()
                     );
 
-                    if(records != 2) {
+                    if(records != 1) {
                         // TODO log error
                     }
-                    else {
-                        // TODO log
-                    }
+
+                    // TODO log
                 }
                 else if (temp.id != null) {
                     formatIDCef = temp.id;
@@ -268,7 +268,7 @@ public class FileFormat extends JPanel {
     }
 
     private FitsTool getFitsTool() throws IOException {
-        String fitsHome = "eu/keep/resources/fits";
+        String fitsHome = "resources/fits-0.4.1";
         String fitsHomePath = "";
         URL url = null;
         logger.warn("Attempting to read FITShome from file...");

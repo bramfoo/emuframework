@@ -1,6 +1,6 @@
 package eu.keep.softwarearchive.wizard.software.tabs;
 
-import eu.keep.gui.util.DBUtil;
+import eu.keep.softwarearchive.util.DBUtil;
 import eu.keep.softwarearchive.wizard.software.SoftwareWizard;
 import net.miginfocom.swing.MigLayout;
 
@@ -40,7 +40,7 @@ public class PronomFileFormat extends JPanel {
     private void initGUI() {
         super.setLayout(new MigLayout());
 
-        final Vector<Vector<String>> data = DBUtil.query(DBUtil.DB.CEF, getPronomFormatsQuery);
+        final Vector<Vector<String>> data = DBUtil.query(DBUtil.DB.SWA, getPronomFormatsQuery);
         final CustomTableModel model = new CustomTableModel();
 
         for(Vector<String> row : data) {
@@ -108,7 +108,7 @@ public class PronomFileFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String i = id.getText().trim();
                 String nm = name.getText().trim();
-                int records = DBUtil.insert(DBUtil.DB.CEF, insertPronomFormatQuery, i, nm);
+                int records = DBUtil.insert(DBUtil.DB.SWA, insertPronomFormatQuery, i, nm);
 
                 if(records != 1) {
                     // TODO warn
@@ -143,7 +143,7 @@ public class PronomFileFormat extends JPanel {
                 int records = 0;
 
                 for(String f : frmts) {
-                    records += DBUtil.insert(DBUtil.DB.CEF, insertEFPronomFormatQuery, fileFormat, f);
+                    records += DBUtil.insert(DBUtil.DB.SWA, insertEFPronomFormatQuery, fileFormat, f);
                 }
 
                 table.setEnabled(false);
