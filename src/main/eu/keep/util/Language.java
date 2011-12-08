@@ -89,6 +89,7 @@ public enum Language {
 	fi("fi", "Finnish"),
 	fj("fj", "Fijian"),
 	fo("fo", "Faroese"),
+
 	fr("fr", "Français"),
 	fy("fy", "Western Frisian"),
 	ga("ga", "Irish"),
