@@ -60,7 +60,7 @@ import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
  * reason, it is ignored by default.
  * @author Bram Lohman
  */
-//@Ignore("Integration tests of the server webservices requiring an instance of the server running")
+@Ignore("Integration tests of the server webservices requiring an instance of the server running")
 public class TestSoftwareArchivePrototype {
 
 	private SoftwareArchivePrototype swa;
