@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -57,7 +58,9 @@ import eu.keep.softwarearchive.pathway.Pathway;
  */
 public class TestController {
 	
-	Controller ctrl;
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
+    Controller ctrl;
 	File emuDir;
 	File emuExec;
 	List<File> digObjs;
@@ -97,12 +100,16 @@ public class TestController {
 	@Test
     public void testGetEmuConfig2() throws IOException  {
 
+		logger.info("testGetEmuConfig2");
+		
 		Integer i;
 		i = ctrl.prepareConfiguration(emuDir, digObjs, swImgs, emuExec, mockedPW);
 		assertEquals("Incorrect configuration number", 1, i.intValue());
 		
 		Map<String, List<Map<String, String>>> opts;
 		opts = ctrl.getEmuConfig(i);
+		
+		logger.info("Got EmuConfig......");
 		
 		assertTrue("Root node not found", opts.containsKey("root"));
 		assertFalse("Root node should not be empty", opts.get("root").isEmpty());

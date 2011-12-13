@@ -33,8 +33,7 @@ package eu.keep.downloader.db;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import eu.keep.util.FileUtilities;
@@ -103,86 +102,48 @@ public class TestH2DataAccessObject {
         }
     }
 
+    
     @Test
-    public void testGetRegistries() {
+    public void testGetWhitelistedEmus() {
         try {
-            DBRegistry testReg1 = new DBRegistry();
-            testReg1.setRegistryID(2);
-            testReg1.setName("PRONOM/PCR");
-            testReg1.setUrl("http://www.nationalarchives.gov.uk/pronom/");
-            testReg1.setClassName("eu.keep.characteriser.registry.PronomRegistry");
-            testReg1.setTranslationView("EF_PCR_FORMATS");
-            testReg1.setEnabled(true);
-            testReg1.setDescription("PRONOM/PCR, the one and only registry");
-            testReg1.setComment("Does not support pathways yet");
-
-            List<DBRegistry> regListdb;
-            regListdb = regDAO.getRegistries();
-
-            assertFalse("List shouldn't be empty", regListdb.isEmpty());
-            assertEquals("Wrong size", 2, regListdb.size());
-            assertEquals("Wrong registry ID", testReg1.getRegistryID(), regListdb.get(0).getRegistryID());
-            assertEquals("Wrong registry name", testReg1.getName(), regListdb.get(0).getName());
+        	Map<Integer, String> whitelist = regDAO.getWhitelistedEmus();       	
+        	assertEquals("Incorrect number of whitelisted emulators. ", 11, whitelist.size());
         }
         catch (Exception e) {
             e.printStackTrace();
             fail(e.toString());
         }
     }
-
-//    @Test
-    public void testSetRegistries() {
-
+    
+    @Test
+    public void testEditWhitelist() {
         try {
-
-            List<DBRegistry> regList = new ArrayList<DBRegistry>();
-            DBRegistry testReg3 = new DBRegistry();
-            testReg3.setRegistryID(1);
-            testReg3.setName("Test Registry 3");
-            testReg3.setUrl("http://www.test3.com");
-            testReg3.setClassName("eu.keep.registry.TestRegistryThree");
-            testReg3.setEnabled(false);
-            testReg3.setDescription("Test Registry 3 dummy data");
-            testReg3.setComment("Test Registry 3 dummy comment");
-            regList.add(testReg3);
-
-            DBRegistry testReg4 = new DBRegistry();
-            testReg4.setRegistryID(2);
-            testReg4.setName("Test Registry 4");
-            testReg4.setUrl("http://www.testFour.eu");
-            testReg4.setClassName("eu.keep.registry.TestRegistryFour");
-            testReg4.setEnabled(true);
-            testReg4.setDescription("Test Registry 4 dummy data");
-            testReg4.setComment("Test Registry 4 dummy comment");
-            regList.add(testReg4);
-
-            // This will erase the current contents and replace them with the above
-            regDAO.updateRegistries(regList);
-            //regDAO.setRegistries(regList);
-
-            List<DBRegistry> regListdb;
-            regListdb = regDAO.getRegistries();
-
-            assertEquals(testReg3.getRegistryID(), regListdb.get(0).getRegistryID());
-            assertEquals(testReg3.getName(), regListdb.get(0).getName());
-            assertEquals(testReg3.getUrl(), regListdb.get(0).getUrl());
-            assertEquals(testReg3.getClassName(), regListdb.get(0).getClassName());
-            assertFalse(regListdb.get(0).isEnabled());
-            assertEquals(testReg3.getDescription(), regListdb.get(0).getDescription());
-            assertEquals(testReg3.getComment(), regListdb.get(0).getComment());
-
-            assertEquals(testReg4.getRegistryID(), regListdb.get(1).getRegistryID());
-            assertEquals(testReg4.getName(), regListdb.get(1).getName());
-            assertEquals(testReg4.getUrl(), regListdb.get(1).getUrl());
-            assertEquals(testReg4.getClassName(), regListdb.get(1).getClassName());
-            assertTrue(regListdb.get(1).isEnabled());
-            assertEquals(testReg4.getDescription(), regListdb.get(1).getDescription());
-            assertEquals(testReg4.getComment(), regListdb.get(1).getComment());
-
+        	int initialSize = regDAO.getWhitelistedEmus().size();
+        	
+        	Integer emuID = 10;
+        	String emuName = "JavaCPC (Win)";
+        	
+        	// Remove emulator JavaCPC (Win)
+        	boolean success = regDAO.unListEmulator(emuID);       	
+        	assertTrue("Negative response when unlisting emulator. ", success);
+        	Map<Integer, String> whitelist = regDAO.getWhitelistedEmus();
+        	assertEquals("Emulator not removed from whitelist. ", initialSize-1, whitelist.size());
+        	assertFalse("Emulator not removed from whitelist. ", whitelist.containsKey(emuID));
+        	assertFalse("Emulator not removed from whitelist. ", whitelist.containsValue(emuName));
+        	
+        	// Add new emulator JavaCPC (Windows)
+        	String newName = "JavaCPC (Windows)";
+        	boolean success2 = regDAO.whiteListEmulator(emuID, "JavaCPC (Windows)");       	
+        	assertTrue("Negative response when adding emulator to whitelist. ", success2);
+        	Map<Integer, String> newWhitelist = regDAO.getWhitelistedEmus();
+        	assertEquals("Emulator not added to whitelist. ", initialSize, newWhitelist.size());
+        	assertTrue("Emulator not added to whitelist. ", newWhitelist.containsKey(emuID));
+        	assertTrue("Emulator not added to whitelist. ", newWhitelist.containsValue(newName));        	
         }
         catch (Exception e) {
             e.printStackTrace();
             fail(e.toString());
         }
     }
+    
 }

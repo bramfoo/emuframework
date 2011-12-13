@@ -88,6 +88,7 @@ public class TestFitsTool {
 		tools.add("Droid 3.0");
 		tools.add("file utility 5.03");
 		tools.add("ffident 0.2");
+		tools.add("OIS XML Metadata 0.1");
 		expected.setReportingTools(tools);
 		List<Format> list = new ArrayList<Format>();
 		list.add(expected);
@@ -97,26 +98,21 @@ public class TestFitsTool {
 	@Test
     public void testGetFileInfo() {
 		FitsOutput fitsOut = null;
+		Map<String, List<String>> fileInfo = new HashMap<String, List<String>>(); 
 		try {
 			fitsOut = fits.examine(testObject);
+			fileInfo = fits.getFileInfo(fitsOut);
 		} catch (FitsException e) {
 			fail("Unexpected error:" + e.getMessage());
 		}
 
-		Map<String, List<String>> info = new HashMap<String, List<String>>();
-		List<String> infoTrue = new ArrayList<String>();
-		infoTrue.add("true");
-		info.put("well-formed", infoTrue);
-		info.put("valid", infoTrue);
-		List<String> infoSize = new ArrayList<String>();
-		infoSize.add("22241");
-		info.put("size", infoSize);
-
-		try {
-			assertEquals("Wrong file info", info, fits.getFileInfo(fitsOut));
-		} catch (FitsException e) {
-			fail("Unexpected error:" + e.getMessage());
-			}
+		assertEquals("Wrong number of elements in file info", 6, fileInfo.size() );
+		assertEquals("Incorrect Well-formedness returned", "true", fileInfo.get("well-formed").get(0));
+		assertEquals("Incorrect validity returned", "true", fileInfo.get("valid").get(0));
+		assertEquals("Incorrect size returned", "23276", fileInfo.get("size").get(0));
+		assertEquals("Incorrect filename returned", ".\\testData\\digitalObjects\\x86\\build.xml", fileInfo.get("filename").get(0));
+		assertEquals("Incorrect md5checksum returned", "368ed07fa017e3a58df25cb7949b783c", fileInfo.get("md5checksum").get(0));
+		assertEquals("Incorrect fslastmodified returned", "1319095088173", fileInfo.get("fslastmodified").get(0));
 	}
 	
 	@Test

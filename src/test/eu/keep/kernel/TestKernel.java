@@ -50,8 +50,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import eu.keep.characteriser.Characteriser;
 import eu.keep.characteriser.Format;
 import eu.keep.downloader.Downloader;
+import eu.keep.downloader.db.DBRegistry;
+import eu.keep.downloader.db.SoftwareArchivePrototype;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage.Emulator.Executable;
 import eu.keep.softwarearchive.pathway.ApplicationType;
@@ -69,8 +72,11 @@ public class TestKernel {
     private Logger logger = Logger.getLogger(this.getClass());
     private Kernel kernel;
     final Downloader mockDL = mock(Downloader.class);
-
+    
+    private SoftwareArchivePrototype mockSWA = mock(SoftwareArchivePrototype.class);
+    
     Format mockFrm = mock(Format.class);
+    List<Format> formatList;
 
 	List<Pathway> pwList;
 	Pathway pw1;
@@ -81,68 +87,86 @@ public class TestKernel {
 	private File digObj;
 
 
-    @Before
-    public void setUp() throws IOException {
-        logger.info("Preparing mock objects for Kernel test class");
+	@Before
+	public void setUp() throws IOException {
+		logger.info("Preparing mock objects for Kernel test class");
 
-    	// Format
-    	when(mockFrm.getName()).thenReturn("plain text");
-    	
-    	// Pathway
-        pw1 = new Pathway();
-    	ObjectFormatType objF = new ObjectFormatType();
-    	ApplicationType app = new ApplicationType();
-    	app.setId("APP-1");
-    	app.setLanguageId("nl");
-    	OperatingSystemType opsys = new OperatingSystemType();
-    	opsys.setId("OPS-1");
-    	opsys.setLanguageId("en");
-    	HardwarePlatformType hpf = new HardwarePlatformType();
-    	pw1.setObjectFormat(objF);
-    	pw1.setApplication(app);
-    	pw1.setOperatingSystem(opsys);
-    	pw1.setHardwarePlatform(hpf);
-        pw1.getObjectFormat().setName("Plain text");
-        pw1.getApplication().setName("EDIT");
-        pw1.getOperatingSystem().setName("MS-DOS");
-        pw1.getHardwarePlatform().setName("x86");
+		// Formats
+		when(mockFrm.getName()).thenReturn("plain text");
+		formatList = new ArrayList<Format>();
+		formatList.add(mockFrm);
+		
+		// Pathway
+		pw1 = new Pathway();
+		ObjectFormatType objF = new ObjectFormatType();
+		ApplicationType app = new ApplicationType();
+		app.setId("APP-1");
+		app.setLanguageId("nl");
+		OperatingSystemType opsys = new OperatingSystemType();
+		opsys.setId("OPS-1");
+		opsys.setLanguageId("en");
+		HardwarePlatformType hpf = new HardwarePlatformType();
+		pw1.setObjectFormat(objF);
+		pw1.setApplication(app);
+		pw1.setOperatingSystem(opsys);
+		pw1.setHardwarePlatform(hpf);
+		pw1.getObjectFormat().setName("Plain text");
+		pw1.getApplication().setName("EDIT");
+		pw1.getOperatingSystem().setName("MS-DOS");
+		pw1.getHardwarePlatform().setName("x86");
 
-    	pwList = new ArrayList<Pathway>();
-    	pwList.add(pw1);
-    	
-    	
-    	// EmulatorPackage
-    	emp1 = mock(EmulatorPackage.class);
-    	EmulatorPackage.Package pck = mock(EmulatorPackage.Package.class);
-    	EmulatorPackage.Emulator em = mock(EmulatorPackage.Emulator.class);
-    	Executable exec = mock(Executable.class);
-    	when(emp1.getPackage()).thenReturn(pck);
-    	when(emp1.getEmulator()).thenReturn(em);
-    	when(pck.getId()).thenReturn(100);
-    	when(em.getName()).thenReturn("mockEmu");
-    	when(em.getVersion()).thenReturn("0.99");
-    	when(em.getExecutable()).thenReturn(exec);
-    	when(exec.getType()).thenReturn("exe");
-    	empList = new ArrayList<EmulatorPackage>();
-    	empList.add(emp1);
-    	
-    	// Downloader
-    	when(mockDL.getPathwayByFileFormat("plain text")).thenReturn(pwList);
-    	when(mockDL.getEmulatorsByHardware("x86")).thenReturn(empList);
-    	when(mockDL.getWhitelistedEmus()).thenReturn(empList);
-    	when(mockDL.whiteListEmulator(2)).thenReturn(true);
-    	when(mockDL.unListEmulator(2)).thenReturn(true);
-    	
-    	// Kernel
-            kernel = new Kernel("testKernel.properties"){
-                protected Downloader createDownloader(Properties props, Connection conn) {
-                	return mockDL;
-                }
-            };
-            logger.info("Set up kernel test class");
-        
-        digObj = new File("./testData/templateCLI.ftl");
-    }
+		pwList = new ArrayList<Pathway>();
+		pwList.add(pw1);
+
+
+		// EmulatorPackage
+		emp1 = mock(EmulatorPackage.class);
+		EmulatorPackage.Package pck = mock(EmulatorPackage.Package.class);
+		EmulatorPackage.Emulator em = mock(EmulatorPackage.Emulator.class);
+		Executable exec = mock(Executable.class);
+		when(emp1.getPackage()).thenReturn(pck);
+		when(emp1.getEmulator()).thenReturn(em);
+		when(pck.getId()).thenReturn(100);
+		when(em.getName()).thenReturn("mockEmu");
+		when(em.getVersion()).thenReturn("0.99");
+		when(em.getExecutable()).thenReturn(exec);
+		when(exec.getType()).thenReturn("exe");
+		empList = new ArrayList<EmulatorPackage>();
+		empList.add(emp1);
+
+		// Downloader
+		when(mockDL.getPathwayByFileFormat("plain text")).thenReturn(pwList);
+		when(mockDL.getEmulatorsByHardware("x86")).thenReturn(empList);
+		when(mockDL.getWhitelistedEmus()).thenReturn(empList);
+		when(mockDL.whiteListEmulator(2)).thenReturn(true);
+		when(mockDL.unListEmulator(2)).thenReturn(true);
+
+		// SoftwareArchivePrototype
+		List<DBRegistry> registries = new ArrayList<DBRegistry>();
+		DBRegistry registry = new DBRegistry();
+		registry.setEnabled(true);
+		registry.setClassName("eu.keep.characteriser.registry.PronomRegistry");
+		registries.add(registry);		
+		when(mockSWA.getRegistries()).thenReturn(registries);
+		
+		// Kernel
+		kernel = new Kernel("testKernel.properties"){
+			protected Downloader createDownloader(Properties props, Connection conn) {
+				return mockDL;
+			}
+			protected Characteriser createCharacteriser(Properties props) throws IOException {
+				Characteriser characteriser = new Characteriser(props) {
+					protected SoftwareArchivePrototype createSWA(Properties props) {
+				    	return TestKernel.this.mockSWA;
+					}
+				};
+				return characteriser;
+			}
+		};
+		logger.info("Set up kernel test class");
+
+		digObj = new File("./testData/templateCLI.ftl");
+	}
 
     @Test
     public void testGetCoreSettings() {
@@ -193,11 +217,19 @@ public class TestKernel {
     	Map<String, List<String>> md = kernel.getFileInfo(digObj);
     	
     	assertFalse("Metadata list not right size.", md.isEmpty());
-    	assertEquals("Metadata list not right size.", 3, md.size());
+    	assertEquals("Metadata list not right size.", 6, md.size());
     	assertTrue("Metadata doesn't contain linebreak.", md.containsKey("size"));
     	assertFalse("Size list not right size.", md.get("size").isEmpty());
     	assertEquals("Size list not right size.", 1, md.get("size").size());
     	assertEquals("Size contents not correct.", "1254", md.get("size").get(0));
+    	assertTrue("Metadata doesn't contain md5 checksum.", md.containsKey("md5checksum"));
+    	assertFalse("Size list not right size.", md.get("md5checksum").isEmpty());
+    	assertEquals("Size list not right size.", 1, md.get("md5checksum").size());
+    	assertEquals("Size contents not correct.", "167047d277ca51ee2cc80ca9a32b13cb", md.get("md5checksum").get(0));
+    	assertTrue("Metadata doesn't contain well-formedness.", md.containsKey("well-formed"));
+    	assertFalse("Size list not right size.", md.get("well-formed").isEmpty());
+    	assertEquals("Size list not right size.", 1, md.get("well-formed").size());
+    	assertEquals("Size contents not correct.", "true", md.get("well-formed").get(0));
     }
 
     @Test

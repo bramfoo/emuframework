@@ -54,7 +54,7 @@ public class LanguageCheckBox extends JCheckBox {
 	
 	/**
 	 * Get the Language object underlying this checkbox
-	 * @return
+	 * @return the Language object
 	 */
 	public Language getLanguage() {
 		return language;

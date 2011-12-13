@@ -8,7 +8,7 @@ public interface EFPropertyEditor {
 
 	/**
 	 * Return the value entered for this Property
-	 * @return
+	 * @return the entered value
 	 */
 	public String getValue();
 	

@@ -53,13 +53,14 @@ public class TestFloppyDiskType {
     public void setUp() {
         
     	// Note: as this is a hashmap, only one of each type can be inserted
+    	// Note 2: most types commented out, because proprietary formats.
     	testData = new HashMap<FloppyDiskType, File>();
-    	testData.put(FloppyDiskType.AMG3_5_880, new File("testData/digitalObjects/Amiga/ASI001.ADF"));
+//    	testData.put(FloppyDiskType.AMG3_5_880, new File("testData/digitalObjects/Amiga/ASI001.ADF"));
     	testData.put(FloppyDiskType.FAT3_5_1440, new File("testData/FloppyDiskImage/floppy144_alphabet.img"));
-    	testData.put(FloppyDiskType.C64TAPE, new File("testData/digitalObjects/C64/arkanoid.t64"));
-    	testData.put(FloppyDiskType.C645_25_170, new File("testData/digitalObjects/C64/IKPlus.d64"));
-    	testData.put(FloppyDiskType.AMS3_180, new File("testData/digitalObjects/Amstrad/The_Rocky_Horror_Show.dsk"));
-    	testData.put(FloppyDiskType.AMSTAPE, new File("testData/digitalObjects/Amstrad/Starglider.cdt"));
+//    	testData.put(FloppyDiskType.C64TAPE, new File("testData/digitalObjects/C64/arkanoid.t64"));
+//    	testData.put(FloppyDiskType.C645_25_170, new File("testData/digitalObjects/C64/IKPlus.d64"));
+//    	testData.put(FloppyDiskType.AMS3_180, new File("testData/digitalObjects/Amstrad/The_Rocky_Horror_Show.dsk"));
+//    	testData.put(FloppyDiskType.AMSTAPE, new File("testData/digitalObjects/Amstrad/Starglider.cdt"));
     }
 	
     @Test

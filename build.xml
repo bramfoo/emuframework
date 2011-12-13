@@ -374,7 +374,8 @@ $Revision$ $Date$ $Author$
 -->
 
     <!-- Compile unit test suite -->
-    <target name="test.compile" description="Compiling the unit tests classes" depends="clean, compile, check.test.properties"  if="test.properties.present">
+    <target name="test.compile" description="Compiling the unit tests classes" depends="clean, compile, check.test.properties"  
+    	if="test.properties.present">
 		<mkdir dir="${classes.dir}"/>
         <javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="dev-classpath" fork="yes">
             <compilerarg value="${javac.args}"/>
@@ -382,7 +383,8 @@ $Revision$ $Date$ $Author$
     </target>
 
     <!-- Run unit test suite -->
-    <target name="test.run" description="Running the unit tests" depends="test.compile, test.copy.resources" if="test.properties.present">
+    <target name="test.run" description="Running the unit tests" depends="test.compile, test.copy.resources" 
+    	if="test.properties.present">
         <mkdir dir="${test.report.dir}"/>
         <junit printsummary="yes" haltonfailure="no" showoutput="yes" >             
             <batchtest fork="yes" todir="${test.report.dir}" >
@@ -401,7 +403,7 @@ $Revision$ $Date$ $Author$
 
     <!-- Make unit test html report -->  
     <target name="test.report" description="Generating the unit tests report" depends="test.run"  if="test.properties.present">
-        <mkdir dir="${test.report.dir}/html/" />
+        <mkdir dir="${test.report.dir}/html/"/>
         <junitreport todir="${test.report.dir}">
 		      <fileset dir="${test.report.dir}">
 		        <include name="TEST-*.xml"/>
@@ -412,7 +414,8 @@ $Revision$ $Date$ $Author$
     </target>
 
     <!-- targets to manage the test database-->
-    <target name="test.db.create" description="Creates the test schemas and tables for the engine test db" depends="check.test.properties" if="test.properties.present">
+    <target name="test.db.create" description="Creates the test schemas and tables for the engine test db" 
+    	depends="check.test.properties" if="test.properties.present">
         <H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}"
                  user="${test.h2.db.admin}"
                  password="${test.h2.db.adminpassw}"
@@ -432,6 +435,18 @@ $Revision$ $Date$ $Author$
                 failonerror="true">
         </H2RunScript>
     </target>
+	
+	<target name="test.db.drop" description="Drops the users, schemas and tables of the engine test db" depends="check.test.properties" if="test.properties.present">
+		<H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}"
+			     user="${test.h2.db.admin}"
+				 password="${test.h2.db.adminpassw}"
+				 script="$${testData.dir}/database/sql/Test_CEF_DropUserSchema.sql"
+				 failonerror="true">
+		</H2RunScript>
+		<delete dir="${test.h2.db.url}.lobs.db"/>
+    </target>
+	
+	<target name="test.db.reset" description="Resets the database" depends="test.db.drop, test.db.create"/>
 
 <!--
  ============ Database targets ===================
@@ -467,6 +482,8 @@ $Revision$ $Date$ $Author$
 		</H2RunScript>
 		<delete dir="${h2.db.url}.lobs.db"/>
 	</target>
+
+	<target name="db.reset" description="Resets the database" depends="db.drop, db.create"/>
 
 <!--
  ============ copy files/resources ===================

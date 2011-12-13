@@ -175,13 +175,11 @@ public class H2DataAccessObject implements DataAccessObject {
             resultSet = prepSt.executeQuery();
 
             // Create list of results
-            if (!resultSet.first())
-            	{
+            if (!resultSet.first()) {
             	logger.debug("No emulator IDs found in database");
             	return emuList;
-            	}
-            else
-            {
+            }
+            else {
 	            do {
 	            	emuList.put(resultSet.getInt(1), resultSet.getString(2));
 	            }

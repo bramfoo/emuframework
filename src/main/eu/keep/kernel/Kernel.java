@@ -100,7 +100,7 @@ public class Kernel implements CoreEngineModel {
         	throw new IOException("Failed to initialise Kernel properly");
 
         // Both the properties and db connection are working so no errors expected here
-        characteriser = new Characteriser(props);
+        characteriser = createCharacteriser(props);
         controller = new Controller();
         downloader = createDownloader(props, localDBConnection);
         
@@ -111,6 +111,11 @@ public class Kernel implements CoreEngineModel {
 	// Support for mocking
     protected Downloader createDownloader(Properties props, Connection conn) {
     	return new Downloader(props, conn);
+    }
+
+	// Support for mocking
+    protected Characteriser createCharacteriser(Properties props) throws IOException {
+		return new Characteriser(props);
     }
 
     /**
