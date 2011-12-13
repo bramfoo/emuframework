@@ -75,13 +75,12 @@ public class TestSoftwareArchive {
 
    	 //TODO Launch server in a separate thread in setup() and kill thread in tearDown()
 
-        // read user.properties
+        // read test.properties
         try {
-
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("eu/keep/" + propertiesFile);
             props = getProperties(is);
         }
-        catch(IOException e){
+        catch(IOException e) {
             e.printStackTrace();
             fail(e.toString());
         }
