@@ -1,6 +1,7 @@
 package eu.keep.softwarearchive.wizard;
 
 import eu.keep.softwarearchive.util.DBUtil;
+import eu.keep.softwarearchive.wizard.model.OpSys;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 

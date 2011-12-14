@@ -1,6 +1,8 @@
 package eu.keep.softwarearchive.wizard;
 
 import eu.keep.softwarearchive.util.DBUtil;
+import eu.keep.softwarearchive.wizard.model.ImageFormat;
+import eu.keep.softwarearchive.wizard.model.Platform;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

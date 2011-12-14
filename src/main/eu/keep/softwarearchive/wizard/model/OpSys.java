@@ -1,4 +1,4 @@
-package eu.keep.softwarearchive.wizard;
+package eu.keep.softwarearchive.wizard.model;
 
 public class OpSys {
 
