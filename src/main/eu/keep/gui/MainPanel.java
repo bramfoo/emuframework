@@ -47,15 +47,16 @@ public class MainPanel extends JPanel {
 
     protected GUI parent;
     protected ConfigPanel configPanel = null;
-    private final boolean adminTabs;
+    private final boolean eaAdminTab;
+    private final boolean swaAdminTab;
     protected JTabbedPane tabbedPane;
-    private DBPanel efPanel = null;
     private DBPanel eaPanel = null;
     private DBPanel swaPanel = null;
 
-    MainPanel(GUI gui, boolean at) {
+    MainPanel(GUI gui, boolean eaAdmin, boolean swaAdmin) {
         parent = gui;
-        adminTabs = at;
+        eaAdminTab = eaAdmin;
+        swaAdminTab = swaAdmin;
         initGUI();
     }
 
@@ -68,20 +69,11 @@ public class MainPanel extends JPanel {
         tabbedPane = new JTabbedPane();
 
         configPanel = new ConfigPanel(parent);
-        tabbedPane.addTab("Config", null, configPanel, "Configure and start an emulator.");
+        tabbedPane.addTab("Emulation Framework", null, configPanel, "Configure and start an emulator.");
 
         Properties p = parent.guiProps;
 
-        if(adminTabs) {
-
-            // The core emulator framework database tab.
-            efPanel = new DBPanel(parent,
-                    p.getProperty("ef.jdbc.prefix") + p.getProperty("ef.db.url") + p.getProperty("ef.db.exists") + p.getProperty("ef.db.server"),
-                    p.getProperty("ef.db.schema.name"),
-                    p.getProperty("ef.db.admin"),
-                    p.getProperty("ef.db.adminpassw")
-            );
-
+        if(eaAdminTab) {
             // The emulator archive database tab.
             eaPanel = new DBPanel(parent,
                     p.getProperty("ea.jdbc.prefix") + p.getProperty("ea.db.url") + p.getProperty("ea.db.exists") + p.getProperty("ea.db.server"),
@@ -89,7 +81,10 @@ public class MainPanel extends JPanel {
                     p.getProperty("ea.db.admin"),
                     p.getProperty("ea.db.adminpassw")
             );
-
+            tabbedPane.addTab("Emulator Archive", null, eaPanel, "Manage the emulator archive database.");
+        }
+        
+        if (swaAdminTab) {
             // The software archive database tab.
             swaPanel = new DBPanel(parent,
                     p.getProperty("swa.jdbc.prefix") + p.getProperty("swa.db.url")  + p.getProperty("swa.db.exists")  + p.getProperty("swa.db.server"),
@@ -97,10 +92,7 @@ public class MainPanel extends JPanel {
                     p.getProperty("swa.db.admin"),
                     p.getProperty("swa.db.adminpassw")
             );
-
-            tabbedPane.addTab("EF", null, efPanel, "Edit the emulator framework database.");
-            tabbedPane.addTab("EA", null, eaPanel, "Edit the emulator archive database.");
-            tabbedPane.addTab("SWA", null, swaPanel, "Edit the software archive database.");
+            tabbedPane.addTab("Software Archive", null, swaPanel, "Manage the software archive database.");
         }
 
         super.add(tabbedPane, BorderLayout.CENTER);

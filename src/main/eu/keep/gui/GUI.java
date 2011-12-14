@@ -76,7 +76,7 @@ public class GUI extends JFrame {
      * @param adminTabs
      * @throws java.io.IOException if the gui.properties file can not be found.
      */
-    private GUI(CoreEngineModel model, boolean adminTabs) throws IOException {
+    private GUI(CoreEngineModel model, boolean eaAdmin, boolean swaAdmin) throws IOException {
         super("KEEP ~ Emulation Framework");
 
         this.model = model;
@@ -108,7 +108,7 @@ public class GUI extends JFrame {
         super.setGlassPane(new GlassPane());
 
         // initialize all GUI components
-        initGUI(adminTabs);
+        initGUI(eaAdmin, swaAdmin);
         initActionListeners();
     }
 
@@ -179,11 +179,11 @@ public class GUI extends JFrame {
     /*
      * Initialize the GUI components.
      */
-    private void initGUI(boolean adminTabs) {
+    private void initGUI(boolean eaAdmin, boolean swaAdmin) {
         super.setLayout(new BorderLayout(5, 5));
 
         // init main panel
-        tabPanel = new MainPanel(this, adminTabs);
+        tabPanel = new MainPanel(this, eaAdmin, swaAdmin);
         super.add(tabPanel, BorderLayout.CENTER);
 
         // log/message label
@@ -198,7 +198,7 @@ public class GUI extends JFrame {
         super.add(logLabel, BorderLayout.SOUTH);
 
         // init menu bar
-        JMenuBar menuBar = initMenuBar();
+        JMenuBar menuBar = initMenuBar(eaAdmin, swaAdmin);
         this.setJMenuBar(menuBar);
     }
 
@@ -206,31 +206,38 @@ public class GUI extends JFrame {
      * Init menu bar
      * @return
      */
-    private JMenuBar initMenuBar() {
+    private JMenuBar initMenuBar(boolean eaAdmin, boolean swaAdmin) {
         JMenuBar menuBar = new JMenuBar();
 
         // File menu option
-        JMenu file = new JMenu("File");
-        file.setMnemonic(KeyEvent.VK_F);
+        JMenu file = initFileMenu();
 
-        JMenu add = new JMenu("Add");
-        JMenuItem addApp = new JMenuItem("Application");
-        addApp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(GUI.this, "add an application wizard");
-            }
-        });
-        JMenuItem addEmu = new JMenuItem("Emulator");
-        addEmu.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(GUI.this, "add an emulator wizard");
-            }
-        });
-        add.add(addApp);
-        add.add(addEmu);
-        //file.add(add);
+        // Settings menu option
+        JMenu settings = initSettingsMenu();
+
+        // Tools menu option
+        JMenu tools = initToolsMenu(eaAdmin, swaAdmin);
+        
+        // Help menu option
+        JMenu help = initHelpMenu();
+
+        // Add everything together
+        menuBar.add(file);
+        menuBar.add(settings);        
+        if (eaAdmin || swaAdmin) { // Do not add Tools menu if in 'client mode'
+            menuBar.add(tools);
+        }	
+        menuBar.add(help);
+		return menuBar;
+	}
+
+	/**
+     * Initialise the File menu
+     * @return the File menu
+     */
+	private JMenu initFileMenu() {
+		JMenu fileMenu = new JMenu("File");
+        fileMenu.setMnemonic(KeyEvent.VK_F);
 
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener(new ActionListener() {
@@ -239,22 +246,30 @@ public class GUI extends JFrame {
                 GUI.this.gracefulExit();
             }
         });
-        file.add(exit);
+        fileMenu.add(exit);
+		return fileMenu;
+	}
 
-        // Settings menu option
-        JMenu settings = new JMenu("Settings");
-        settings.setMnemonic(KeyEvent.VK_S);
+    /**
+     * Initialise the Settings menu
+     * @return the Settings menu
+     */
+	private JMenu initSettingsMenu() {
+		JMenu settingsMenu = new JMenu("Settings");
+        settingsMenu.setMnemonic(KeyEvent.VK_S);
         
-        JMenuItem languages = new JMenuItem("languages");
+        // Language settings option
+        JMenuItem languages = new JMenuItem("Languages");
         languages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new LanguageSettingsFrame(GUI.this, "eu/keep/" + PROP_FILE_NAME_KERNEL);
             }
         });
-        settings.add(languages);
+        settingsMenu.add(languages);
 
-        JMenuItem addresses = new JMenuItem("web-service addresses");
+        // Web-service addresses settings option
+        JMenuItem addresses = new JMenuItem("Web-service addresses");
         addresses.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -275,11 +290,52 @@ public class GUI extends JFrame {
                         editableProperties);
             }
         });
-        settings.add(addresses);
+        settingsMenu.add(addresses);
+		return settingsMenu;
+	}
 
-        // Help menu option
-        JMenu help = new JMenu("Help");
-        help.setMnemonic(KeyEvent.VK_H);
+    /**
+     * Initialise the Tools menu
+     * @return the Tools menu
+     */
+    private JMenu initToolsMenu(boolean eaAdmin, boolean swaAdmin) {
+		JMenu toolsMenu = new JMenu("Tools");
+        toolsMenu.setMnemonic(KeyEvent.VK_T);
+        
+        // Option to start Add Emulator wizard
+        if (eaAdmin) {
+            JMenuItem addEmulator = new JMenuItem("Add Emulator...");
+            addEmulator.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(GUI.this, "Emulator Wizard", "", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+            toolsMenu.add(addEmulator);        	
+        }
+        
+        // Option to start Add Software wizard
+        if (swaAdmin) {
+            JMenuItem addSoftware = new JMenuItem("Add Software...");
+            addSoftware.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(GUI.this, "Software Wizard", "", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+            toolsMenu.add(addSoftware);        	
+        }
+        
+        return toolsMenu;
+    }
+
+    /**
+     * Initialise the Help menu
+     * @return the help menu
+     */
+	private JMenu initHelpMenu() {
+		JMenu helpMenu = new JMenu("Help");
+        helpMenu.setMnemonic(KeyEvent.VK_H);
 
         JMenuItem helpItem = new JMenuItem("Help");
         helpItem.addActionListener(new ActionListener() {
@@ -288,7 +344,7 @@ public class GUI extends JFrame {
                 JOptionPane.showMessageDialog(GUI.this, "HELP");
             }
         });
-        // help.add(helpItem); // TODO: add some help pages
+        // helpMenu.add(helpItem); // TODO: add some help pages
 
         JMenuItem aboutItem = new JMenuItem("About");
         aboutItem.addActionListener(new ActionListener() {
@@ -330,13 +386,8 @@ public class GUI extends JFrame {
                 );
             }
         });
-        help.add(aboutItem);
-
-        // Add everything together
-        menuBar.add(file);
-        menuBar.add(settings);
-        menuBar.add(help);
-		return menuBar;
+        helpMenu.add(aboutItem);
+		return helpMenu;
 	}
 
     public void loadFormats(List<Format> formats) {
@@ -424,16 +475,39 @@ public class GUI extends JFrame {
             @Override
             public void run() {
                 try {
-                    // TODO: use something like Apache CLI instead of regex voodoo
-                    boolean adminTabs = false;
-                    if(args.length == 1) {
-                        adminTabs = args[0].matches("(?i)-*admin"); // accepts --admin, -a, ... (case insensitive)
-                    }
+                	
+                	// Check if the EA admin mode should be started
+                	boolean eaAdmin = false;
+                	File ea = new File("ea");
+                	if (ea.exists() && ea.isDirectory() && ea.list().length > 0) {
+                    	logger.info("Found local instance of Emulator Archive in directory " + ea.getAbsolutePath() + 
+                    			". Starting Emulator Archive admin mode.");
+                		eaAdmin = true;
+                	} 
+                	else {
+                		logger.info("No local instance of Emulator Archive found.");
+                	}
 
+                	// Check if the SWA admin mode should be started
+                	boolean swaAdmin = false;
+                	File swa = new File("swa");
+                	if (swa.exists() && swa.isDirectory() && swa.list().length > 0) {
+                    	logger.info("Found local instance of Software Archive in directory " + swa.getAbsolutePath() + 
+                    			". Starting Software Archive admin mode.");
+                		swaAdmin = true;
+                	}
+                	else {
+                		logger.info("No local instance of Software Archive found.");
+                	}
+
+                	if (!eaAdmin && !swaAdmin) {
+                		logger.info("Starting Emulation Framework in client mode.");
+                	}
+                	
                     logger.info("Initializing the GUI...");
-                    GUI gui = new GUI(m, adminTabs);
+                    GUI gui = new GUI(m, eaAdmin, swaAdmin);
                     gui.setVisible(true);
-                    logger.info("Started the GUI successfully.");
+                    logger.debug("Started the GUI successfully.");
                 } catch (IOException e) {
                     logger.fatal(e.getMessage());
                 }
