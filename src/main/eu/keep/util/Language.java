@@ -248,4 +248,8 @@ public enum Language {
 		return languageName;
 	}
 
+    @Override
+    public String toString() {
+        return languageName;
+    }
 }
