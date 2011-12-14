@@ -100,7 +100,7 @@ public class Step2_OpSys extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step2);
                 parent.add(parent.step1, BorderLayout.CENTER);
-                parent.log("1/5");
+                parent.log("1/5, select an application");
                 parent.validate();
                 parent.repaint();
             }
@@ -119,7 +119,7 @@ public class Step2_OpSys extends JPanel {
                 }
                 parent.remove(parent.step2);
                 parent.add(parent.step3, BorderLayout.CENTER);
-                parent.log("3/5, selected operating system: " + opSys.name + ", id: " + opSys.opsys_id);
+                parent.log("3/5, select a hardware platform and file system");
                 parent.validate();
                 parent.repaint();
             }

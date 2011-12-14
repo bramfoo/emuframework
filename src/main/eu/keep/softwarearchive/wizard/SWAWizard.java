@@ -36,7 +36,7 @@ public class SWAWizard extends JFrame {
         step5 = new Step5_FileFormat(this);
         confirm = new ConfirmPanel(this);
 
-        logLabel = new JLabel("1/5");
+        logLabel = new JLabel("1/5, select an application");
 
         super.setLayout(new BorderLayout(5, 5));
 
@@ -85,7 +85,7 @@ public class SWAWizard extends JFrame {
         return txt;
     }
 
-    protected void log(String message) {
+    protected synchronized void log(String message) {
         logLabel.setText(message);
     }
 

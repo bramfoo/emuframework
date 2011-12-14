@@ -77,7 +77,7 @@ public class Step3_HardwareAndFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step3);
                 parent.add(parent.step2, BorderLayout.CENTER);
-                parent.log("2/5");
+                parent.log("2/5, select an operating system");
                 parent.validate();
                 parent.repaint();
             }
@@ -88,7 +88,7 @@ public class Step3_HardwareAndFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step3);
                 parent.add(parent.step4, BorderLayout.CENTER);
-                parent.log("4/5, hardware platform: " + platform + ", file system: " + imageFormat);
+                parent.log("4/5, select the ZIP file");
                 parent.validate();
                 parent.repaint();
             }

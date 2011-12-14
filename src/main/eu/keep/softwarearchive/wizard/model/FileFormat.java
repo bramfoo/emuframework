@@ -3,7 +3,7 @@ package eu.keep.softwarearchive.wizard.model;
 public class FileFormat {
 
     public final boolean newFormat;
-    protected final String fileformat_id, name, version, description, reference;
+    public final String fileformat_id, name, version, description, reference;
 
     public FileFormat() {
         this(false, null, null, null, null, null);
@@ -16,6 +16,10 @@ public class FileFormat {
         this.version = version;
         this.description = description;
         this.reference = reference;
+    }
+
+    public boolean isDummy() {
+        return fileformat_id == null;
     }
 
     @Override

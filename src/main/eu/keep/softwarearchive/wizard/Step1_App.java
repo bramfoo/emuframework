@@ -102,7 +102,7 @@ public class Step1_App extends JPanel {
                 }
                 parent.remove(parent.step1);
                 parent.add(parent.step2, BorderLayout.CENTER);
-                parent.log("2/5, selected app: " + app.name + ", id: " + app.app_id);
+                parent.log("2/5, select an operating system");
                 parent.validate();
                 parent.repaint();
             }

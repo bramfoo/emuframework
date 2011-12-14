@@ -45,6 +45,8 @@ public class Step4_ZippedImage extends JPanel {
         final JButton previous = new JButton("<html>&larr;</html>");
         final JButton next = new JButton("<html>&rarr;</html>");
 
+        next.setEnabled(false);
+
         buttons.add(previous);
         buttons.add(next);
 
@@ -56,7 +58,7 @@ public class Step4_ZippedImage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step4);
                 parent.add(parent.step3, BorderLayout.CENTER);
-                parent.log("3/5");
+                parent.log("3/5, select a hardware platform and file system");
                 parent.validate();
                 parent.repaint();
             }
@@ -67,7 +69,7 @@ public class Step4_ZippedImage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step4);
                 parent.add(parent.step5, BorderLayout.CENTER);
-                parent.log("5/5");
+                parent.log("5/5, select a file format");
                 parent.validate();
                 parent.repaint();
             }
@@ -85,6 +87,8 @@ public class Step4_ZippedImage extends JPanel {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File f = fileChooser.getSelectedFile();
                     txtPath.setText(f.toString());
+                    txtPath.setBackground(Color.WHITE);
+                    next.setEnabled(true);
                     imageBlob = new ImageBlob(blobID, f);
                 }
             }
@@ -97,10 +101,12 @@ public class Step4_ZippedImage extends JPanel {
                 if(f.exists() && f.isFile() && f.getName().toLowerCase().endsWith(".zip")) {
                     txtPath.setBackground(Color.WHITE);
                     imageBlob = new ImageBlob(blobID, f);
+                    next.setEnabled(true);
                 }
                 else {
                     txtPath.setBackground(SWAWizard.LIGHT_RED);
                     imageBlob = null;
+                    next.setEnabled(false);
                 }
             }
         });
