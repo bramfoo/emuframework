@@ -34,6 +34,7 @@ import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
 import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
+import eu.keep.gui.wizard.swa.SWAWizard;
 import eu.keep.kernel.CoreEngineModel;
 import eu.keep.kernel.Kernel;
 import eu.keep.util.FileUtilities;
@@ -71,10 +72,10 @@ public class GUI extends JFrame {
     /**
      * Private constructor: instantiation is done through the main method.
      *
-     *
-     * @param model the core engine model.
-     * @param adminTabs
-     * @throws java.io.IOException if the gui.properties file can not be found.
+     * @param model
+     * @param eaAdmin
+     * @param swaAdmin
+     * @throws IOException if the gui.properties file can not be found.
      */
     private GUI(CoreEngineModel model, boolean eaAdmin, boolean swaAdmin) throws IOException {
         super("KEEP ~ Emulation Framework");
@@ -320,7 +321,12 @@ public class GUI extends JFrame {
             addSoftware.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(GUI.this, "Software Wizard", "", JOptionPane.INFORMATION_MESSAGE);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new SWAWizard();
+                        }
+                    });
                 }
             });
             toolsMenu.add(addSoftware);        	
