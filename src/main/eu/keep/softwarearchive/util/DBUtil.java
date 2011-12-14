@@ -49,13 +49,6 @@ public final class DBUtil {
         String fileName = "user.properties";
 
         try {
-            /*
-            InputStream is = DBUtil.class.getClass().getClassLoader().getResourceAsStream(fileName);
-
-            if(is == null) {
-                is = new FileInputStream(fileName);
-            }
-            */
             p = FileUtilities.getProperties(new FileInputStream(fileName));
 
         } catch (Exception e) {
@@ -178,10 +171,10 @@ public final class DBUtil {
         return prefix + "-" + (numbers.last() + 1 + toAdd);
     }
 
-    public static Vector<String> getColumn(Vector<Vector<String>> data, int column) {
+    public static Vector<String> getColumn(Vector<Vector<String>> data, int columnIndex) {
         Vector<String> col = new Vector<String>();
         for(Vector<String> row : data) {
-            col.add(row.get(column));
+            col.add(row.get(columnIndex));
         }
         return col;
     }
