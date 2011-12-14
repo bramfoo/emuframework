@@ -45,7 +45,7 @@ public class CheckBoxList<E extends JCheckBox> extends JList {
 //
 	public CheckBoxList() {
 		// Use standard background color
-		setBackground(new Color(UIManager.getColor("background").getRGB()));
+		this.setBackground(new Color(UIManager.getColor("background").getRGB()));
 
 		// Use custom cell renderer, to display checkboxes.
 		setCellRenderer(new ListCellRenderer() {

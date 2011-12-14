@@ -37,6 +37,9 @@ import eu.keep.util.Language;
 
 import javax.swing.*;
 
+import net.miginfocom.layout.CC;
+import net.miginfocom.swing.MigLayout;
+
 import org.apache.log4j.Logger;
 
 import java.awt.*;
@@ -102,42 +105,46 @@ public class LanguageSettingsFrame extends JFrame {
      * Initialise this frame
      */
     private void initFrame() {
-        super.addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 LanguageSettingsFrame.this.close();
             }
         });
 
-        super.setResizable(false);
-        super.setVisible(true);
-        
-        super.setSize(new Dimension(500, 400));
+        this.setResizable(false);
+        this.setVisible(true);        
+        this.setSize(new Dimension(500, 400));
         int parentX = parent.getX();
         int parentY = parent.getY();
         int parentW = parent.getWidth();
         int parentH = parent.getHeight();
-        super.setLocation(parentX + (parentW / 2) - (getWidth() / 2),
+        this.setLocation(parentX + (parentW / 2) - (getWidth() / 2),
                 parentY + (parentH / 2) - (getHeight() / 2));
         
-        super.setLayout(new BorderLayout(5, 5));
-        super.add(new JLabel("  "), BorderLayout.NORTH);
-        super.add(new JLabel("  "), BorderLayout.WEST);
-        super.add(new JLabel("  "), BorderLayout.EAST);
+        this.setLayout(new BorderLayout(5, 0));
+        this.add(new JLabel(" "), BorderLayout.NORTH);
+        this.add(new JLabel(" "), BorderLayout.WEST);
+        this.add(new JLabel(" "), BorderLayout.EAST);
+
+        JPanel mainPanel = new JPanel(new MigLayout(
+        		"wrap 2", // Layout Constraints
+        		"[]20[]", // Column constraints
+        		"[top]50[top]push[bottom]") // Row constraints
+        );
 
         // Add child Panels
-        JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
-        initLanguagePanel(mainPanel);
-        initAcceptedLanguagesPanel(mainPanel);
-        initButtonPanel(mainPanel);
-        super.add(mainPanel, BorderLayout.CENTER);
+        addLanguagePanel(mainPanel);
+        addAcceptedLanguagesPanel(mainPanel);
+        addButtonPanel(mainPanel);
+        this.add(mainPanel, BorderLayout.CENTER);
     }
 
 	/**
 	 * Initialise the Language Panel with a list of GUI languages
 	 * @param mainPanel the GUI's mainPanel object
 	 */
-	private void initLanguagePanel(JPanel mainPanel) {		
+	private void addLanguagePanel(JPanel mainPanel) {		
 
 		// Buttons for available language options
         JRadioButton english = new JRadioButton(Language.en.getLanguageName());
@@ -160,35 +167,38 @@ public class LanguageSettingsFrame extends JFrame {
         buttonGroupPanel.add(german);
         buttonGroupPanel.add(french);
         buttonGroupPanel.add(dutch);
-		
-        // User instructions
-        JLabel languageInstructions = new JLabel("Select language for this user interface:");
         
-        // Add everything together
-        JPanel guiLanguagePanel = new JPanel(new GridLayout(0, 2));
-        guiLanguagePanel.add(languageInstructions);
-        guiLanguagePanel.add(buttonGroupPanel);
-		mainPanel.add(guiLanguagePanel, BorderLayout.NORTH);
+        // User instructions
+        JLabel languageInstructions = new JLabel("Emulation Framework language:");
+        
+        // Add everything to the main panel
+        mainPanel.add(languageInstructions);
+        mainPanel.add(buttonGroupPanel);
 	}
 
 	/**
 	 * Initialise the AcceptedLanguages Panel with a list of check buttons for each available language
 	 * @param mainPanel the GUI's mainPanel object
 	 */
-	private void initAcceptedLanguagesPanel(JPanel mainPanel) {
+	private void addAcceptedLanguagesPanel(JPanel mainPanel) {
 
 		boolean allLanguagesAccepted = initAcceptedLanguages();
 
 		// User instructions
 		JLabel acceptedLanguageInstructions = new JLabel("<html>" +
-				"Select the acceptable languages for emulators and software. <br><br>" +
+				"The Emulation Framework contains emulators and software with different user languages." +
+				"Select here the emulator and software languages which you wish to accept. <br><br>" +
 				"Deselecting languages here means that emulators and software that use " +
 				"this language will not be shown or selected by the Emulation Framework." +
 				"</html>");
-
+		
 		// List of checkboxes for each available language
-		JPanel checkBoxesPanel = new JPanel(new GridLayout(0,1));
-
+		JPanel checkBoxesPanel = new JPanel(new MigLayout(
+        		"wrap 1", // Layout Constraints
+        		"0[]", // Column constraints
+        		"0[top][center][top]") // Row constraints
+        );
+		
 		// Select all checkbox
 		final JCheckBox selectAllBox = new JCheckBox(select_all_label); // final so it can be accessed in anonymous inner classes
 		selectAllBox.setSelected(allLanguagesAccepted);
@@ -208,7 +218,13 @@ public class LanguageSettingsFrame extends JFrame {
 			}
 		});
 		checkBoxesPanel.add(selectAllBox);
-
+		
+		// Horizontal line to divide 'select all' checkbox from list below
+		JSeparator line = new JSeparator(SwingConstants.HORIZONTAL);
+		line.setPreferredSize(new Dimension(100,1));
+		checkBoxesPanel.add(line);
+		
+		
 		// Individual language checkboxes
 		List<LanguageCheckBox> checkBoxes = new ArrayList<LanguageCheckBox>();
 		for (Language language : availableLanguages) {
@@ -249,11 +265,9 @@ public class LanguageSettingsFrame extends JFrame {
 		checkBoxList.setListData(checkBoxes.toArray(new LanguageCheckBox[0]));
 		checkBoxesPanel.add(checkBoxList);
 
-		// Add everything together
-		JPanel accepedLanguagesPanel = new JPanel(new GridLayout(0, 2));
-		accepedLanguagesPanel.add(acceptedLanguageInstructions);
-		accepedLanguagesPanel.add(checkBoxesPanel);
-		mainPanel.add(accepedLanguagesPanel, BorderLayout.CENTER);
+		// Add everything to the main panel
+		mainPanel.add(acceptedLanguageInstructions);
+		mainPanel.add(checkBoxesPanel);
 	}
 
 	/**
@@ -294,7 +308,7 @@ public class LanguageSettingsFrame extends JFrame {
 	 * Initialise the Button Panel with a Save and a Cancel button
 	 * @param mainPanel the GUI's mainPanel object
 	 */
-	private void initButtonPanel(JPanel mainPanel) {
+	private void addButtonPanel(JPanel mainPanel) {
         // Save button
         JButton save = new JButton("save");
         save.addActionListener(new ActionListener() {
@@ -331,7 +345,7 @@ public class LanguageSettingsFrame extends JFrame {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(save);
         buttonPanel.add(cancel);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, new CC().cell(1,2).alignX("right").alignY("bottom"));
 	}
 
 	/**
