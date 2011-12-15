@@ -55,7 +55,7 @@ public class SWAWizard extends JFrame {
     public SWAWizard() {
         super("SWA wizard");
 
-        super.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         super.setResizable(false);
         super.setSize(500, 600);
 

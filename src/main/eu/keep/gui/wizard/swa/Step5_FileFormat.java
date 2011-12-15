@@ -46,6 +46,8 @@ import java.util.Vector;
 
 public class Step5_FileFormat extends JPanel {
 
+    private static final String FITS_HOME = "eu/keep/resources/fits";
+
     protected FileFormat fileFormat = new FileFormat();
 
     Step5_FileFormat(final SWAWizard parent) {
@@ -185,7 +187,7 @@ public class Step5_FileFormat extends JPanel {
                         @Override
                         public void run() {
                             try {
-                                FitsTool tool = new FitsTool("resources/fits-0.4.1");
+                                FitsTool tool = new FitsTool(FITS_HOME);
                                 FitsOutput output = tool.examine(f);
                                 java.util.List<Format> formats = tool.getFormats(output);
                                 fitsOut.removeAllItems();

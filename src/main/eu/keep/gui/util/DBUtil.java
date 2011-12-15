@@ -33,52 +33,67 @@ package eu.keep.gui.util;
 import eu.keep.util.FileUtilities;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
 public final class DBUtil {
 
     private static Logger logger = Logger.getLogger(DBUtil.class.getName());
-    private static Properties p = null;
+    private static final String propFileName = "eu/keep/gui.properties";
+    private static Properties swaProps = null;
 
     static {
-        String fileName = "user.properties";
-
+        if(!new File(propFileName).exists()) {
+            throw new RuntimeException("Could not locate: " + propFileName);
+        }
         try {
-            p = FileUtilities.getProperties(new FileInputStream(fileName));
-
-        } catch (Exception e) {
+            swaProps = FileUtilities.getProperties(new FileInputStream(propFileName));
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static enum DB {
         /*
-        CEF(p.getProperty("ef.jdbc.prefix") + p.getProperty("ef.db.url") + p.getProperty("ef.db.exists") + p.getProperty("ef.db.server"),
-                p.getProperty("ef.db.schema.name"),
-                p.getProperty("ef.db.admin"),
-                p.getProperty("ef.db.adminpassw")),
-        EA(p.getProperty("ea.jdbc.prefix") + p.getProperty("ea.db.url") + p.getProperty("ea.db.exists") + p.getProperty("ea.db.server"),
-                p.getProperty("ea.db.schema.name"),
-                p.getProperty("ea.db.admin"),
-                p.getProperty("ea.db.adminpassw")),
+        CEF(swaProps.getProperty("ef.jdbc.prefix") + swaProps.getProperty("ef.db.url") + swaProps.getProperty("ef.db.exists") + swaProps.getProperty("ef.db.server"),
+                swaProps.getProperty("ef.db.schema.name"),
+                swaProps.getProperty("ef.db.admin"),
+                swaProps.getProperty("ef.db.adminpassw")),
+        EA(swaProps.getProperty("ea.jdbc.prefix") + swaProps.getProperty("ea.db.url") + swaProps.getProperty("ea.db.exists") + swaProps.getProperty("ea.db.server"),
+                swaProps.getProperty("ea.db.schema.name"),
+                swaProps.getProperty("ea.db.admin"),
+                swaProps.getProperty("ea.db.adminpassw")),
         */
-        SWA(p.getProperty("h2.jdbc.prefix") + p.getProperty("h2.db.url") + p.getProperty("h2.db.exists"),
-                p.getProperty("h2.db.schema"),
-                p.getProperty("h2.db.admin"),
-                p.getProperty("h2.db.adminpassw"));
+        SWA(swaProps.getProperty("swa.jdbc.prefix") + swaProps.getProperty("swa.db.url") + swaProps.getProperty("swa.db.exists") + swaProps.getProperty("swa.db.server"),
+                swaProps.getProperty("swa.db.schema"),
+                swaProps.getProperty("swa.db.admin"),
+                swaProps.getProperty("swa.db.adminpassw"));
 
         public final Connection conn;
 
         private DB(String url, String schema, String usr, String pwd) {
-            System.out.printf("url=%s, schema=%s, usr=%s, pwd=%s", url, schema, usr, pwd);
             Connection c;
-            try {
-                c = DriverManager.getConnection(url, usr, pwd);
-            } catch (SQLException e) {
-                c = null;
-                logger.warn("Could not connect to the database: " + e.getMessage());
+
+            if(url == null || schema == null || usr == null || pwd == null) {
+
+                String message = String.format("Invalid data in %s: url=%s, schema=%s, usr=%s, pwd=%s",
+                        propFileName, url, schema, usr, pwd);
+
+                logger.error(message);
+                throw new RuntimeException(message);
+            }
+            else {
+                try {
+                    c = DriverManager.getConnection(url, usr, pwd);
+                } catch (SQLException e) {
+                    String message = "Could not connect to the database: " + e.getMessage();
+                    logger.error(message);
+                    throw new RuntimeException(message);
+                }
             }
             conn = c;
         }
@@ -89,8 +104,8 @@ public final class DBUtil {
     }
 
     /**
-     * <p>Returns a unique string based on zero or more existing records. For example, if the
-     * records <code>existingData</code> contains the following data:</p>
+     * <swaProps>Returns a unique string based on zero or more existing records. For example, if the
+     * records <code>existingData</code> contains the following data:</swaProps>
      *
      * <pre>
      * data = [
@@ -100,10 +115,10 @@ public final class DBUtil {
      * ]
      * </pre>
      *
-     * <p><code>createUniqueStringID(data, 0, 0)</code> will return
+     * <swaProps><code>createUniqueStringID(data, 0, 0)</code> will return
      * <code>"abc-6"</code> (the largest number + 1 + 0). And
      * <code>createUniqueStringID(data, 0, 3)</code> will return
-     * <code>"abc-9"</code> (the largest number + 1 + 3).</p>
+     * <code>"abc-9"</code> (the largest number + 1 + 3).</swaProps>
      *
      * @param existingData      the existing records.
      * @param indexID           the index of the rows in <code>existingData</code> which
@@ -120,8 +135,8 @@ public final class DBUtil {
     }
 
     /**
-     * <p>Returns a unique string based on zero or more existing records. For example, if the
-     * records <code>existingData</code> contains the following data:</p>
+     * <swaProps>Returns a unique string based on zero or more existing records. For example, if the
+     * records <code>existingData</code> contains the following data:</swaProps>
      *
      * <pre>
      * data = [
@@ -131,10 +146,10 @@ public final class DBUtil {
      * ]
      * </pre>
      *
-     * <p><code>createUniqueStringID(data, 0, 0)</code> will return
+     * <swaProps><code>createUniqueStringID(data, 0, 0)</code> will return
      * <code>"abc-6"</code> (the largest number + 1 + 0). And
      * <code>createUniqueStringID(data, 0, 3)</code> will return
-     * <code>"abc-9"</code> (the largest number + 1 + 3).</p>
+     * <code>"abc-9"</code> (the largest number + 1 + 3).</swaProps>
      *
      * @param existingData      the existing records.
      * @param indexID           the index of the rows in <code>existingData</code> which
@@ -197,7 +212,7 @@ public final class DBUtil {
         }
     }
 
-    // TODO: read-only (SQL injections) or use PreparedStatement
+    // TODO: read-only (prevent SQL injections) or use PreparedStatement
     public static Vector<Vector<String>> query(DB db, String sql) throws RuntimeException {
         if(db.conn == null) {
             throw new RuntimeException("No connection to: " + db);

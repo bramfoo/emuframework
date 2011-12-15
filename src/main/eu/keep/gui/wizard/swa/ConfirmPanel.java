@@ -113,6 +113,7 @@ public class ConfirmPanel extends JPanel {
                     cancel.setEnabled(false);
                     confirm.setEnabled(false);
 
+                    parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
                     parent.log("committing changes, please wait...");
                     parent.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     parent.setEnabled(false);
@@ -237,7 +238,7 @@ public class ConfirmPanel extends JPanel {
                                         fileFormat.fileformat_id, app.app_id
                                 );
 
-                                // all went okay!
+                                // Yay, all went okay!
                                 parent.log("Successfully committed changes!");
 
                             }
@@ -247,9 +248,11 @@ public class ConfirmPanel extends JPanel {
 
                             parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                             parent.setEnabled(true);
+                            parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         }
                     })).start();
-                } else {
+                }
+                else {
                     parent.log("commit canceled");
                 }
             }
