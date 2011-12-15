@@ -54,7 +54,7 @@ import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
  */
 public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
-     private static final Logger logger = Logger.getLogger(H2EmulatorPackageDAO.class.getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private Connection          conn;
 
@@ -161,34 +161,35 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
      */
     public List<Integer> getEmuID(String hardwareName) {
 
-        List<Integer> emuID = new ArrayList<Integer>();
+    	List<Integer> emuID = new ArrayList<Integer>();
 
-        PreparedStatement pstmt = null;
-        ResultSet rs = null;
+    	PreparedStatement pstmt = null;
+    	ResultSet rs = null;
 
-        // FIXME: Add proper exception handling
-        try {
-            pstmt = conn.prepareStatement(EMUID_FROM_HWNAME);
-            pstmt.setString(1, hardwareName);
-            rs = pstmt.executeQuery();
+    	// FIXME: Add proper exception handling
+    	try {
+    		pstmt = conn.prepareStatement(EMUID_FROM_HWNAME);
+    		pstmt.setString(1, hardwareName);
+    		rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                // record has been found
-                String res = rs.getString("emulator_id");
-                emuID.add(Integer.parseInt(res));
-            }
-            rs.close();
-            pstmt.close();
+    		while (rs.next()) {
+    			// record has been found
+    			String res = rs.getString("emulator_id");
+    			emuID.add(Integer.parseInt(res));
+    		}
 
-        }
-        catch (SQLException e) {
-             logger.warn("Database: Cannot get list of emulator IDs: " +
-             e.toString());
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+    		rs.close();
+    		pstmt.close();
 
-        return emuID;
+    	}
+    	catch (SQLException e) {
+    		logger.warn("Database: Cannot get list of emulator IDs: " +
+    				e.toString());
+    		e.printStackTrace();
+    		throw new RuntimeException(e);
+    	}
+
+    	return emuID;
     }
 
     // TODO add unit test

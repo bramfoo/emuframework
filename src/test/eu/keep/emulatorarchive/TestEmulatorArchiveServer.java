@@ -35,6 +35,7 @@ import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.transport.http.HTTPConduit;
 import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -60,7 +61,9 @@ import java.util.Properties;
 @Ignore("Integration tests of the server webservices requiring an instance of the server running")
 public class TestEmulatorArchiveServer {
 
-    private static final QName      SERVICE_NAME = new QName("http://emulatorarchive.keep.eu",
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
+    private static final QName SERVICE_NAME = new QName("http://emulatorarchive.keep.eu",
                                                          "EmulatorArchiveService");
 
     private final static String propertiesFile = "test.properties";
@@ -69,7 +72,11 @@ public class TestEmulatorArchiveServer {
     private EmulatorArchiveService  ss;
     private EmulatorArchivePortType port;
 
-   
+    private static final int dummy = 0;   // dummy argument
+    private static final int Dioscuri_050_id = 3;
+
+    
+    
     @Before
     public void setUp() {
 
@@ -77,8 +84,8 @@ public class TestEmulatorArchiveServer {
 
         // read user.properties
         try {
-
-            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("eu/keep/emulatorarchive/" + propertiesFile);
+        	logger.info("Reading properties from " + "eu/keep/" + propertiesFile);
+            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("eu/keep/" + propertiesFile);
             props = getProperties(is);
 //            props = getProperties(propertiesFile);
 
@@ -115,10 +122,20 @@ public class TestEmulatorArchiveServer {
     public void testGetEmulatorPackage() {
 
         try {
-
-           int id = 1;
-            EmulatorPackage result = port.getEmulatorPackage(id);
-
+           EmulatorPackage result = port.getEmulatorPackage(Dioscuri_050_id);
+           assertNotNull("empty EmulatorPackage returned.", result);
+           assertEquals("returned EmulatorPackage has incorrect ID. ", Dioscuri_050_id, result.getPackage().getId());
+           assertNotNull("empty EmulatorPackage returned.", result.getPackage().getName());
+           assertTrue("empty EmulatorPackage returned.", !result.getPackage().getName().equals(""));
+           assertNotNull("empty EmulatorPackage returned.", result.getPackage().getVersion());
+           assertTrue("empty EmulatorPackage returned.", !result.getPackage().getVersion().equals(""));
+           
+           assertNotNull("empty Emulator returned.", result.getEmulator().getName());
+           assertTrue("empty EmulatorPackage returned.", !result.getEmulator().getName().equals(""));
+           assertNotNull("empty Emulator returned.", result.getEmulator().getVersion());
+           assertTrue("empty EmulatorPackage returned.", !result.getEmulator().getVersion().equals(""));
+           assertNotNull("empty Emulator returned.", result.getEmulator().getImageFormat());
+           assertTrue("empty Emulator returned.", result.getEmulator().getImageFormat().size() > 0);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -130,10 +147,10 @@ public class TestEmulatorArchiveServer {
     public void testGetEmusByHardware() {
 
         try {
-
             String hw = "x86";
             EmulatorPackageList result = port.getEmusByHardware(hw);
-
+            assertNotNull("empty EmulatorPackageList returned.", result);
+            assertTrue("empty EmulatorPackageList returned.", result.getEmulatorPackage().size() > 0);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -145,10 +162,7 @@ public class TestEmulatorArchiveServer {
     public void testGetEmulatorPackageList() {
 
         try {
-
-           int dummy = 0;   // dummy argument
             EmulatorPackageList result = port.getEmulatorPackageList(dummy);
-
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -160,11 +174,7 @@ public class TestEmulatorArchiveServer {
     public void testGetSupportedHardware() {
 
         try {
-
-            int dummy = 0; //dummy element
             HardwareIDs result = port.getSupportedHardware(dummy);
-
-
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -176,11 +186,7 @@ public class TestEmulatorArchiveServer {
     public void testDownloadEmulatorPackage() {
 
         try {
-
-            int id = 1;
-            DataHandler result = port.downloadEmulator(id);
-
-
+            DataHandler result = port.downloadEmulator(Dioscuri_050_id);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -194,9 +200,9 @@ public class TestEmulatorArchiveServer {
 
         try {
             props.load(inputStream);
-            System.out.println("Correctly read properties file: " + inputStream);
+            logger.info("Correctly read properties file: " + inputStream);
         } catch (IOException e) {
-            System.out.println("Failed to read properties file [" + inputStream + "]: "
+            logger.error("Failed to read properties file [" + inputStream + "]: "
                     + e.toString());
             throw e;
         } finally {
@@ -207,7 +213,7 @@ public class TestEmulatorArchiveServer {
             } catch (Exception e) {
                 // Hmm... hoping not to get this far into catching exceptions;
                 // we'll just log it and proceed...
-                System.out.println("Failed to close open file: [" + inputStream + "]: "
+                logger.error("Failed to close open file: [" + inputStream + "]: "
                         + e.toString());
             }
         }
@@ -224,11 +230,11 @@ public class TestEmulatorArchiveServer {
             fis = new FileInputStream(userPropertiesFileName);
             return getProperties(fis);
         } catch (FileNotFoundException e) {
-            System.out.println("Could not find properties file [" + userPropertiesFileName + "]: "
+            logger.error("Could not find properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
             throw new IOException("Could not find properties file [" + userPropertiesFileName + "]: ", e);
         } catch (IOException e) {
-            System.out.println("Failed to read properties file [" + userPropertiesFileName + "]: "
+            logger.error("Failed to read properties file [" + userPropertiesFileName + "]: "
                     + e.toString());
             throw e;
         } finally {
@@ -239,7 +245,7 @@ public class TestEmulatorArchiveServer {
             } catch (Exception e) {
                 // Hmm... hoping not to get this far into catching exceptions;
                 // we'll just log it and proceed...
-                System.out.println("Failed to close open file: [" + userPropertiesFileName + "]: "
+                logger.error("Failed to close open file: [" + userPropertiesFileName + "]: "
                         + e.toString());
             }
         }

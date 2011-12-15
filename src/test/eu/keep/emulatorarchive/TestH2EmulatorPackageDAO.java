@@ -33,6 +33,8 @@ package eu.keep.emulatorarchive;
 
 import java.io.IOException;
 import java.util.Properties;
+
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,21 +59,34 @@ import static org.junit.Assert.assertNull;
  */
 public class TestH2EmulatorPackageDAO {
    
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
+
     private Connection           conn;
     private H2EmulatorPackageDAO dao;
 
     protected final static String propertiesFile = "test.properties";
     protected static Properties   props;
 
+    private static final int Dioscuri_050_ID = 3;
+    private static final int Dioscuri_050v2_ID = 12;
+    private static final int Dioscuri_060_ID = 11;
+    private static final int Vice_22_Linux_ID = 4;
+    private static final int Vice_22_Windows_ID = 5;
+    private static final int Thomson_10_ID = 15;
+    private static final int QEMU_0130_Linux_ID = 6;
+    private static final int QEMU_090_Windows_ID = 7;
+    
+    private static final String C64 = "C64";
+    private static final String x86 = "x86";
+    
+    
     @Before
     public void setUp() {
 
         // read user.properties
         try {
-
             InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("eu/keep/" + propertiesFile);
             props = getProperties(is);
-
         }
         catch(IOException e){
             e.printStackTrace();
@@ -86,7 +101,6 @@ public class TestH2EmulatorPackageDAO {
 
             // set up DAO
             dao = new H2EmulatorPackageDAO(conn);
-
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -109,8 +123,8 @@ public class TestH2EmulatorPackageDAO {
     public void testGetPackageVersion() {
 
         try {
-            assertEquals("wrong package version", "1", dao.getPackageVersion(1));
-            assertEquals("wrong package version", "2", dao.getPackageVersion(2));
+            assertEquals("wrong package version", "1", dao.getPackageVersion(Dioscuri_050_ID));
+            assertEquals("wrong package version", "2", dao.getPackageVersion(Dioscuri_050v2_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -122,7 +136,7 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorCount() {
 
         try {
-            assertEquals("wrong emulator count", 2, dao.getEmulatorCount());
+            assertEquals("wrong emulator count", 13, dao.getEmulatorCount());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -135,8 +149,10 @@ public class TestH2EmulatorPackageDAO {
 
         try {
             List<Integer> list = dao.getEmulatorIDs();
-            assertEquals("wrong emulator ID", new Integer(1), list.get(0));
-            assertEquals("wrong emulator ID", new Integer(2), list.get(1));
+            assertEquals("wrong number of emulator IDs", 13, list.size());
+            assertEquals("wrong emulator ID", new Integer(Dioscuri_050_ID), list.get(0));
+            assertEquals("wrong emulator ID", new Integer(Vice_22_Linux_ID), list.get(1));
+            assertEquals("wrong emulator ID", new Integer(Thomson_10_ID), list.get(12));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -188,10 +204,10 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorPackageFileName() {
 
         try {
-            assertEquals("wrong emulator package file name", "dioscuri_043Package.zip", dao
-                    .getEmulatorPackageFileName(1));
+            assertEquals("wrong emulator package file name", "dioscuri_050Package.zip", dao
+                    .getEmulatorPackageFileName(Dioscuri_050_ID));
             assertEquals("wrong emulator package file name", "LinVICE_22Package.zip", dao
-                    .getEmulatorPackageFileName(2));
+                    .getEmulatorPackageFileName(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -203,8 +219,8 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorName() {
 
         try {
-            assertEquals("wrong emulator name", "Dioscuri", dao.getEmulatorName(1));
-            assertEquals("wrong emulator name", "Vice", dao.getEmulatorName(2));
+            assertEquals("wrong emulator name", "Dioscuri", dao.getEmulatorName(Dioscuri_050_ID));
+            assertEquals("wrong emulator name", "Vice", dao.getEmulatorName(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -216,8 +232,8 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorVersion() {
 
         try {
-            assertEquals("wrong emulator version", "0.4.3", dao.getEmulatorVersion(1));
-            assertEquals("wrong emulator version", "2.2", dao.getEmulatorVersion(2));
+            assertEquals("wrong emulator version", "0.5.0", dao.getEmulatorVersion(Dioscuri_050_ID));
+            assertEquals("wrong emulator version", "2.2", dao.getEmulatorVersion(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -230,9 +246,9 @@ public class TestH2EmulatorPackageDAO {
 
         try {
             assertEquals("wrong emulator description", "Dioscuri, the modular emulator", dao
-                    .getEmulatorDescription(1));
+                    .getEmulatorDescription(Dioscuri_050_ID));
             assertEquals("wrong emulator description",
-                    "VICE, the VersatIle Commodore Emulator (Linux)", dao.getEmulatorDescription(2));
+                    "VICE, the VersatIle Commodore Emulator (Linux)", dao.getEmulatorDescription(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -244,8 +260,8 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorExecType() {
 
         try {
-            assertEquals("wrong emulator executable type", "jar", dao.getEmulatorExecType(1));
-            assertEquals("wrong emulator executable type", "ELF", dao.getEmulatorExecType(2));
+            assertEquals("wrong emulator executable type", "jar", dao.getEmulatorExecType(Dioscuri_050_ID));
+            assertEquals("wrong emulator executable type", "ELF", dao.getEmulatorExecType(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -257,9 +273,9 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorExecName() {
 
         try {
-            assertEquals("wrong emulator executable name", "Dioscuri-0.4.3.jar", dao
-                    .getEmulatorExecName(1));
-            assertEquals("wrong emulator executable name", "x64", dao.getEmulatorExecName(2));
+            assertEquals("wrong emulator executable name", "Dioscuri-0.5.0.jar", dao
+                    .getEmulatorExecName(Dioscuri_050_ID));
+            assertEquals("wrong emulator executable name", "x64", dao.getEmulatorExecName(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -271,8 +287,8 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorExecDir() {
 
         try {
-            assertNull("wrong emulator executable directory", dao.getEmulatorExecDir(1));
-            assertNull("wrong emulator executable directory", dao.getEmulatorExecDir(2));
+            assertNull("wrong emulator executable directory", dao.getEmulatorExecDir(Dioscuri_050_ID));
+            assertNull("wrong emulator executable directory", dao.getEmulatorExecDir(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -284,12 +300,14 @@ public class TestH2EmulatorPackageDAO {
     public void testGetImageFormats() {
 
         try {
-            List<String> list0 = dao.getImageFormats(1);
-            assertEquals("wrong emulator ID", "FAT12", list0.get(0));
-            assertEquals("wrong emulator ID", "FAT16", list0.get(1));
+            List<String> list0 = dao.getImageFormats(Dioscuri_050_ID);
+            assertEquals("wrong supported Image Format", "FAT12", list0.get(0));
+            assertEquals("wrong supported Image Format", "FAT16", list0.get(1));
 
-            List<String> list1 = dao.getImageFormats(2);
-            assertEquals("wrong emulator ID", "D64", list1.get(0));
+            List<String> list1 = dao.getImageFormats(Vice_22_Linux_ID);
+            assertEquals("wrong supported Image Format", "D64", list1.get(0));
+            assertEquals("wrong supported Image Format", "T64", list1.get(1));
+            assertEquals("wrong supported Image Format", "X64", list1.get(2));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -301,11 +319,11 @@ public class TestH2EmulatorPackageDAO {
     public void testGetHardware() {
 
         try {
-            List<String> list0 = dao.getHardware(1);
-            assertEquals("wrong emulator ID", "x86", list0.get(0));
+            List<String> list0 = dao.getHardware(Dioscuri_050_ID);
+            assertEquals("wrong supported Hardware", x86, list0.get(0));
 
-            List<String> list1 = dao.getHardware(2);
-            assertEquals("wrong emulator ID", "c64", list1.get(0));
+            List<String> list1 = dao.getHardware(Vice_22_Linux_ID);
+            assertEquals("wrong supported Hardware", C64, list1.get(0));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -317,8 +335,8 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmulatorPackageType() {
 
         try {
-            assertEquals("wrong emulator package type", "zip", dao.getEmulatorPackageType(1));
-            assertEquals("wrong emulator package type", "zip", dao.getEmulatorPackageType(2));
+            assertEquals("wrong emulator package type", "zip", dao.getEmulatorPackageType(Dioscuri_050_ID));
+            assertEquals("wrong emulator package type", "zip", dao.getEmulatorPackageType(Vice_22_Linux_ID));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -330,16 +348,20 @@ public class TestH2EmulatorPackageDAO {
     public void testGetEmuID() {
 
         try {
-            String hw0 = "c64";
+            String hw0 = C64;
             List<Integer> list0 = dao.getEmuID(hw0);
-            assertEquals("wrong list of emulator id for hardware " + hw0, new Integer(2), list0
-                    .get(0));
+            assertEquals("wrong number of emulator IDs for hardware " + hw0, 2, list0.size());
+            assertTrue("wrong list of emulator id for hardware " + hw0, list0.contains(new Integer(Vice_22_Linux_ID)));
+            assertTrue("wrong list of emulator id for hardware " + hw0, list0.contains(new Integer(Vice_22_Windows_ID)));
 
-            String hw1 = "x86";
+            String hw1 = x86;
             List<Integer> list1 = dao.getEmuID(hw1);
-            assertEquals("wrong list of emulator id for hardware " + hw1, new Integer(1), list1
-                    .get(0));
-
+            assertEquals("wrong number of emulator IDs for hardware " + hw0, 5, list1.size());
+            assertTrue("wrong list of emulator id for hardware " + hw1, list1.contains(new Integer(Dioscuri_050_ID)));
+            assertTrue("wrong list of emulator id for hardware " + hw1, list1.contains(new Integer(Dioscuri_050v2_ID)));
+            assertTrue("wrong list of emulator id for hardware " + hw1, list1.contains(new Integer(Dioscuri_060_ID)));
+            assertTrue("wrong list of emulator id for hardware " + hw1, list1.contains(new Integer(QEMU_0130_Linux_ID)));
+            assertTrue("wrong list of emulator id for hardware " + hw1, list1.contains(new Integer(QEMU_090_Windows_ID)));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -354,9 +376,9 @@ public class TestH2EmulatorPackageDAO {
 
         try {
             props.load(inputStream);
-            System.out.println("Correctly read properties file: " + inputStream);
+            logger.info("Correctly read properties file: " + inputStream);
         } catch (IOException e) {
-            System.out.println("Failed to read properties file [" + inputStream + "]: "
+            logger.error("Failed to read properties file [" + inputStream + "]: "
                     + e.toString());
             throw e;
         } finally {
@@ -367,7 +389,7 @@ public class TestH2EmulatorPackageDAO {
             } catch (Exception e) {
                 // Hmm... hoping not to get this far into catching exceptions;
                 // we'll just log it and proceed...
-                System.out.println("Failed to close open file: [" + inputStream + "]: "
+                logger.error("Failed to close open file: [" + inputStream + "]: "
                         + e.toString());
             }
         }
@@ -383,10 +405,10 @@ public class TestH2EmulatorPackageDAO {
             Class.forName(driver);
         }
         catch (ClassNotFoundException e) {
-            System.out.println("Cannot set up database driver");
+            logger.error("Cannot set up database driver");
             throw new RuntimeException(e);
         }
-        System.out.println("Successfully set up database driver");
+        logger.info("Successfully set up database driver");
 
         int attempt = 0;
         String dbUrl = props.getProperty("h2.jdbc.prefix")
@@ -401,18 +423,18 @@ public class TestH2EmulatorPackageDAO {
                 break;
             }
             catch (SQLException e) {
-                System.out.println("Failed database connection attempt: " + attempt);
+                logger.error("Failed database connection attempt: " + attempt);
             }
 
             attempt++;
         }
 
         if (attempt >= 5) {
-            System.out.println("Cannot connect to database: " + dbUrl);
+            logger.error("Cannot connect to database: " + dbUrl);
             throw new RuntimeException();
         }
         else {
-            System.out.println("Successfully connected to database" + dbUrl);
+            logger.info("Successfully connected to database" + dbUrl);
         }
     }
 

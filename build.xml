@@ -56,6 +56,7 @@ $
 	<property name="database.dir"    location="${basedir}/database"/>
 	<property name="sqlscript.dir"   location="${database.dir}/sql"/>
 	<property name="packages.dir"    location="${basedir}/packages"/>
+	<property name="test.database.dir" location="${basedir}/testData/database"/>
 
 	<!-- check if user.properties file exists or not -->
 	<target name="check.user.properties">
@@ -168,7 +169,7 @@ $
         <javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes"/>
     </target>
 
-    <target name="test.run" description="Run the unit tests" depends="test.compile, testProperties.toTestDir">
+    <target name="test.run" description="Run the unit tests" depends="test.compile, testProperties.toTestDir, copy.testDB">
         <mkdir dir="${test.report.dir}"/>
         <junit printsummary="yes" haltonfailure="no" showoutput="yes" >             
             <batchtest fork="yes" todir="${test.report.dir}" >
@@ -401,5 +402,18 @@ $
     <!-- Copy test.properties onto classpath -->
     <target name="testProperties.toTestDir">
         <copy file="${basedir}/test.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
+        <copy file="${basedir}/log4j.properties" todir="${classes.dir}" overwrite="yes"/>
     </target>
+
+    <!-- Copy database to testData directory -->
+	<target name="copy.testDB" depends="db.drop, db.create, db.populate">
+		<copy todir="${test.database.dir}" overwrite="yes">
+	        <fileset dir="${database.dir}/db">
+	            <include name="EF_ea.lobs.db/*.*"/>
+	        	<include name="EF_ea.h2.db"/>
+	        </fileset>
+		</copy>
+	</target>
+	
+
 </project>
