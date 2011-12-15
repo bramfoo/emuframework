@@ -74,20 +74,13 @@
             <fileset dir="build/release/EF" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
         </pack>
 
-        <!--
-        <pack name="Alternative GUI (optional)" required="no" preselected="no">
-            <description>Alternative Graphical User Interface (UPHEC)</description>
-            <fileset dir="build/release/altGUI" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
-        </pack>
-        -->
-
         <pack name="Emulator Archive" required="no" preselected="yes">
             <description>Emulator archive used by the Emulation Framework to retrieve supported emulator packages via web services.</description>
             <fileset dir="build/release/ea" targetdir="$INSTALL_PATH/ea" excludes="**/.svn/**"/>
         </pack>
 
         <pack name="Software Archive" required="no" preselected="yes">
-            <description>Software archive used the Emulation Framework to retrieve software images via web services.</description>
+            <description>Software archive used by the Emulation Framework to retrieve software images via web services.</description>
             <fileset dir="build/release/swa" targetdir="$INSTALL_PATH/swa" excludes="**/.svn/**"/>
         </pack>
     </packs>

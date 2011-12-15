@@ -361,8 +361,8 @@ public class GUI extends JFrame {
                         model.getTitle() + " " + model.getVersion() + " - Copyright (c) 2009-2011 Tessella plc.\n" +
                         "GUI - Copyright (c) 2011 National Library of the Netherlands\n" +
                         "\n" +
-                        "Software Archive version 0.2.0\n" + // TODO get version from SWA
-                        "Emulator Archive version 0.1.4\n" + // TODO get version from EA
+                        "Software Archive version 1.1.0\n" + // TODO get version from SWA
+                        "Emulator Archive version 1.1.0\n" + // TODO get version from EA
                         "\n" +
                         "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
                         "you may not use this software except in compliance with the License.\n" +
@@ -384,6 +384,7 @@ public class GUI extends JFrame {
                         "Credits:\n" +
                         "  - Bram Lohman (Tessella plc., Emulation Framework)\n" +
                         "  - David Michel (Tessella plc., Emulation Framework)\n" +
+                        "  - Edo Noordermeer (Tessella plc., Emulation Framework, GUI)\n" +
                         "  - Bart Kiers (National Library of the Netherlands, GUI)\n" +
                         "  - Jeffrey van der Hoeven (National Library of the Netherlands, Coordination)\n" +
                         "\n"+

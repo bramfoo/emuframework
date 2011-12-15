@@ -41,7 +41,7 @@ $Revision$ $Date$ $Author$
         Main build file for the Core Emulation Framework
     </description>
 
-	<property name="version" value="1.0.0"/>
+	<property name="version" value="1.1.0"/>
 	<property name="runCLI" value="runEF"/>
 
 	<!-- master build file with properties, macros -->
@@ -345,8 +345,8 @@ $Revision$ $Date$ $Author$
     	    <fileset dir="${javadoc.dir}"/>
     	</copy>
 
-		<unzip src="${basedir}/../SoftwareArchive/build/release/swa-0.2.0.zip" dest="${release.dir}/swa"/>	
-		<unzip src="${basedir}/../EmulatorArchive/build/release/ea-0.1.4.zip" dest="${release.dir}/ea"/>
+		<unzip src="${basedir}/../SoftwareArchive/build/release/swa-1.1.0.zip" dest="${release.dir}/swa"/>	
+		<unzip src="${basedir}/../EmulatorArchive/build/release/ea-1.1.0.zip" dest="${release.dir}/ea"/>
         <!-- <unzip src="${basedir}/AltGUI.zip" dest="${release.dir}/altGUI"/> -->
 
     	<!-- Launch IzPack packaging process -->
