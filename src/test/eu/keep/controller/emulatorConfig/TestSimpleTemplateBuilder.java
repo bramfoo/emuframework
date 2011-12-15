@@ -118,22 +118,36 @@ public class TestSimpleTemplateBuilder {
 		Map<String, String> fixed1 = new HashMap<String, String>();
 		fixed1.put("swImg", "swImgVal");
 		fixed1.put("index", "0");
+		fixed1.put("enabled", "true");
+		fixed1.put("cylinders", "1");
+		fixed1.put("heads", "0");
+		fixed1.put("sectorsPerTrack", "144");
+		fixed1.put("master", "true");
 		fixList.add(fixed1);
 		Map<String, String> fixed2 = new HashMap<String, String>();
 		fixed2.put("swImg", "swImgVal");
 		fixed2.put("index", "1");
 		fixed2.put("unused", "randomVal");	// This shouldn't stop it from working
+		fixed2.put("enabled", "true");
+		fixed2.put("cylinders", "2");
+		fixed2.put("heads", "10");
+		fixed2.put("sectorsPerTrack", "144");
+		fixed2.put("master", "false");
 		fixList.add(fixed2);
 		opts.put("fixedDisks", fixList);
 		List<Map<String, String>> flopList = new ArrayList<Map<String, String>>();
 		Map<String, String> flop = new HashMap<String, String>();
 		flop.put("num", "1");
 		flop.put("digobj", "digobjVal");
+		flop.put("inserted", "true");
+		flop.put("type", "FAT-32");
 		flopList.add(flop);
 		opts.put("floppyDisks", flopList);
 		List<Map<String, String>> rootList = new ArrayList<Map<String, String>>();
 		Map<String, String> root = new HashMap<String, String>();
 		root.put("configDir", "dirVal");
+		root.put("configFile", "file.cfg");
+		root.put("digobj", "obj.txt");
 		rootList.add(root);
 		opts.put("root", rootList);
 

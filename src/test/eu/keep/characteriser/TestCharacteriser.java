@@ -86,6 +86,8 @@ public class TestCharacteriser {
 		// SoftwareArchivePrototype
 		List<DBRegistry> registries = new ArrayList<DBRegistry>();
 		DBRegistry registry = new DBRegistry();
+		registry.setName("PRONOM/PCR");
+		registry.setRegistryId(2);
 		registry.setEnabled(true);
 		registry.setClassName("eu.keep.characteriser.registry.PronomRegistry");
 		registries.add(registry);		
@@ -190,7 +192,6 @@ public class TestCharacteriser {
 		}
 	}
 	
-	@Ignore("This test ignored because the getRegistries() method uses mocked out softwareArchive instance")
 	@Test
     public void testGetRegistries() {
 		
@@ -199,9 +200,9 @@ public class TestCharacteriser {
 			db = characteriser.getRegistries();
 		} catch (IOException e) {
 			fail("Unexpected error:" + e.getMessage());
-			}
+		}
 		
-		assertEquals("Incorrect number of registries", 2, db.size());
+		assertEquals("Incorrect number of registries", 1, db.size());
 		DBRegistry reg = db.get(0);
 		assertEquals("Incorrect registry ID", 2, reg.getRegistryID());
 		assertEquals("Incorrect registry name", "PRONOM/PCR", reg.getName());

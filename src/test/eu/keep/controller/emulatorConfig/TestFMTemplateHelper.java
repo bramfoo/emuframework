@@ -53,7 +53,7 @@ public class TestFMTemplateHelper {
 		digObjs.add(new File("testData/digitalObjects/x86/build.xml"));
 
 		swImgs = new ArrayList<File>();
-		swImgs.add(new File("testData/digitalObjects/HardDiskImage/FreeDOS09_blocek.img.zip"));
+		swImgs.add(new File("testData/digitalObjects/HardDiskImage/hd20MB_alphabet.img"));
 	}
 	
 	@Test
@@ -120,11 +120,11 @@ public class TestFMTemplateHelper {
 		assertFalse("CLI should not be empty", cli.isEmpty());
 		assertEquals("CLI should have 3 parts", 3, cli.size());
 		assertTrue("Pre should be empty", cli.get(0).isEmpty());
-		assertTrue("Post should be empty", cli.get(2).isEmpty());
 		assertEquals("Body not set correctly", 6, cli.get(1).size());
 		assertEquals("Body part not set correctly", "-L", cli.get(1).get(0));
 		assertEquals("Body part not set correctly", "-fda", cli.get(1).get(2));
 		assertEquals("Body part not set correctly", "\"" + swImgs.get(0).getPath() + "\"", cli.get(1).get(5));
+		assertTrue("Post should be empty", cli.get(2).isEmpty());
 	}
 
 }

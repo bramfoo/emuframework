@@ -1,4 +1,4 @@
-<#ftl attributes={"configDir":"configDir", "fixedDisks":{"index":"index", "swImg":"swImg"}, "floppyDisks":{"num":"num", "digobj":"digobj"}}>
+<#ftl attributes={"configDir":"configDir", "configFile":"configFile", "digobj":"digobj", "fixedDisks":{"enabled":"enabled", "index":"index", "master":"master", "cylinders":"cylinders", "heads":"heads", "sectorsPerTrack":"sectorsPerTrack", "swImg":"swImg"}, "floppyDisks":{"type":"type", "num":"num", "digobj":"digobj", "inserted":"inserted"}}>
 <#-- QEMU 0.9.0 (Windows) and 0.12.5 (Linux) configuration template (CLI) -->
 
 <#-- Floppy drive letter definition -->

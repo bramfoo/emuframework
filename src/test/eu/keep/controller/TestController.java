@@ -87,7 +87,7 @@ public class TestController {
 		digObjs.add(new File("testData/digitalObjects/x86/build.xml"));
 
 		swImgs = new ArrayList<File>();
-		swImgs.add(new File("testData/digitalObjects/HardDiskImage/FreeDOS09_blocek.img.zip"));
+		swImgs.add(new File("testData/digitalObjects/HardDiskImage/hd20MB_alphabet.img"));
 	}
 	
 	@Test(expected=IOException.class)

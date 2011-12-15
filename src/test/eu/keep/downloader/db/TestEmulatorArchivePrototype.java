@@ -61,7 +61,7 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage.Emulator.Executab
  * @author Bram Lohman
  */
 // FIXME: Fix mocking of Client timeout policy/MTOM
-@Ignore
+@Ignore("Integration tests of the server webservices requiring an instance of the server running")
 public class TestEmulatorArchivePrototype {
 
     protected Logger              logger         = Logger.getLogger(this.getClass());

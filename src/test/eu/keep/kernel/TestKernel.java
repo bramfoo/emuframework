@@ -221,11 +221,11 @@ public class TestKernel {
     	assertTrue("Metadata doesn't contain linebreak.", md.containsKey("size"));
     	assertFalse("Size list not right size.", md.get("size").isEmpty());
     	assertEquals("Size list not right size.", 1, md.get("size").size());
-    	assertEquals("Size contents not correct.", "1254", md.get("size").get(0));
+    	assertEquals("Size contents not correct.", "1457", md.get("size").get(0));
     	assertTrue("Metadata doesn't contain md5 checksum.", md.containsKey("md5checksum"));
     	assertFalse("Size list not right size.", md.get("md5checksum").isEmpty());
     	assertEquals("Size list not right size.", 1, md.get("md5checksum").size());
-    	assertEquals("Size contents not correct.", "167047d277ca51ee2cc80ca9a32b13cb", md.get("md5checksum").get(0));
+    	assertEquals("md5checksum not correct.", "b07b7da0d6e7e6942aa236d372fba288", md.get("md5checksum").get(0));
     	assertTrue("Metadata doesn't contain well-formedness.", md.containsKey("well-formed"));
     	assertFalse("Size list not right size.", md.get("well-formed").isEmpty());
     	assertEquals("Size list not right size.", 1, md.get("well-formed").size());
