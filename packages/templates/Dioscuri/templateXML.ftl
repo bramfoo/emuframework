@@ -1,5 +1,5 @@
 <#ftl attributes={"configDir":"configDir", "configFile":"configFile", "digobj":"digobj", "fixedDisks":{"enabled":"enabled", "index":"index", "master":"master", "cylinders":"cylinders", "heads":"heads", "sectorsPerTrack":"sectorsPerTrack", "swImg":"swImg"}, "floppyDisks":{"type":"type", "num":"num", "digobj":"digobj", "inserted":"inserted"}}>
-<#-- Dioscuri 0.4.3 - 0.6.0 configuration template (CLI) -->
+<#-- Dioscuri 0.4.3 - 0.6.0 configuration simple template (CLI) -->
 
 <#-- Floppy drive letter definition -->
 <#assign floppyDriveLetter = {"0":"A", "1":"B"}>
