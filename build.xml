@@ -39,7 +39,7 @@ $
 
     <property name="server.script" value="runServer"/>
     <property name="server.name" value="softwareArchiveServer"/>
-    <property name="server.version" value="0.2.0"/>
+    <property name="server.version" value="1.1.0"/>
     
     <property environment="env"/>
     <property name="home.dir" location="${basedir}"/>
@@ -151,7 +151,9 @@ $
     <target name="release" description="Create a release package" depends="jar, db.drop, db.create, db.populate, runServer.scripts" >	   	    
 	    <property name="release.name"  value="swa-${server.version}.zip"/>
         <mkdir dir="${release.dir}"/>
-        <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" includes="${server.script}.*, *.jar, lib/*.jar, database/db/**, user.properties, log4j.properties" excludes="lib/junit-4.7.jar">
+        <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" 
+        	includes="${server.script}.*, *.jar, lib/*.jar, database/db/**, user.properties, log4j.properties" 
+        	excludes="lib/junit-4.7.jar">
         </zip>
         <echo message="Release ${release.name} has been created in ${release.dir}" />  
     </target>
