@@ -53,7 +53,7 @@ public class SWAWizard extends JFrame {
     private JLabel logLabel;
 
     public SWAWizard() {
-        super("SWA wizard");
+        super("Software Archive wizard");
 
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         super.setResizable(false);

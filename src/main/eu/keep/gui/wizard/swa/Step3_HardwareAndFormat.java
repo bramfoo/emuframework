@@ -67,7 +67,7 @@ public class Step3_HardwareAndFormat extends JPanel {
         }
 
         final Vector<Vector<String>> fileSystemData = DBUtil.query(DBUtil.DB.SWA,
-                "SELECT imageformat_id, name FROM softwarearchive.imageformats");
+                "SELECT hardware_id, name FROM softwarearchive.imageformats");
         final Vector<ImageFormat> existingFileSystems = new Vector<ImageFormat>();
         imageFormat = new ImageFormat();
         existingFileSystems.add(imageFormat);
