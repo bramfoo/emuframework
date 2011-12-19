@@ -113,15 +113,20 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             tree.addMouseListener(new MouseAdapter(){
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    parent.getConfigPanel().clear();
-                    File selected = tree.getSelectedFile();
+                    try {
+                        parent.getConfigPanel().clear();
+                        File selected = tree.getSelectedFile();
 
-                    if(selected != null) {
-                        select(selected);
+                        if(selected != null) {
+                            select(selected);
 
-                        if(selected.isFile() && e.getClickCount() >= 2) {
-                            doAutoStart();
+                            if(selected.isFile() && e.getClickCount() >= 2) {
+                                doAutoStart();
+                            }
                         }
+                    }
+                    catch(Exception ex) {
+                        logger.warn(ex.getMessage());
                     }
                 }
             });

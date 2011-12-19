@@ -74,7 +74,7 @@ public class Step2_HardwareImageFormat extends JPanel {
         */
 
         Vector<Vector<String>> hardwareData = DBUtil.query(DBUtil.DB.EA, "select hardware_id, name from emulatorarchive.hardware");
-        Vector<Vector<String>> imageFormatData = DBUtil.query(DBUtil.DB.EA, "select hardware_id, name from emulatorarchive.imageformats");
+        Vector<Vector<String>> imageFormatData = DBUtil.query(DBUtil.DB.EA, "select imageformat_id, name from emulatorarchive.imageformats");
 
         Vector<Hardware> hardwareVector = new Vector<Hardware>();
         hardwareVector.add(new Hardware());
