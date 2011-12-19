@@ -35,22 +35,22 @@ import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.*;
 import java.util.*;
 
 public final class DBUtil {
 
     private static Logger logger = Logger.getLogger(DBUtil.class.getName());
-    private static final String propFileName = "eu/keep/gui.properties";
-    private static Properties swaProps = null;
+    private static String propFileName = "eu/keep/gui.properties";
+    private static Properties props = null;
 
     static {
+
         if(!new File(propFileName).exists()) {
             throw new RuntimeException("Could not locate: " + propFileName);
         }
         try {
-            swaProps = FileUtilities.getProperties(new FileInputStream(propFileName));
+            props = FileUtilities.getProperties(new FileInputStream(propFileName));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -58,26 +58,36 @@ public final class DBUtil {
     }
 
     public static enum DB {
-        /*
-        CEF(swaProps.getProperty("ef.jdbc.prefix") + swaProps.getProperty("ef.db.url") + swaProps.getProperty("ef.db.exists") + swaProps.getProperty("ef.db.server"),
-                swaProps.getProperty("ef.db.schema.name"),
-                swaProps.getProperty("ef.db.admin"),
-                swaProps.getProperty("ef.db.adminpassw")),
-        EA(swaProps.getProperty("ea.jdbc.prefix") + swaProps.getProperty("ea.db.url") + swaProps.getProperty("ea.db.exists") + swaProps.getProperty("ea.db.server"),
-                swaProps.getProperty("ea.db.schema.name"),
-                swaProps.getProperty("ea.db.admin"),
-                swaProps.getProperty("ea.db.adminpassw")),
-        */
-        SWA(swaProps.getProperty("swa.jdbc.prefix") + swaProps.getProperty("swa.db.url") + swaProps.getProperty("swa.db.exists") + swaProps.getProperty("swa.db.server"),
-                swaProps.getProperty("swa.db.schema"),
-                swaProps.getProperty("swa.db.admin"),
-                swaProps.getProperty("swa.db.adminpassw"));
 
-        public final Connection conn;
+        CEF(props.getProperty("ef.jdbc.prefix") + props.getProperty("ef.db.url") + props.getProperty("ef.db.exists") + props.getProperty("ef.db.server"),
+                props.getProperty("ef.db.schema.name"),
+                props.getProperty("ef.db.admin"),
+                props.getProperty("ef.db.adminpassw")),
+
+        EA(props.getProperty("ea.jdbc.prefix") + props.getProperty("ea.db.url") + props.getProperty("ea.db.exists") + props.getProperty("ea.db.server"),
+                props.getProperty("ea.db.schema.name"),
+                props.getProperty("ea.db.admin"),
+                props.getProperty("ea.db.adminpassw")),
+
+        SWA(props.getProperty("swa.jdbc.prefix") + props.getProperty("swa.db.url") + props.getProperty("swa.db.exists") + props.getProperty("swa.db.server"),
+                props.getProperty("swa.db.schema"),
+                props.getProperty("swa.db.admin"),
+                props.getProperty("swa.db.adminpassw"));
+
+        public Connection conn;
+        private final String url;
+        private final String schema;
+        private final String usr;
+        private final String pwd;
 
         private DB(String url, String schema, String usr, String pwd) {
-            Connection c;
+            this.url = url;
+            this.schema = schema;
+            this.usr = usr;
+            this.pwd = pwd;
+        }
 
+        public void connect() {
             if(url == null || schema == null || usr == null || pwd == null) {
 
                 String message = String.format("Invalid data in %s: url=%s, schema=%s, usr=%s, pwd=%s",
@@ -88,24 +98,34 @@ public final class DBUtil {
             }
             else {
                 try {
-                    c = DriverManager.getConnection(url, usr, pwd);
+                    conn = DriverManager.getConnection(url, usr, pwd);
                 } catch (SQLException e) {
                     String message = "Could not connect to the database: " + e.getMessage();
                     logger.error(message);
                     throw new RuntimeException(message);
                 }
             }
-            conn = c;
+        }
+
+        public void disconnect() {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                String message = "Could not disconnect connection to the database: " + e.getMessage();
+                logger.error(message);
+                throw new RuntimeException(message);
+            }
         }
     }
+
 
     // no need to instantiate this class
     private DBUtil() {
     }
 
     /**
-     * <swaProps>Returns a unique string based on zero or more existing records. For example, if the
-     * records <code>existingData</code> contains the following data:</swaProps>
+     * <props>Returns a unique string based on zero or more existing records. For example, if the
+     * records <code>existingData</code> contains the following data:</props>
      *
      * <pre>
      * data = [
@@ -115,10 +135,10 @@ public final class DBUtil {
      * ]
      * </pre>
      *
-     * <swaProps><code>createUniqueStringID(data, 0, 0)</code> will return
+     * <props><code>createUniqueStringID(data, 0, 0)</code> will return
      * <code>"abc-6"</code> (the largest number + 1 + 0). And
      * <code>createUniqueStringID(data, 0, 3)</code> will return
-     * <code>"abc-9"</code> (the largest number + 1 + 3).</swaProps>
+     * <code>"abc-9"</code> (the largest number + 1 + 3).</props>
      *
      * @param existingData      the existing records.
      * @param indexID           the index of the rows in <code>existingData</code> which
@@ -135,8 +155,8 @@ public final class DBUtil {
     }
 
     /**
-     * <swaProps>Returns a unique string based on zero or more existing records. For example, if the
-     * records <code>existingData</code> contains the following data:</swaProps>
+     * <props>Returns a unique string based on zero or more existing records. For example, if the
+     * records <code>existingData</code> contains the following data:</props>
      *
      * <pre>
      * data = [
@@ -146,10 +166,10 @@ public final class DBUtil {
      * ]
      * </pre>
      *
-     * <swaProps><code>createUniqueStringID(data, 0, 0)</code> will return
+     * <props><code>createUniqueStringID(data, 0, 0)</code> will return
      * <code>"abc-6"</code> (the largest number + 1 + 0). And
      * <code>createUniqueStringID(data, 0, 3)</code> will return
-     * <code>"abc-9"</code> (the largest number + 1 + 3).</swaProps>
+     * <code>"abc-9"</code> (the largest number + 1 + 3).</props>
      *
      * @param existingData      the existing records.
      * @param indexID           the index of the rows in <code>existingData</code> which
@@ -183,6 +203,35 @@ public final class DBUtil {
         return prefix + "-" + (numbers.last() + 1 + toAdd);
     }
 
+
+    // todo javadoc
+    public static String createUniqueIntID(Vector<Vector<String>> existingData, int indexID)
+            throws RuntimeException {
+        return createUniqueIntID(existingData, indexID, 0);
+    }
+
+    // todo javadoc
+    public static String createUniqueIntID(Vector<Vector<String>> existingData, int indexID, int toAdd)
+            throws RuntimeException {
+
+        if(existingData.isEmpty()) {
+            throw new RuntimeException("existingData is empty: cannot create a unique ID");
+        }
+
+        TreeSet<Integer> numbers = new TreeSet<Integer>();
+
+        for(Vector<String> row : existingData) {
+            String id = row.get(indexID);
+            if(!id.matches("\\d+")) {
+                throw new RuntimeException("Expecting an ID consisting only of numbers, encountered: " + id);
+            }
+            numbers.add(Integer.valueOf(id));
+        }
+
+        return String.valueOf(numbers.last() + 1 + toAdd);
+    }
+
+    // todo javadoc
     public static Vector<String> getColumn(Vector<Vector<String>> data, int columnIndex) {
         Vector<String> col = new Vector<String>();
         for(Vector<String> row : data) {
@@ -191,8 +240,15 @@ public final class DBUtil {
         return col;
     }
 
+    // todo javadoc
     public static int insert(DB db, String sql, Object... values) {
+
+        db.connect();
+
+        int retVal = -1;
+
         try {
+            db.conn.setReadOnly(false);
             PreparedStatement stat = db.conn.prepareStatement(sql);
             for(int i = 0; i < values.length; i++) {
                 if(values[i] instanceof String) {
@@ -205,15 +261,23 @@ public final class DBUtil {
                     // TODO warn/error?
                 }
             }
-            return stat.executeUpdate();
+
+            retVal = stat.executeUpdate();
+
         } catch (SQLException e) {
             e.printStackTrace();
-            return -1;
         }
+
+        db.disconnect();
+
+        return retVal;
     }
 
-    // TODO: read-only (prevent SQL injections) or use PreparedStatement
+    // todo javadoc
     public static Vector<Vector<String>> query(DB db, String sql) throws RuntimeException {
+
+        db.connect();
+
         if(db.conn == null) {
             throw new RuntimeException("No connection to: " + db);
         }
@@ -222,6 +286,7 @@ public final class DBUtil {
         List<Integer> columnTypes = new ArrayList<Integer>();
 
         try {
+            db.conn.setReadOnly(true);
             Statement stmt = db.conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             ResultSetMetaData rsmd = rs.getMetaData();
@@ -252,6 +317,8 @@ public final class DBUtil {
         } catch (Exception e) {
             logger.warn("Could not execute query: " + sql + ", " + e.getMessage());
         }
+
+        db.disconnect();
 
         return data;
     }
