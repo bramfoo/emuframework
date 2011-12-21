@@ -77,7 +77,7 @@ $Revision$ $Date$ $Author$
 	<property name="fits.classpath.dir"		value="${fits.dir}/xml/nlnz"/>
       
 	<!-- Javac options -->                                          
-    <property name="javac.args" value="-target 6 -Xlint:unchecked" />
+    <property name="javac.args" value="-Xlint:unchecked" />
 
 	<!-- Main variables -->
 	<property name="package.name" 	               value="eu.keep"/>
