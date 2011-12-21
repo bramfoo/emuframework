@@ -68,7 +68,7 @@ public class SWAWizard extends JFrame {
         step5 = new Step5_FileFormat(this);
         confirm = new ConfirmPanel(this);
 
-        logLabel = new JLabel("1/5, select an application");
+        logLabel = new JLabel("");
 
         super.setLayout(new BorderLayout(5, 5));
 
