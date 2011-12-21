@@ -155,7 +155,6 @@ public class TestCharacteriser {
 		assertEquals("Incorrect size returned", "23276", info.get("size").get(0));
 		assertEquals("Incorrect filename returned", "testData\\digitalObjects\\x86\\build.xml", info.get("filename").get(0));
 		assertEquals("Incorrect md5checksum returned", "368ed07fa017e3a58df25cb7949b783c", info.get("md5checksum").get(0));
-		assertEquals("Incorrect fslastmodified returned", "1319095088173", info.get("fslastmodified").get(0));
 	}
 	
 	@Test

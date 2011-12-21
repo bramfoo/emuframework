@@ -112,7 +112,6 @@ public class TestFitsTool {
 		assertEquals("Incorrect size returned", "23276", fileInfo.get("size").get(0));
 		assertEquals("Incorrect filename returned", ".\\testData\\digitalObjects\\x86\\build.xml", fileInfo.get("filename").get(0));
 		assertEquals("Incorrect md5checksum returned", "368ed07fa017e3a58df25cb7949b783c", fileInfo.get("md5checksum").get(0));
-		assertEquals("Incorrect fslastmodified returned", "1319095088173", fileInfo.get("fslastmodified").get(0));
 	}
 	
 	@Test
