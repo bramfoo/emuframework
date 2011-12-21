@@ -377,7 +377,7 @@ public class GUI extends JFrame {
         onlineDocItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String uri = "http://sourceforge.net/projects/emuframework/forums";
+                String uri = "http://sourceforge.net/projects/emuframework/forums/";
                 try {
                     Desktop.getDesktop().browse(new URI(uri));
                 } catch (Exception ex) {
