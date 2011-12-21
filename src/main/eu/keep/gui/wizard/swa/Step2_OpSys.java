@@ -55,7 +55,8 @@ public class Step2_OpSys extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "On what operating system does the selected application run?";
+        final String explanation = "<h2>Step 2</h2>\n" +
+                "<p>On what operating system does the selected application run?</p>";
 
         final Vector<Vector<String>> opSysData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT opsys_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions from softwarearchive.opsys");
@@ -88,7 +89,7 @@ public class Step2_OpSys extends JPanel {
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("select an existing format:    ")                         );
+        center.add(new JLabel("select an existing operating system: ")                  );
         center.add(opSysCombo,                                          "wrap"          );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line

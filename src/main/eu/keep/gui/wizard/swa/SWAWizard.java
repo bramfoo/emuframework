@@ -43,6 +43,7 @@ public class SWAWizard extends JFrame {
 
     protected static final String MANDATORY_MESSAGE = "<mandatory field>";
 
+    protected Step0_Introduction step0;
     protected Step1_App step1;
     protected Step2_OpSys step2;
     protected Step3_HardwareAndFormat step3;
@@ -59,6 +60,7 @@ public class SWAWizard extends JFrame {
         super.setResizable(false);
         super.setSize(500, 600);
 
+        step0 = new Step0_Introduction(this);
         step1 = new Step1_App(this);
         step2 = new Step2_OpSys(this);
         step3 = new Step3_HardwareAndFormat(this);
@@ -70,7 +72,7 @@ public class SWAWizard extends JFrame {
 
         super.setLayout(new BorderLayout(5, 5));
 
-        super.add(step1, BorderLayout.CENTER);
+        super.add(step0, BorderLayout.CENTER);
         super.add(logLabel, BorderLayout.SOUTH);
 
         super.setVisible(true);

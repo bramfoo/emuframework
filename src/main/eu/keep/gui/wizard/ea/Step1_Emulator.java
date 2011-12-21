@@ -63,9 +63,10 @@ public class Step1_Emulator extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "Add an emulator by filling in the appropriate information and " +
+        final String explanation = "<h2>Step 1</h2>" +
+                "<p>Add an emulator by filling in the appropriate information and " +
                 "selecting a locally installed directory in which an emulator is installed. " +
-                "In the root of this directory, a valid FreeMarker template should be present.";
+                "In the root of this directory, a valid FreeMarker template should be present.</p>";
 
         Vector<Vector<String>> emuIDs = DBUtil.query(DBUtil.DB.EA, "select emulator_id from emulatorarchive.emulators");
         final String emulator_id = DBUtil.createUniqueIntID(emuIDs, 0);

@@ -54,8 +54,9 @@ public class Step3_HardwareAndFormat extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "On what hardware platform, and file system, does " +
-                "the operating system selected in the previous step run?";
+        final String explanation = "<h2>Step 3</h2>\n" +
+                "<p>On what hardware platform, and file system, does " +
+                "the operating system selected in the previous step run?</p>";
 
         final Vector<Vector<String>> platformData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT platform_id, name, description, creator, production_start, production_end, reference FROM softwarearchive.platforms");

@@ -56,8 +56,9 @@ public class Step4_ZippedImage extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "Please point where the zipped image containing " +
-                "the operating system and application is located on your local disk.";
+        final String explanation = "<h2>Step 4</h2>\n" +
+                "<p>Please point where the zipped image containing " +
+                "the operating system and application is located on your local disk.</p>";
 
         final Vector<Vector<String>> blobIDs = DBUtil.query(DBUtil.DB.SWA, "SELECT image_id FROM softwarearchive.imageblobs");
         final String blobID = DBUtil.createUniqueStringID(blobIDs,  0);

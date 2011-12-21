@@ -1,5 +1,6 @@
-package eu.keep.gui.wizard.ea;
+package eu.keep.gui.wizard.swa;
 
+import eu.keep.gui.wizard.ea.EAWizard;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -7,41 +8,28 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bki010
- * Date: 12/15/11
- * Time: 1:51 PM
- * To change this template use File | Settings | File Templates.
- */
 public class Step0_Introduction extends JPanel {
 
-    public Step0_Introduction(final EAWizard parent) {
+    public Step0_Introduction(final SWAWizard parent) {
 
         super.setLayout(new BorderLayout(5, 5));
-
-        final Dimension d = new Dimension(320, 25);
 
         final String explanation = "<html>" +
                 "<h2>Introduction</h2>\n" +
                 "\n" +
-                "<p>\n" +
-                "This wizard adds an emulator to the Emulator Archive. Beware that \n" +
-                "some work in advance is needed: \n" +
-                "<ul>" +
-                "  <li>the emulator needs to be locally installed;</li>" +
-                "  <li>a FreeMarker<sup>1</sup> template needs to be present in the root of the installation directory of the emulator.</li>" +
+                "<p>This wizard allows you to add a new software application to the Software Archive and associate " +
+                "it with a certain file format. You can also select an application that is already in the Software " +
+                "Archive and associate <i>it</i> with the file format.</p>" +
+                "" +
+                "<br />" +
+                "<p>The following is required:</p>" +
+                "<ul>"+
+                "  <li>a zipped disk image containing the installed application and operating system<sup>1</sup>;</li>" +
+                "  <li>in case of associating the application with a file format which is unknown to the Emulation Framework, " +
+                "       you need to have an example file stored locally;</li>" +
                 "</ul>" +
-                "</p>\n" +
-                "\n" +
-                "<p>\n" +
-                "For more information on how to create a proper FreeMarker template, \n" +
-                "see their website<sup>1</sup> or look at the documentation of the \n" +
-                "Emulation Framework<sup>2</sup>.\n" +
-                "</p>\n" +
-                "\n" +
-                "<ol>\n" +
-                "  <li>http://freemarker.sourceforge.net</li>\n" +
+                "" +
+                 "<ol>\n" +
                 "  <li>http://emuframework.sourceforge.net/documentation.html</li>\n" +
                 "</ol>" +
                 "<html>";
@@ -62,7 +50,7 @@ public class Step0_Introduction extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step0);
                 parent.add(parent.step1, BorderLayout.CENTER);
-                parent.log("1/2, select an emulator");
+                parent.log("");
                 parent.validate();
                 parent.repaint();
             }

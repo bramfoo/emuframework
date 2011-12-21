@@ -55,8 +55,9 @@ public class Step1_App extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "Select an existing application which you want to " +
-                "associate with a certain file format, or create a new application.";
+        final String explanation = "<h2>Step 1</h2>" +
+                "<p>Select an existing application which you want to " +
+                "associate with a certain file format, or create a new application.</p>";
 
         final Vector<Vector<String>> appData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions from softwarearchive.apps");
@@ -107,20 +108,33 @@ public class Step1_App extends JPanel {
         center.add(txtReleaseDate,                                      "wrap"          );
         center.add(new JLabel("license: ")                                              );
         center.add(txtLicense,                                          "wrap"          );
-        center.add(new JLabel("language id: ")                                          );
+        center.add(new JLabel("language: ")                                             );
         center.add(langIdCombo,                                         "wrap"          );
         center.add(new JLabel("reference: ")                                            );
         center.add(txtReference,                                        "wrap"          );
         center.add(new JLabel("user instructions: ")                                    );
         center.add(txtUserInstructions,                                 "wrap"          );
 
+        final JButton previous = new JButton("<html>&larr;</html>");
         final JButton next = new JButton("<html>&rarr;</html>");
         next.setEnabled(false);
 
+        buttons.add(previous);
         buttons.add(next);
 
         super.add(center, BorderLayout.CENTER);
         super.add(buttons, BorderLayout.SOUTH);
+
+        previous.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                parent.remove(parent.step1);
+                parent.add(parent.step0, BorderLayout.CENTER);
+                parent.log("Introduction");
+                parent.validate();
+                parent.repaint();
+            }
+        });
 
         next.addActionListener(new ActionListener() {
             @Override

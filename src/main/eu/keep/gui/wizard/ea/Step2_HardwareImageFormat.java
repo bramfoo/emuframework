@@ -64,14 +64,9 @@ public class Step2_HardwareImageFormat extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "Select a hardware platform and disk image format " +
-                "for the emulator from the two drop down boxes below.";
-
-        /*
-        INSERT INTO emulatorarchive.hardware (hardware_id,name) VALUES(6,'Thomson');
-
-        INSERT INTO emulatorarchive.imageformats (hardware_id,name) VALUES(1,'FAT12');
-        */
+        final String explanation = "<h2>Step 2</h2>" +
+                "<p>Select a hardware platform and disk image format " +
+                "for the emulator from the two drop down boxes below.</p>";
 
         Vector<Vector<String>> hardwareData = DBUtil.query(DBUtil.DB.EA, "select hardware_id, name from emulatorarchive.hardware");
         Vector<Vector<String>> imageFormatData = DBUtil.query(DBUtil.DB.EA, "select imageformat_id, name from emulatorarchive.imageformats");

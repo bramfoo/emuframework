@@ -58,9 +58,10 @@ public class Step5_FileFormat extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "Select an existing file format that will be " +
+        final String explanation = "<h2>Step 5</h2>\n" +
+                "<p>Select an existing file format that will be " +
                 "associated with the application selected in step 1/5, or create " +
-                "a new file format by pointing to a local file on your hard disk";
+                "a new file format by pointing to a local file on your hard disk</p>";
 
         final Vector<Vector<String>> fileFormatData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT fileformat_id, name, version, description, reference from softwarearchive.fileformats");
