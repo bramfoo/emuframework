@@ -374,10 +374,10 @@ public class GUI extends JFrame {
         });
 
         JMenuItem onlineForum = new JMenuItem("Online forum");
-        onlineDocItem.addActionListener(new ActionListener() {
+        onlineForum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String uri = "http://sourceforge.net/projects/emuframework/forums/";
+                String uri = "http://sourceforge.net/projects/emuframework/forums";
                 try {
                     Desktop.getDesktop().browse(new URI(uri));
                 } catch (Exception ex) {
