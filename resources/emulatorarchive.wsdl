@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+$Revision$ $Date$
+$Author$
+-->
+
+<!--
+$header:
+* Copyright (c) 2009-2011 Tessella plc.
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* For more information about this project, visit
+*   http://www.keep-project.eu/
+*   http://emuframework.sourceforge.net/
+* or contact us via email:
+*   blohman at users.sourceforge.net
+*   dav_m at users.sourceforge.net
+*   bkiers at users.sourceforge.net
+* Developed by:
+*   Tessella plc <www.tessella.com>
+*   Koninklijke Bibliotheek <www.kb.nl>
+*   KEEP <www.keep-project.eu>
+* Project Title: Emulator Archive (EA)
+$
+-->
+
+<wsdl:definitions name="EmulatorArchive"
+                  targetNamespace="http://emulatorarchive.keep.eu"
+                  xmlns:tns="http://emulatorarchive.keep.eu"
+                  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                  xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+
+    <!-- type/schema definition -->
+    <wsdl:types>
+    
+        <xs:schema xmlns:tns="http://emulatorarchive.keep.eu" 
+                  targetNamespace="http://emulatorarchive.keep.eu" 
+                  xmlns:ea="http://emulatorarchive.keep.eu/EmulatorPackage"
+		  xmlns:xmime="http://www.w3.org/2005/05/xmlmime">  
+       
+            <!-- http://www.ibm.com/developerworks/xml/library/ws-tip-imports.html -->
+            <xs:import namespace="http://emulatorarchive.keep.eu/EmulatorPackage" 
+                      schemaLocation="EmulatorPackageSchema.xsd"/>            
+
+			<xs:element name="emuPackage" type="ea:emulatorPackage"/>
+            <xs:element name="emulatorPackageList">             
+                <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="emulatorPackage" type="ea:emulatorPackage" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                </xs:complexType>
+            </xs:element>             
+
+            <xs:element name="hardwareID" type="xs:string"/>
+            <xs:element name="hardwareIDs">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="id" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+			<xs:element name="emulatorID_1" type="xs:int"/>
+			<xs:element name="emulatorID_2" type="xs:int"/>
+			
+            <xs:element name="packageFile" type="xs:base64Binary" 
+					   xmime:expectedContentTypes="application/octet-stream"/>
+            
+			<xs:element name="emuLanguage_list" type="ea:emuLanguage_list"/>
+
+            <!--
+            Dummy element used for notification operations (http://www.w3.org/TR/wsdl#_notification)
+            Apparently not supported by CXF (?)
+            -->
+            <xs:element name="dummyElement" type="xs:int"/>
+            <!--
+            The same element/message cannot be used for several operations
+            Workaround: define multiple elements for each usage.
+            See forum discussion here: http://old.nabble.com/%22Non-unique-body-parts%22-error-when-trying-to-use-same-input-message-for-2-different-operations-ts28387764.html          
+            -->
+            <xs:element name="dummyElement_2" type="xs:int"/>
+            <xs:element name="dummyElement_3" type="xs:int"/>
+
+        </xs:schema>
+        
+    </wsdl:types>
+    
+
+    <!-- message definition -->
+    <wsdl:message name="GetEmulatorPackageInput">
+        <wsdl:part name="parameters" element="tns:emulatorID_1"/>
+    </wsdl:message>     
+    <wsdl:message name="GetEmulatorPackageOutput">
+        <wsdl:part name="emulatorPackage" element="tns:emuPackage"/>    
+    </wsdl:message>
+    
+    <wsdl:message name="GetEmulatorPackageListInput">
+        <wsdl:part name="parameters" element="tns:dummyElement"/>
+    </wsdl:message>     
+    <wsdl:message name="GetEmulatorPackageListOutput">
+        <wsdl:part name="emulatorPackageList" element="tns:emulatorPackageList"/>    
+    </wsdl:message>
+    
+    <wsdl:message name="DownloadEmulatorInput">
+        <wsdl:part name="parameters" element="tns:emulatorID_2"/>
+    </wsdl:message>   
+    <wsdl:message name="DownloadEmulatorOutput">
+        <wsdl:part name="parameters" element="tns:packageFile"/>
+    </wsdl:message>
+    
+    <wsdl:message name="GetSupportedHardwareInput">
+		<wsdl:part name="parameters" element="tns:dummyElement_2"/>
+	</wsdl:message>
+    <wsdl:message name="GetSupportedHardwareOutput">
+        <wsdl:part name="parameters" element="tns:hardwareIDs"/>
+    </wsdl:message>  
+        
+    <wsdl:message name="GetEmusByHardwareInput">
+		<wsdl:part name="parameters" element="tns:hardwareID"/>
+	</wsdl:message>
+    <wsdl:message name="GetEmusByHardwareOutput">
+        <wsdl:part name="parameters" element="tns:emulatorPackageList"/>
+    </wsdl:message>      
+    
+    <wsdl:message name="GetLanguageListInput">
+        <wsdl:part name="parameters" element="tns:dummyElement_3"/>
+    </wsdl:message>   
+    <wsdl:message name="GetLanguageListOutput">
+        <wsdl:part name="parameters" element="tns:emuLanguage_list"/>
+    </wsdl:message>   
+    
+    
+    <!-- portType definition -->
+    <wsdl:portType name="EmulatorArchivePortType">
+        <wsdl:operation name="DownloadEmulator">
+           <wsdl:input message="tns:DownloadEmulatorInput"/>
+           <wsdl:output message="tns:DownloadEmulatorOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetEmulatorPackage">
+           <wsdl:input message="tns:GetEmulatorPackageInput"/>
+           <wsdl:output message="tns:GetEmulatorPackageOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetEmulatorPackageList">
+           <wsdl:input message="tns:GetEmulatorPackageListInput"/>
+           <wsdl:output message="tns:GetEmulatorPackageListOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetSupportedHardware">
+           <wsdl:input message="tns:GetSupportedHardwareInput"/>
+           <wsdl:output message="tns:GetSupportedHardwareOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetEmusByHardware">
+           <wsdl:input message="tns:GetEmusByHardwareInput"/>
+           <wsdl:output message="tns:GetEmusByHardwareOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetLanguageList">
+           <wsdl:input message="tns:GetLanguageListInput"/>
+           <wsdl:output message="tns:GetLanguageListOutput"/>
+        </wsdl:operation>
+    </wsdl:portType>
+    
+    <!-- binding definition -->    
+    <wsdl:binding name="EmulatorArchiveBinding" type="tns:EmulatorArchivePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <wsdl:operation name="DownloadEmulator">
+            <soap:operation soapAction="http://emulatorarchive.keep.eu/DownloadEmulator" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetEmulatorPackage">
+            <soap:operation soapAction="http://emulatorarchive.keep.eu/GetEmulatorPackage" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetEmulatorPackageList">
+            <soap:operation soapAction="http://emulatorarchive.keep.eu/GetEmulatorPackageList" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetSupportedHardware">
+            <soap:operation soapAction="http://emulatorarchive.keep.eu/GetSupportedHardware" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetEmusByHardware">
+            <soap:operation soapAction="http://emulatorarchive.keep.eu/GetEmusByHardware" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetLanguageList">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetLanguageList" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+           </wsdl:input>
+           <wsdl:output>
+               <soap:body use="literal"/>
+           </wsdl:output>
+        </wsdl:operation>                                      
+    </wsdl:binding>
+    
+    <!-- service definition -->
+    <wsdl:service name="EmulatorArchiveService">
+        <wsdl:port name="EmulatorArchivePort" binding="tns:EmulatorArchiveBinding">
+           <soap:address location="http://localhost:9001/emulatorarchive/"/>
+        </wsdl:port>
+    </wsdl:service>
+    
+    
+</wsdl:definitions>
