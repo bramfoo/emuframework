@@ -51,6 +51,9 @@
 	<property file="${CEF-common.basedir}/user.properties"/>
 	<property file="${CEF-common.basedir}/test.properties"/>
 
+	<!-- EF version -->
+	<property name="version" value="1.1.0"/>
+	
 	<!--================================================================================-->
 	<!-- common macros 																	-->
 	<!--================================================================================-->
@@ -72,7 +75,7 @@
 	
 	        <java fork="true" classname="org.h2.tools.RunScript">
 	            <classpath>
-	                <path refid="dev-classpath"/>
+	                <path refid="dev.classpath"/>
 	            </classpath>
 	        	<arg line='-url "@{url}"'/>
 	        	<arg line="-user @{user}"/>

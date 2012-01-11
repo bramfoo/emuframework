@@ -41,9 +41,6 @@ $Revision$ $Date$ $Author$
         Main build file for the Core Emulation Framework
     </description>
 
-	<property name="version" value="1.1.0"/>
-	<property name="runCLI" value="runEF"/>
-
 	<!-- master build file with properties, macros -->
 	<import file="build.common.xml"/>
 
@@ -76,12 +73,18 @@ $Revision$ $Date$ $Author$
     <property name="icons.dir"			    value="${basedir}/resources/icons"/>
 	<property name="fits.classpath.dir"		value="${fits.dir}/xml/nlnz"/>
       
+	<property name="swa.release.dir" 		value="${basedir}/../SoftwareArchive/build/release"/>
+	<property name="ea.release.dir" 		value="${basedir}/../EmulatorArchive/build/release"/>
+	<property name="clientGUI.release.dir" 	value="${basedir}/../ClientGUI/build/release"/>
+	
+	<property name="runCLI" value="runEF_adminGUI"/>
+
 	<!-- Javac options -->                                          
     <property name="javac.args" value="-Xlint:unchecked" />
 
 	<!-- Main variables -->
 	<property name="package.name" 	               value="eu.keep"/>
-	<property name="jar.name" 		               value="EFCore"/>
+	<property name="jar.name" 		               value="EFCore-${version}"/>
 	<property name="release.name" 	               value="EmulationFramework"/>
 	<property name="controller.package.name"       value="${package.name}.controller"/>
 	<property name="characteriser.package.name"    value="${package.name}.characteriser"/>
@@ -93,7 +96,7 @@ $Revision$ $Date$ $Author$
         <fileset dir="${basedir}/lib-local/ant" includes="**/*.jar"/>
     </path>
     
-    <path id="dev-classpath">
+    <path id="dev.classpath">
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
@@ -103,7 +106,7 @@ $Revision$ $Date$ $Author$
     </path>
 
     <manifestclasspath property="dev.lib.list" jarfile="./${jar.name}.jar">
-	   <classpath refid="dev-classpath" />
+	   <classpath refid="dev.classpath" />
 	</manifestclasspath>
 
     <path id="release-classpath">
@@ -198,7 +201,7 @@ $Revision$ $Date$ $Author$
           <arg value="-xjc-Xts"/>
           <arg value="eu/keep/resources/external/emulatorarchive.wsdl"/>
           <classpath>
-            <path refid="dev-classpath"/>
+            <path refid="dev.classpath"/>
           </classpath>
         </java>
         <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
@@ -207,7 +210,7 @@ $Revision$ $Date$ $Author$
           <arg value="-xjc-Xts"/>
           <arg value="eu/keep/resources/external/softwarearchive.wsdl"/>
           <classpath>
-            <path refid="dev-classpath"/>
+            <path refid="dev.classpath"/>
           </classpath>
         </java>
     	<!-- clean up mockup classpath directory -->        
@@ -222,11 +225,11 @@ $Revision$ $Date$ $Author$
     <target name="compile" description="Compiles the source directory tree" depends="generated.src, check.user.properties">
     	<mkdir dir="${classes.dir}"/>
     	<echo level="info" message="Compiling generated-src..."/>
-   		<javac srcdir="${gen-src.dir}" destdir="${classes.dir}" classpathref="dev-classpath" fork="yes">
+   		<javac srcdir="${gen-src.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes">
    			<compilerarg value="${javac.args}"/>
         </javac>
         <echo level="info" message="Compiling src..."/>
-    	<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="dev-classpath" fork="yes">
+    	<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes">
             <compilerarg value="${javac.args}"/>
         </javac>
     </target>
@@ -256,8 +259,8 @@ $Revision$ $Date$ $Author$
 
     <!-- Generate CLI scripts to start Emulation Framework -->
     <target name="cli.scripts">
-        <echo file="${runCLI}.sh" append="false" message="#!/bin/sh${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}-${version}.jar $@"/>
-        <echo file="${runCLI}.bat" append="false" message="@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}-${version}.jar %*"/>
+        <echo file="${runCLI}.sh" append="false" message="#!/bin/sh${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar $@"/>
+        <echo file="${runCLI}.bat" append="false" message="@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar %*"/>
     </target>
 
 <!--
@@ -272,14 +275,14 @@ $Revision$ $Date$ $Author$
         	     version="true"
         	     use="true"
         	     verbose="no"
-        	     classpathref="dev-classpath"
+        	     classpathref="dev.classpath"
         	     noqualifier="java.*:${package.name}.*"
         	     useexternalfile="yes">
         	<sourcepath path="${src.dir}"/>
         	<sourcepath path="${gen-src.dir}"/>
         	<classpath>
                 <dirset dir="."/>
-                <path refid="dev-classpath"/>
+                <path refid="dev.classpath"/>
             </classpath>
         </javadoc>
     	<echo message="View the JavaDoc in your browser: file://${javadoc.dir}/index.html"/>
@@ -321,10 +324,9 @@ $Revision$ $Date$ $Author$
 
     <target name="release" description="Creates a release package" depends="jar, cli.scripts, db.drop, db.create" >	   	    
         <mkdir dir="${release.dir}"/>
-        <zip destfile="${release.dir}/${jar.name}-${version}.zip">
+        <zip destfile="${release.dir}/${release.name}.zip">
         	<fileset dir="${basedir}" includes="${runCLI}.*"/>
-    <!--    <fileset dir="${basedir}" includes="runAltGUI.bat"/> -->
-        	<zipfileset dir="${jar.dir}" includes="${jar.name}.jar" fullpath="${jar.name}-${version}.jar"/>
+        	<fileset dir="${jar.dir}" includes="${jar.name}.jar"/>
            	<zipfileset dir="${libs.dir}" prefix="lib/" excludes="dev/**"/>
            	<zipfileset dir="${database.dir}" prefix="database/" includes="h2/**"/>
         	<zipfileset dir="${basedir}" prefix="eu/keep" includes="*.properties" excludes="test.properties"/>
@@ -332,7 +334,7 @@ $Revision$ $Date$ $Author$
         	<zipfileset dir="${fits.dir}" prefix="eu/keep/resources/fits"/>
             <zipfileset dir="${icons.dir}" prefix="eu/keep/resources/icons"/>
         </zip>
-        <echo message="${jar.name}-${version}.zip has been created in ${release.dir}" />  
+        <echo message="${jar.name}.zip has been created in ${release.dir}" />  
     </target>
 
     <!-- Create a complete release (zip file, including jars, docs, database, config and GUI) -->
@@ -340,14 +342,14 @@ $Revision$ $Date$ $Author$
 	    classname="com.izforge.izpack.ant.IzPackTask"/>
 	
 	<target name="release.installer" description="Create a complete release package" depends="db.drop, db.create, release, javadoc" if="user.properties.present">
-    	<unzip src="${release.dir}/${jar.name}-${version}.zip" dest="${release.dir}/EF"/>
+    	<unzip src="${release.dir}/${release.name}.zip" dest="${release.dir}/EF"/>
     	<copy todir="${release.dir}/EF/javadoc">
     	    <fileset dir="${javadoc.dir}"/>
     	</copy>
 
-		<unzip src="${basedir}/../SoftwareArchive/build/release/swa-1.1.0.zip" dest="${release.dir}/swa"/>	
-		<unzip src="${basedir}/../EmulatorArchive/build/release/ea-1.1.0.zip" dest="${release.dir}/ea"/>
-        <!-- <unzip src="${basedir}/AltGUI.zip" dest="${release.dir}/altGUI"/> -->
+		<unzip src="${swa.release.dir}/swa.zip" dest="${release.dir}/swa"/>	
+		<unzip src="${ea.release.dir}/ea.zip" dest="${release.dir}/ea"/>
+        <unzip src="${clientGUI.release.dir}/clientGUI.zip" dest="${release.dir}/clientGUI"/>
 
     	<!-- Launch IzPack packaging process -->
     	<echo message="Running IzPack to build the installer..."/>
@@ -366,7 +368,7 @@ $Revision$ $Date$ $Author$
     <delete dir="${release.dir}/EF"/>
     <delete dir="${release.dir}/ea"/>
     <delete dir="${release.dir}/swa"/>
-    <!-- <delete dir="${release.dir}/altGUI"/> -->
+    <delete dir="${release.dir}/clientGUI"/>
 	</target>
 	
 <!--
@@ -377,7 +379,7 @@ $Revision$ $Date$ $Author$
     <target name="test.compile" description="Compiling the unit tests classes" depends="clean, compile, check.test.properties"  
     	if="test.properties.present">
 		<mkdir dir="${classes.dir}"/>
-        <javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="dev-classpath" fork="yes">
+        <javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes">
             <compilerarg value="${javac.args}"/>
         </javac>
     </target>
@@ -395,7 +397,7 @@ $Revision$ $Date$ $Author$
             </batchtest>
             <formatter type="xml" />
             <classpath>
-                <path refid="dev-classpath"/>
+                <path refid="dev.classpath"/>
                 <path location="${classes.dir}"/>
             </classpath>
         </junit> 
@@ -537,4 +539,17 @@ $Revision$ $Date$ $Author$
         <ivy:publish resolver="local" pubrevision="${version}" overwrite="true" artifactspattern="${jar.dir}/[artifact].[ext]"/>
     </target>
 
+<!-- 
+============ Edo's targets ===================
+-->	
+
+	<target name="deploy" depends="jar">
+		<copy file="${jar.dir}/EFCore.jar" todir="C:\Users\nooe\Documents\KEEP\EF_installation"/>
+		
+		<exec dir="C:\Users\nooe\Documents\KEEP\EF_installation" executable="cmd" os="Windows 7">
+		  <arg line="/c runEF.bat -admin"/>
+		</exec>
+		
+	</target>
+		
 </project>

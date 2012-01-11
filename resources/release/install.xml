@@ -70,8 +70,13 @@
     -->
     <packs>
         <pack name="Core Emulation Framework" required="yes">
-            <description>Core Emulation Framework</description>
+            <description>Core Emulation Framework (including admin GUI).</description>
             <fileset dir="build/release/EF" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
+        </pack>
+
+        <pack name="Client GUI" required="no" preselected="yes">
+            <description>GUI to run Emulation Framework in client mode.</description>
+            <fileset dir="build/release/clientGUI" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
         </pack>
 
         <pack name="Emulator Archive" required="no" preselected="yes">
