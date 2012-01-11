@@ -262,7 +262,7 @@ public class ConfirmPanel extends JPanel {
 
     private void execute(DBUtil.DB db, String onSuccess, String onError, String sql, Object... params) {
 
-        int count = DBUtil.insert(db, sql, params);
+        int count = DBUtil.update(db, sql, params);
 
         if (count == 1) {
             logger.info(onSuccess);

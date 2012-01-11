@@ -241,7 +241,7 @@ public final class DBUtil {
     }
 
     // todo javadoc
-    public static int insert(DB db, String sql, Object... values) {
+    public static int update(DB db, String sql, Object... values) {
 
         db.connect();
 

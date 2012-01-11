@@ -34,6 +34,7 @@ import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
 import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
+import eu.keep.gui.settings.WhitelistFrame;
 import eu.keep.gui.wizard.ea.EAWizard;
 import eu.keep.gui.wizard.swa.SWAWizard;
 import eu.keep.kernel.CoreEngineModel;
@@ -298,6 +299,17 @@ public class GUI extends JFrame {
             }
         });
         settingsMenu.add(addresses);
+
+        // Emulator whitelist option
+        JMenuItem whitelist = new JMenuItem("Emulator whitelist");
+        whitelist.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new WhitelistFrame(GUI.this, "eu/keep/" + PROP_FILE_NAME_KERNEL);
+            }
+        });
+        settingsMenu.add(whitelist);
+
         return settingsMenu;
     }
 
