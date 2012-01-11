@@ -37,7 +37,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class EAWizard extends JFrame {
+public class EAWizardAdd extends JFrame {
 
     public static final Color LIGHT_RED = new Color(255, 212, 222);
 
@@ -50,7 +50,7 @@ public class EAWizard extends JFrame {
 
     private JLabel logLabel;
 
-    public EAWizard() {
+    public EAWizardAdd() {
         super("Emulator Archive wizard");
 
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -75,7 +75,7 @@ public class EAWizard extends JFrame {
     public static JTextField createTxtField(Dimension d, boolean mandatory) {
         final JTextField txt = new JTextField();
         if(mandatory) {
-            txt.setBackground(EAWizard.LIGHT_RED);
+            txt.setBackground(EAWizardAdd.LIGHT_RED);
             txt.setText(MANDATORY_MESSAGE);
 
             txt.addFocusListener(new FocusListener() {
@@ -99,7 +99,7 @@ public class EAWizard extends JFrame {
                 public void keyReleased(KeyEvent e) {
                     String s = txt.getText().trim();
                     if(s.isEmpty() || s.equals(MANDATORY_MESSAGE)) {
-                        txt.setBackground(EAWizard.LIGHT_RED);
+                        txt.setBackground(EAWizardAdd.LIGHT_RED);
                     }
                     else {
                         txt.setBackground(Color.WHITE);
@@ -126,7 +126,7 @@ public class EAWizard extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new EAWizard();
+                new EAWizardAdd();
             }
         });
     }

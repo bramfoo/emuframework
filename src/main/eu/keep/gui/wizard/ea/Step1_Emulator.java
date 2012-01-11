@@ -32,28 +32,25 @@ package eu.keep.gui.wizard.ea;
 
 import eu.keep.gui.util.DBUtil;
 import eu.keep.gui.wizard.ea.model.Emulator;
-import eu.keep.gui.wizard.swa.SWAWizard;
-import eu.keep.gui.wizard.swa.model.App;
+import eu.keep.gui.wizard.swa.SWAWizardAdd;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.Vector;
 
 public class Step1_Emulator extends JPanel {
 
-    private EAWizard parent;
+    private EAWizardAdd parent;
     protected Emulator emu = null;
 
-    public Step1_Emulator(final EAWizard parent) {
+    public Step1_Emulator(final EAWizardAdd parent) {
                 super.setLayout(new BorderLayout(5, 5));
 
         final Dimension d = new Dimension(320, 25);
@@ -71,19 +68,19 @@ public class Step1_Emulator extends JPanel {
         Vector<Vector<String>> emuIDs = DBUtil.query(DBUtil.DB.EA, "select emulator_id from emulatorarchive.emulators");
         final String emulator_id = DBUtil.createUniqueIntID(emuIDs, 0);
 
-        final JTextField txtName = SWAWizard.createTxtField(d, true);
-        final JTextField txtVersion = SWAWizard.createTxtField(d, false);
+        final JTextField txtName = SWAWizardAdd.createTxtField(d, true);
+        final JTextField txtVersion = SWAWizardAdd.createTxtField(d, false);
         final JComboBox exeCombo = new JComboBox(new String[]{"exe", "jar", "ELF"});
         exeCombo.setPreferredSize(d);
         final JButton btnExe = new JButton("browse...");
         btnExe.setPreferredSize(d);
-        final JTextField txtDescription = SWAWizard.createTxtField(d, false);
+        final JTextField txtDescription = SWAWizardAdd.createTxtField(d, false);
         final JComboBox langIdCombo = new JComboBox(Language.values());
         langIdCombo.setSelectedItem(Language.en);
         langIdCombo.setPreferredSize(d);
         final JButton btnFolder = new JButton("browse...");
         btnFolder.setPreferredSize(d);
-        final JTextField txtUserInstructions = SWAWizard.createTxtField(d, false);
+        final JTextField txtUserInstructions = SWAWizardAdd.createTxtField(d, false);
 
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
@@ -197,7 +194,7 @@ public class Step1_Emulator extends JPanel {
         String _package = new File(folder, package_name).getAbsolutePath();
         String user_instructions = txtUserInstructions.getText();
 
-        if(name.equals(EAWizard.MANDATORY_MESSAGE) || name.isEmpty()) return;
+        if(name.equals(EAWizardAdd.MANDATORY_MESSAGE) || name.isEmpty()) return;
 
         if(!exe.exists() || !folder.exists()) return;
 

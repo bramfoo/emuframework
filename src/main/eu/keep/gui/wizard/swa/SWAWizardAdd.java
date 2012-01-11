@@ -37,7 +37,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class SWAWizard extends JFrame {
+public class SWAWizardAdd extends JFrame {
 
     public static final Color LIGHT_RED = new Color(255, 212, 222);
 
@@ -53,7 +53,7 @@ public class SWAWizard extends JFrame {
 
     private JLabel logLabel;
 
-    public SWAWizard() {
+    public SWAWizardAdd() {
         super("Software Archive wizard");
 
         super.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -81,7 +81,7 @@ public class SWAWizard extends JFrame {
     public static JTextField createTxtField(Dimension d, boolean mandatory) {
         final JTextField txt = new JTextField();
         if(mandatory) {
-            txt.setBackground(SWAWizard.LIGHT_RED);
+            txt.setBackground(SWAWizardAdd.LIGHT_RED);
             txt.setText(MANDATORY_MESSAGE);
 
             txt.addFocusListener(new FocusListener() {
@@ -105,7 +105,7 @@ public class SWAWizard extends JFrame {
                 public void keyReleased(KeyEvent e) {
                     String s = txt.getText().trim();
                     if(s.isEmpty() || s.equals(MANDATORY_MESSAGE)) {
-                        txt.setBackground(SWAWizard.LIGHT_RED);
+                        txt.setBackground(SWAWizardAdd.LIGHT_RED);
                     }
                     else {
                         txt.setBackground(Color.WHITE);
@@ -132,7 +132,7 @@ public class SWAWizard extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new SWAWizard();
+                new SWAWizardAdd();
             }
         });
     }

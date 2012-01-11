@@ -31,29 +31,23 @@
 package eu.keep.gui.wizard.ea;
 
 import eu.keep.gui.util.DBUtil;
-import eu.keep.gui.wizard.ea.model.Emulator;
 import eu.keep.gui.wizard.ea.model.Hardware;
 import eu.keep.gui.wizard.ea.model.ImageFormat;
-import eu.keep.gui.wizard.swa.SWAWizard;
-import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.File;
 import java.util.Vector;
 
 public class Step2_HardwareImageFormat extends JPanel {
 
-    private EAWizard parent;
+    private EAWizardAdd parent;
     protected Hardware hardware = null;
     protected ImageFormat format = null;
 
-    public Step2_HardwareImageFormat(final EAWizard parent) {
+    public Step2_HardwareImageFormat(final EAWizardAdd parent) {
 
         super.setLayout(new BorderLayout(5, 5));
 

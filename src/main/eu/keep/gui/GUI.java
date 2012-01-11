@@ -35,8 +35,10 @@ import eu.keep.gui.common.GlassPane;
 import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
 import eu.keep.gui.settings.WhitelistFrame;
-import eu.keep.gui.wizard.ea.EAWizard;
-import eu.keep.gui.wizard.swa.SWAWizard;
+import eu.keep.gui.wizard.ea.EAWizardAdd;
+import eu.keep.gui.wizard.ea.EAWizardRemove;
+import eu.keep.gui.wizard.swa.SWAWizardAdd;
+import eu.keep.gui.wizard.swa.SWAWizardRemove;
 import eu.keep.kernel.CoreEngineModel;
 import eu.keep.kernel.Kernel;
 import eu.keep.util.FileUtilities;
@@ -324,36 +326,64 @@ public class GUI extends JFrame {
 
         // Option to start Add Emulator wizard
         if (eaAdmin) {
-            JMenuItem addEmulator = new JMenuItem("Add Emulator...");
+            JMenuItem addEmulator = new JMenuItem("Add an Emulator");
             addEmulator.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new EAWizard();
+                            new EAWizardAdd();
                         }
                     });
                 }
             });
             toolsMenu.add(addEmulator);
+
+            JMenuItem removeEmulator = new JMenuItem("Remove an Emulator");
+            removeEmulator.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new EAWizardRemove();
+                        }
+                    });
+                }
+            });
+            toolsMenu.add(removeEmulator);
         }
 
         // Option to start Add Software wizard
         if (swaAdmin) {
-            JMenuItem addSoftware = new JMenuItem("Add Software...");
+            JMenuItem addSoftware = new JMenuItem("Add Software");
             addSoftware.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
                         public void run() {
-                            new SWAWizard();
+                            new SWAWizardAdd();
                         }
                     });
                 }
             });
             toolsMenu.add(addSoftware);
+
+            JMenuItem removeSoftware = new JMenuItem("Remove Software");
+            removeSoftware.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            new SWAWizardRemove();
+                        }
+                    });
+                }
+            });
+            toolsMenu.add(removeSoftware);
         }
 
         return toolsMenu;

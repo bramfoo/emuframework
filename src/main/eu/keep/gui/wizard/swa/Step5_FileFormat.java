@@ -50,7 +50,7 @@ public class Step5_FileFormat extends JPanel {
 
     protected FileFormat fileFormat = new FileFormat();
 
-    Step5_FileFormat(final SWAWizard parent) {
+    Step5_FileFormat(final SWAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final Dimension d = new Dimension(320, 25);
@@ -79,9 +79,9 @@ public class Step5_FileFormat extends JPanel {
         fitsOut.setEnabled(false);
         fitsOut.setPreferredSize(d);
 
-        final JTextField txtVersion = SWAWizard.createTxtField(d, false);
-        final JTextField txtDescription = SWAWizard.createTxtField(d, false);
-        final JTextField txtReference = SWAWizard.createTxtField(d, false);
+        final JTextField txtVersion = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtDescription = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtReference = SWAWizardAdd.createTxtField(d, false);
 
         final JComponent[] allNewFields = {browse, fitsOut, txtVersion, txtDescription, txtReference};
 
@@ -150,7 +150,7 @@ public class Step5_FileFormat extends JPanel {
                 fileFormat = (FileFormat)formatsCombo.getSelectedItem();
                 if(fileFormat.isDummy()) {
                     String s = fitsOut.getSelectedItem() != null ? ((FitsOutWrapper)fitsOut.getSelectedItem()).name : "";
-                    next.setEnabled(!s.isEmpty() && !s.equals(SWAWizard.MANDATORY_MESSAGE));
+                    next.setEnabled(!s.isEmpty() && !s.equals(SWAWizardAdd.MANDATORY_MESSAGE));
                     for(JComponent c : allNewFields) {
                         c.setEnabled(true);
                     }

@@ -48,7 +48,7 @@ public class Step4_ZippedImage extends JPanel {
 
     protected ImageBlob imageBlob = null;
 
-    Step4_ZippedImage(final SWAWizard parent) {
+    Step4_ZippedImage(final SWAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final Dimension d = new Dimension(320, 25);
@@ -63,7 +63,7 @@ public class Step4_ZippedImage extends JPanel {
         final Vector<Vector<String>> blobIDs = DBUtil.query(DBUtil.DB.SWA, "SELECT image_id FROM softwarearchive.imageblobs");
         final String blobID = DBUtil.createUniqueStringID(blobIDs,  0);
 
-        final JTextField txtPath = SWAWizard.createTxtField(d, true);
+        final JTextField txtPath = SWAWizardAdd.createTxtField(d, true);
         final JButton browse = new JButton("browse...");
 
         center.add(new JLabel(" "),                                             "wrap"          ); // empty line
@@ -135,7 +135,7 @@ public class Step4_ZippedImage extends JPanel {
                     next.setEnabled(true);
                 }
                 else {
-                    txtPath.setBackground(SWAWizard.LIGHT_RED);
+                    txtPath.setBackground(SWAWizardAdd.LIGHT_RED);
                     imageBlob = null;
                     next.setEnabled(false);
                 }

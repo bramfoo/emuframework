@@ -39,7 +39,7 @@ import java.awt.event.ActionListener;
 
 public class Step0_Introduction extends JPanel {
 
-    public Step0_Introduction(final SWAWizard parent) {
+    public Step0_Introduction(final SWAWizardAdd parent) {
 
         super.setLayout(new BorderLayout(5, 5));
 

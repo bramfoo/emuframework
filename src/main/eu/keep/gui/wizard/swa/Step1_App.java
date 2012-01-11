@@ -47,7 +47,7 @@ public class Step1_App extends JPanel {
 
     protected App app = new App();
 
-    Step1_App(final SWAWizard parent) {
+    Step1_App(final SWAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final Dimension d = new Dimension(320, 25);
@@ -70,17 +70,17 @@ public class Step1_App extends JPanel {
         final JComboBox appsCombo = new JComboBox(existingApps);
         appsCombo.setPreferredSize(d);
 
-        final JTextField txtName = SWAWizard.createTxtField(d, true);
-        final JTextField txtVersion = SWAWizard.createTxtField(d, false);
-        final JTextField txtDescription = SWAWizard.createTxtField(d, false);
-        final JTextField txtCreator = SWAWizard.createTxtField(d, false);
-        final JTextField txtReleaseDate = SWAWizard.createTxtField(d, false);
-        final JTextField txtLicense = SWAWizard.createTxtField(d, false);
+        final JTextField txtName = SWAWizardAdd.createTxtField(d, true);
+        final JTextField txtVersion = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtDescription = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtCreator = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtReleaseDate = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtLicense = SWAWizardAdd.createTxtField(d, false);
         final JComboBox langIdCombo = new JComboBox(Language.values());
         langIdCombo.setSelectedItem(Language.en);
         langIdCombo.setPreferredSize(d);
-        final JTextField txtReference = SWAWizard.createTxtField(d, false);
-        final JTextField txtUserInstructions = SWAWizard.createTxtField(d, false);
+        final JTextField txtReference = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtUserInstructions = SWAWizardAdd.createTxtField(d, false);
 
         final JComponent[] allNewAppFields = {txtName, txtVersion, txtDescription, txtCreator,
                 txtReleaseDate, txtLicense, langIdCombo, txtReference, txtUserInstructions};
@@ -160,7 +160,7 @@ public class Step1_App extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 app = (App)appsCombo.getSelectedItem();
                 if(app.isDummy()) {
-                    next.setEnabled(!txtName.getText().trim().isEmpty() && !txtName.getText().equals(SWAWizard.MANDATORY_MESSAGE));
+                    next.setEnabled(!txtName.getText().trim().isEmpty() && !txtName.getText().equals(SWAWizardAdd.MANDATORY_MESSAGE));
                     for(JComponent c : allNewAppFields) {
                         c.setEnabled(true);
                     }

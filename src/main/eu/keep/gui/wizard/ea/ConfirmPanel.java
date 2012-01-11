@@ -55,9 +55,9 @@ public class ConfirmPanel extends JPanel {
     private static final Logger logger = Logger.getLogger(ConfirmPanel.class.getName());
 
     private final JLabel explanation;
-    private final EAWizard parent;
+    private final EAWizardAdd parent;
 
-    ConfirmPanel(final EAWizard parent) {
+    ConfirmPanel(final EAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final JPanel center = new JPanel(new MigLayout());

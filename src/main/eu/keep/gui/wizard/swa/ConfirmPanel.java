@@ -46,9 +46,9 @@ public class ConfirmPanel extends JPanel {
     private static final Logger logger = Logger.getLogger(ConfirmPanel.class.getName());
 
     private final JLabel explanation;
-    private final SWAWizard wizard;
+    private final SWAWizardAdd wizard;
 
-    ConfirmPanel(final SWAWizard parent) {
+    ConfirmPanel(final SWAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final JPanel center = new JPanel(new MigLayout());

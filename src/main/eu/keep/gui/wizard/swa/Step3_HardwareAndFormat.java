@@ -46,7 +46,7 @@ public class Step3_HardwareAndFormat extends JPanel {
     protected Platform platform;
     protected ImageFormat imageFormat;
 
-    Step3_HardwareAndFormat(final SWAWizard parent) {
+    Step3_HardwareAndFormat(final SWAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final Dimension d = new Dimension(320, 25);

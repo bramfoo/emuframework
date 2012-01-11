@@ -47,7 +47,7 @@ public class Step2_OpSys extends JPanel {
 
     protected OpSys opSys;
 
-    Step2_OpSys(final SWAWizard parent) {
+    Step2_OpSys(final SWAWizardAdd parent) {
         super.setLayout(new BorderLayout(5, 5));
 
         final Dimension d = new Dimension(320, 25);
@@ -70,17 +70,17 @@ public class Step2_OpSys extends JPanel {
         final JComboBox opSysCombo = new JComboBox(existingOpSys);
         opSysCombo.setPreferredSize(d);
 
-        final JTextField txtName = SWAWizard.createTxtField(d, true);
-        final JTextField txtVersion = SWAWizard.createTxtField(d, false);
-        final JTextField txtDescription = SWAWizard.createTxtField(d, false);
-        final JTextField txtCreator = SWAWizard.createTxtField(d, false);
-        final JTextField txtReleaseDate = SWAWizard.createTxtField(d, false);
-        final JTextField txtLicense = SWAWizard.createTxtField(d, false);
+        final JTextField txtName = SWAWizardAdd.createTxtField(d, true);
+        final JTextField txtVersion = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtDescription = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtCreator = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtReleaseDate = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtLicense = SWAWizardAdd.createTxtField(d, false);
         final JComboBox langIdCombo = new JComboBox(Language.values());
         langIdCombo.setSelectedItem(Language.en);
         langIdCombo.setPreferredSize(d);
-        final JTextField txtReference = SWAWizard.createTxtField(d, false);
-        final JTextField txtUserInstructions = SWAWizard.createTxtField(d, false);
+        final JTextField txtReference = SWAWizardAdd.createTxtField(d, false);
+        final JTextField txtUserInstructions = SWAWizardAdd.createTxtField(d, false);
 
         final JComponent[] allNewOpSysFields = {txtName, txtVersion, txtDescription, txtCreator,
                 txtReleaseDate, txtLicense, langIdCombo, txtReference, txtUserInstructions};
@@ -161,7 +161,7 @@ public class Step2_OpSys extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 opSys = (OpSys)opSysCombo.getSelectedItem();
                 if(opSys.isDummy()) {
-                    next.setEnabled(!txtName.getText().trim().isEmpty() && !txtName.getText().equals(SWAWizard.MANDATORY_MESSAGE));
+                    next.setEnabled(!txtName.getText().trim().isEmpty() && !txtName.getText().equals(SWAWizardAdd.MANDATORY_MESSAGE));
                     for(JComponent c : allNewOpSysFields) {
                         c.setEnabled(true);
                     }
