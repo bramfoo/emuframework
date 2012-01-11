@@ -38,9 +38,13 @@ $
 
 	<property file="user.properties"/>
 
+	<!-- master build file with properties, macros -->
+    <property name="EFCore.dir"		 location="${basedir}/../Core"/>
+	<import file="${EFCore.dir}/build.common.xml"/>
+
     <property name="server.script" value="runServer"/>
     <property name="server.name" value="emulatorArchiveServer"/>
-    <property name="server.version" value="1.1.0"/>
+    <property name="server.version" value="${version}"/>
     
     <property environment="env"/>
     <property name="home.dir"        location="${basedir}"/>
@@ -58,6 +62,7 @@ $
 	<property name="packages.dir"    location="${basedir}/packages"/>
 	<property name="test.database.dir" location="${basedir}/testData/database"/>
 
+	
 	<!-- check if user.properties file exists or not -->
 	<target name="check.user.properties">
 	    <available file="user.properties" property="user.properties.present"/>
@@ -150,7 +155,7 @@ $
     
     <!-- release -->
     <target name="release" description="creates a release package" depends="jar, runServer.scripts, packages.All, db.drop, db.create, db.populate" >	   	    
-	    <property name="release.name"  value="ea-${server.version}.zip"/>
+	    <property name="release.name"  value="ea.zip"/>
         <mkdir dir="${release.dir}"/>
         <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" includes="${server.script}.*, *.jar, lib/*.jar, database/db/**, user.properties, log4j.properties" excludes="lib/junit-4.7.jar">
         </zip>
@@ -371,34 +376,7 @@ $
         </sequential>
     </macrodef>
         
-    <!-- H2 RunScript: executes H2's RunScript tool with parameters -->
-	<macrodef name="H2RunScript">
-		<attribute name="url" default="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}${h2.db.emulatorarchiveschema}"/>
-		<attribute name="user"/>
-		<attribute name="password"/> 
-		<attribute name="script"/>
-		<attribute name="failonerror" default="true"/>
 	
-		<element name="arguments" optional="true"/>
-		
-		<sequential>
-			<!-- executes "RunScript -url [url] -user [user] -password [password] -script [script] -->
-			<echo level="info" 
-			message="executing: org.h2.tools.RunScript -url @{url} -user @{user} -password @{password} -script @{script}"/>
-	
-	        <java fork="true" classname="org.h2.tools.RunScript">
-	            <classpath>
-	                <path refid="dev.classpath"/>
-	            </classpath>
-	        	<arg line='-url "@{url}"'/>
-	        	<arg line="-user @{user}"/>
-	        	<arg line="-password @{password}"/>
-	        	<arg line='-script "@{script}"'/>
-	        	<arguments/>
-	        </java>
-		</sequential>
-	</macrodef>
-    
     <!-- Copy test.properties onto classpath -->
     <target name="testProperties.toTestDir">
         <copy file="${basedir}/test.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
