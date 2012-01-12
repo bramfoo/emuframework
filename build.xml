@@ -495,6 +495,13 @@ $Revision$ $Date$ $Author$
         <copy file="${src.dir}/log4j.properties" todir="${classes.dir}"/>
 		<copy file="${basedir}/user.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
         <copy file="${basedir}/gui.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
+
+        <copy todir="${classes.dir}/eu/keep">
+            <fileset dir="${basedir}">
+                <include name="GUIBundle*.properties"/>
+            </fileset>
+        </copy>
+
 		<copy file="${resource.dir}/external/softwarearchive/PathwaySchema.xsd" todir="${classes.dir}/eu/keep/resources/external" overwrite="yes"/>	
 		<copy todir="${classes.dir}/eu/keep/resources/fits" >
 		    <fileset dir="${fits.dir}" includes="**"/>
