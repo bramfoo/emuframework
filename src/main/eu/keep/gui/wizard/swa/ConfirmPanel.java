@@ -246,7 +246,7 @@ public class ConfirmPanel extends JPanel {
                                 parent.log("ERROR: " + ex.getMessage());
                             }
 
-                            parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             parent.setEnabled(true);
                             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         }

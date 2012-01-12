@@ -175,7 +175,7 @@ public class ConfirmPanel extends JPanel {
                                 confirm.setEnabled(false);
                             }
 
-                            parent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                            parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                             parent.setEnabled(true);
                             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         }
