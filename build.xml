@@ -166,7 +166,7 @@ $
     <!-- Generate runServer scripts for Linux (.sh) and Windows (.bat) -->
 	<target name="runServer.scripts">
 		<echo message="Creating Linux/Windows startup scripts" />
-        <echo file="${server.script}.sh" append="false" message='#!/bin/bash${line.separator}java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>
+        <echo file="${server.script}.sh" append="false" message='java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>
         <echo file="${server.script}.bat" append="false" message='@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>        
     </target>
 
