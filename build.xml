@@ -259,7 +259,7 @@ $Revision$ $Date$ $Author$
 
     <!-- Generate CLI scripts to start Emulation Framework -->
     <target name="cli.scripts">
-        <echo file="${runCLI}.sh" append="false" message="#!/bin/sh${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar $@"/>
+        <echo file="${runCLI}.sh" append="false" message="java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar $@"/>
         <echo file="${runCLI}.bat" append="false" message="@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar %*"/>
     </target>
 
