@@ -140,10 +140,6 @@ public class ConfirmPanel extends JPanel {
                                 readRecursive(emuRoot, filesToZip);
                                 createZipFile(filesToZip, emu._package);
 
-                                // INSERT INTO emulatorarchive.emulators
-                                //   (emulator_id, name, version, exec_type, exec_name, description, language_id, package_name, package_type, package_version, package, user_instructions)
-                                // VALUES
-                                //   (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FILE_READ(?), ?)
                                 execute(
                                         DBUtil.DB.EA, // database
                                         "successfully inserted " + emu.name + " in the database", // success

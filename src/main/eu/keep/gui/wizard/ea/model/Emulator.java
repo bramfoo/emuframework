@@ -54,4 +54,9 @@ public class Emulator {
         this._package = _package;
         this.user_instructions = user_instructions;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s (%s)", name, version, exec_type);
+    }
 }
