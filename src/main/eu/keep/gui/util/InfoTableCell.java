@@ -28,38 +28,28 @@
  *   KEEP <www.keep-project.eu>
  * Project Title: Core Emulation Framework (Core EF)$
  */
-package eu.keep.gui.common;
+package eu.keep.gui.util;
 
-import javax.swing.table.AbstractTableModel;
+/**
+ * Convenience class to display cell entries in the InfoTableDialog
+ * @author nooe
+ */
+public class InfoTableCell {
 
-public class InfoTableModel extends AbstractTableModel {
-
-	private Object[] colNames;
-	private Object[][] data;
+	private final String text;
+	private final boolean isSectionTitle;
 	
-	public InfoTableModel(Object[] colNames, Object[][] data) {
-		this.colNames = colNames;
-		this.data = data;
+	public InfoTableCell(String text, boolean sectionTitle) {
+		this.text = text;
+		this.isSectionTitle = sectionTitle;
+	}
+
+	public String getText() {
+		return this.text;
 	}
 	
-	@Override
-    public String getColumnName(int col) {
-        return this.colNames[col].toString();
-    }
-    
-	@Override
-    public int getRowCount() { 
-    	return this.data.length; 
-    }
-    
-	@Override
-    public int getColumnCount() { 
-		return this.colNames.length; 
+	public boolean isSectionTitle() {
+		return this.isSectionTitle;
 	}
-	
-	@Override
-    public Object getValueAt(int row, int col) {
-        return this.data[row][col];
-    }
 	
 }
