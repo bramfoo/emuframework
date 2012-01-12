@@ -34,6 +34,7 @@ import eu.keep.gui.GUI;
 
 import javax.swing.*;
 
+import eu.keep.gui.util.RBLanguages;
 import org.apache.log4j.Logger;
 
 import java.awt.*;
@@ -58,7 +59,7 @@ public class SettingsFrame extends JFrame {
     private final String fileName;
     private final Map<String, EFPropertyEditor> valueMap;
     
-    public SettingsFrame(GUI p, String fn, String instructions, List<EFProperty> editableProperties) {
+    public SettingsFrame(GUI p, String fn, List<EFProperty> editableProperties) {
         super("settings");
 
         parent = p;
@@ -84,7 +85,7 @@ public class SettingsFrame extends JFrame {
             }
         });
 
-        initGUI(instructions, editableProperties);
+        initGUI(editableProperties);
 
         int parentX = parent.getX();
         int parentY = parent.getY();
@@ -104,7 +105,7 @@ public class SettingsFrame extends JFrame {
         this.dispose();
     }
 
-    private void initGUI(String instructions, List<EFProperty> editableProperties) {
+    private void initGUI(List<EFProperty> editableProperties) {
         super.setSize(new Dimension(600, 400));
         super.setLayout(new BorderLayout(5, 5));
         super.add(new JLabel("  "), BorderLayout.NORTH);
@@ -148,7 +149,11 @@ public class SettingsFrame extends JFrame {
         
         middlePanel.add(settingsPanel, BorderLayout.SOUTH);
         mainPanel.add(middlePanel, BorderLayout.CENTER);
-        mainPanel.add(new JLabel(instructions), BorderLayout.NORTH);
+
+        JLabel instructions = new JLabel();
+        RBLanguages.set(instructions, "settings_instructions");
+
+        mainPanel.add(instructions, BorderLayout.NORTH);
 
         JButton save = new JButton("save");
         JButton cancel = new JButton("cancel");

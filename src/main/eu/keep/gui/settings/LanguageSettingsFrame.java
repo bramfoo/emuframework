@@ -33,9 +33,12 @@ package eu.keep.gui.settings;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.CheckBoxList;
 import eu.keep.gui.util.LanguageCheckBox;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.util.Language;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import net.miginfocom.layout.CC;
 import net.miginfocom.swing.MigLayout;
@@ -66,8 +69,10 @@ public class LanguageSettingsFrame extends JFrame {
     private static final Logger logger = Logger.getLogger(LanguageSettingsFrame.class.getName());
 
     private final GUI parent;
-    private final Properties properties;
-    private final String fileName;
+    private final Properties kernelProperties;
+    private final Properties guiProperties;
+    private final String kernelFileName;
+    private final String guiFileName;
 
     private Set<Language> availableLanguages = new HashSet<Language>();
     private Set<Language> acceptedLanguages = new HashSet<Language>();
@@ -75,13 +80,15 @@ public class LanguageSettingsFrame extends JFrame {
     private CheckBoxList<JCheckBox> checkBoxList = new CheckBoxList<JCheckBox>();
 
     private static final String select_all_label = "Select all";
-    
+
     /**
      * Constructor
-     * @param p parent GUI
-     * @param fn filename of user.properties file
+     *
+     * @param p        parent GUI
+     * @param fnKernel filename of user.properties file
+     * @param fnGUI    filename of gui.properties file
      */
-    public LanguageSettingsFrame(GUI p, String fn) {
+    public LanguageSettingsFrame(GUI p, String fnKernel, String fnGUI) {
         super("language settings");
 
         parent = p;
@@ -89,10 +96,14 @@ public class LanguageSettingsFrame extends JFrame {
         parent.getGlassPane().setVisible(true);
 
         // read the properties file
-        fileName = fn;
-        properties = new Properties();
+        kernelFileName = fnKernel;
+        guiFileName = fnGUI;
+        kernelProperties = new Properties();
+        guiProperties = new Properties();
+
         try {
-            properties.load(new FileInputStream(fileName));
+            kernelProperties.load(new FileInputStream(kernelFileName));
+            guiProperties.load(new FileInputStream(guiFileName));
         } catch (IOException e) {
             JOptionPane.showMessageDialog(parent, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             this.close();
@@ -146,15 +157,73 @@ public class LanguageSettingsFrame extends JFrame {
 	 */
 	private void addLanguagePanel(JPanel mainPanel) {		
 
+        String lang = guiProperties.getProperty("language");
+
 		// Buttons for available language options
-        JRadioButton english = new JRadioButton(Language.en.getLanguageName());
-        JRadioButton german = new JRadioButton(Language.de.getLanguageName());
-        JRadioButton french = new JRadioButton(Language.fr.getLanguageName());
-        JRadioButton dutch = new JRadioButton(Language.nl.getLanguageName());
-        english.setSelected(true);
-        german.setEnabled(false);
-        french.setEnabled(false);
-        dutch.setEnabled(false);
+        final JRadioButton english = new JRadioButton(Language.en.getLanguageName(), lang.equals(Language.en.getLanguageId()));
+        final JRadioButton german = new JRadioButton(Language.de.getLanguageName(), lang.equals(Language.de.getLanguageId()));
+        final JRadioButton french = new JRadioButton(Language.fr.getLanguageName(), lang.equals(Language.fr.getLanguageId()));
+        final JRadioButton dutch = new JRadioButton(Language.nl.getLanguageName(), lang.equals(Language.nl.getLanguageId()));
+
+        english.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(english.isSelected()) {
+                    RBLanguages.change(Language.en);
+                    try {
+                        guiProperties.setProperty("language", Language.en.getLanguageId());
+                        acceptLanguages();
+                    } catch (IOException ex) {
+                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
+                    }
+                }
+            }
+        });
+
+        german.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (german.isSelected()) {
+                    RBLanguages.change(Language.de);
+                    try {
+                        guiProperties.setProperty("language", Language.de.getLanguageId());
+                        acceptLanguages();
+                    } catch (IOException ex) {
+                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
+                    }
+                }
+            }
+        });
+
+        french.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(french.isSelected()) {
+                    RBLanguages.change(Language.fr);
+                    try {
+                        guiProperties.setProperty("language", Language.fr.getLanguageId());
+                        acceptLanguages();
+                    } catch (IOException ex) {
+                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
+                    }
+                }
+            }
+        });
+
+        dutch.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(dutch.isSelected()) {
+                    RBLanguages.change(Language.nl);
+                    try {
+                        guiProperties.setProperty("language", Language.nl.getLanguageId());
+                        acceptLanguages();
+                    } catch (IOException ex) {
+                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
+                    }
+                }
+            }
+        });
         
         ButtonGroup group = new ButtonGroup();
         group.add(english);
@@ -169,7 +238,7 @@ public class LanguageSettingsFrame extends JFrame {
         buttonGroupPanel.add(dutch);
         
         // User instructions
-        JLabel languageInstructions = new JLabel("Emulation Framework language:");
+        JLabel languageInstructions = new JLabel("Language");
         
         // Add everything to the main panel
         mainPanel.add(languageInstructions);
@@ -377,8 +446,11 @@ public class LanguageSettingsFrame extends JFrame {
 		parent.model.setAcceptedLanguages(acceptedLanguages);
 
 		// Save selection in user.properties
-		properties.setProperty(acceptedLanguagesProperty, newProperty.toString());
-		properties.store(new FileOutputStream(fileName), null);		
+		kernelProperties.setProperty(acceptedLanguagesProperty, newProperty.toString());
+		kernelProperties.store(new FileOutputStream(kernelFileName), null);
+
+        // store the GUI-language
+        guiProperties.store(new FileOutputStream(guiFileName), null);
 	}
 
 	/**

@@ -35,6 +35,7 @@ import eu.keep.gui.common.GlassPane;
 import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
 import eu.keep.gui.settings.WhitelistFrame;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.ea.EAWizardAdd;
 import eu.keep.gui.wizard.ea.EAWizardRemove;
 import eu.keep.gui.wizard.swa.SWAWizardAdd;
@@ -194,7 +195,9 @@ public class GUI extends JFrame {
         super.add(tabPanel, BorderLayout.CENTER);
 
         // log/message label
-        logLabel = new JTextArea("GUI started", 1, 2);
+        logLabel = new JTextArea("", 1, 2);
+        RBLanguages.set(logLabel, "gui_started");
+
         logLabel.setEditable(false);
         logLabel.setOpaque(false);
         logLabel.setLineWrap(true);
@@ -245,10 +248,13 @@ public class GUI extends JFrame {
      * @return the File menu
      */
     private JMenu initFileMenu() {
-        JMenu fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu();
+        RBLanguages.set(fileMenu, "file");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
-        JMenuItem exit = new JMenuItem("Exit");
+        JMenuItem exit = new JMenuItem();
+        RBLanguages.set(exit, "exit");
+
         exit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -265,21 +271,24 @@ public class GUI extends JFrame {
      * @return the Settings menu
      */
     private JMenu initSettingsMenu() {
-        JMenu settingsMenu = new JMenu("Settings");
+        JMenu settingsMenu = new JMenu();
+        RBLanguages.set(settingsMenu, "settings");
         settingsMenu.setMnemonic(KeyEvent.VK_S);
 
         // Language settings option
-        JMenuItem languages = new JMenuItem("Languages");
+        JMenuItem languages = new JMenuItem();
+        RBLanguages.set(languages, "languages");
         languages.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new LanguageSettingsFrame(GUI.this, "eu/keep/" + PROP_FILE_NAME_KERNEL);
+                new LanguageSettingsFrame(GUI.this, "eu/keep/" + PROP_FILE_NAME_KERNEL, "eu/keep/" + PROP_FILE_NAME);
             }
         });
         settingsMenu.add(languages);
 
         // Web-service addresses settings option
-        JMenuItem addresses = new JMenuItem("Web-service addresses");
+        JMenuItem addresses = new JMenuItem();
+        RBLanguages.set(addresses, "addresses");
         addresses.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -288,15 +297,6 @@ public class GUI extends JFrame {
                 editableProperties.add(EFProperty.emulatorArchiveURL);
                 new SettingsFrame(GUI.this,
                         "eu/keep/" + PROP_FILE_NAME_KERNEL,
-                        "<html>" +
-                                "Edit the addresses of the emulator- and software-archive. <br><br>" +
-                                "They're supposed to be entered as follows: <b>http://ADDRESS:PORT/ARCHIVE</b>, " +
-                                "where <b>ADDRESS</b> is the name of the server running the webservice(s) (this " +
-                                "could also be an IP address!), <b>PORT</b> is the port number the service is " +
-                                "listening on, and <b>ARCHIVE</b> the name of the service.<br><br>" +
-                                "Examples: <ul><li><b>http://services.kb.nl:1234/softwarearchive</b></li>" +
-                                "<li><b>http://123.45.67.89:1234/softwarearchive</b></li></ul>" +
-                                "</html>",
                         editableProperties);
             }
         });
