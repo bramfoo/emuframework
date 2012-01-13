@@ -453,66 +453,66 @@ public class Kernel implements CoreEngineModel {
     @Override
     public List<EmulatorPackage> getEmulatorsByPathway(Pathway pathway) throws IOException {
 
-        List<EmulatorPackage> emuPacks = new ArrayList<EmulatorPackage>();
-        List<EmulatorPackage> whiteListedPacks = new ArrayList<EmulatorPackage>();
-        List<EmulatorPackage> finalPacks = new ArrayList<EmulatorPackage>();
-        
-        // get single component from pathway
-        String hw = pathway.getHardwarePlatform().getName();
+    	List<EmulatorPackage> emuPacks = new ArrayList<EmulatorPackage>();
+    	List<EmulatorPackage> whiteListedPacks = new ArrayList<EmulatorPackage>();
+    	List<EmulatorPackage> finalPacks = new ArrayList<EmulatorPackage>();
 
-                emuPacks = downloader.getEmulatorsByHardware(hw);
-                if (emuPacks.isEmpty()) {
-                    logger.warn("No emulators found matching " + hw + " hardware" + ": ");
-                    return emuPacks;
-                }
+    	// get single component from pathway
+    	String hw = pathway.getHardwarePlatform().getName();
 
-        logger.info("Found " + emuPacks.size() + " emulators matching hardware '" + hw + "': " + emuPacks);
-        
-        
-        // Detect current host operating system
-        String osName;
-        try {
-            osName = System.getProperty("os.name");
-            // Set default if null is returned
-            osName = osName == null ? "Windows.default" : osName;
-            logger.info("Host operating system detected as '" + osName +"'. If this is incorrect, successful emulation is not guaranteed!");
-        }
-        catch (Exception e) {
-            logger.error("Could not detect the OS name. Defaulting to 'Windows'. Successful emulation not guaranteed!");
-            osName = "Windows.default";
-        }
-        
-        // Ensure that only explicitly selected emulators, running on the current host operating system, are used
-        String emuType;
-        whiteListedPacks = getWhitelistedEmus();
-        for (EmulatorPackage emuPack : emuPacks)
-        {        		
-        	emuType = emuPack.getEmulator().getExecutable().getType();
-        	logger.debug("Found emulator executable type: " + emuType);
-        	if (emuType.equals("exe") && osName.matches("Windows.*") || 
-        			emuType.equals("ELF") && osName.matches("Linux") || 
-        			emuType.equals("jar")) {
-        		logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
-        				" matches host operating system, so can be used");
-        		
-        		for (EmulatorPackage whitePack: whiteListedPacks)
-        		{
-        			if (emuPack.getPackage().getId() == whitePack.getPackage().getId())
-        			{
-        				logger.info("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " is on whitelist, can be used");
-        				finalPacks.add(emuPack);
-        				break;
-        			}
-        		}           
-        	}
-        	else {
-        		logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
-        				" does not match host operating system, so cannot be used");
-        	}
-        }
+    	emuPacks = downloader.getEmulatorsByHardware(hw);
+    	if (emuPacks.isEmpty()) {
+    		logger.warn("No emulators found matching " + hw + " hardware" + ": ");
+    		return emuPacks;
+    	}
 
-        logger.info("Final list of " + finalPacks.size() + " emulators matching hardware '" + hw + "' after removing non-whitelised emulators: " + finalPacks);
-        return new ArrayList<EmulatorPackage>(finalPacks);
+    	logger.info("Found " + emuPacks.size() + " emulators matching hardware '" + hw + "': " + emuPacks);
+
+
+    	// Detect current host operating system
+    	String osName;
+    	try {
+    		osName = System.getProperty("os.name");
+    		// Set default if null is returned
+    		osName = osName == null ? "Windows.default" : osName;
+    		logger.info("Host operating system detected as '" + osName +"'. If this is incorrect, successful emulation is not guaranteed!");
+    	}
+    	catch (Exception e) {
+    		logger.error("Could not detect the OS name. Defaulting to 'Windows'. Successful emulation not guaranteed!");
+    		osName = "Windows.default";
+    	}
+
+    	// Ensure that only explicitly selected emulators, running on the current host operating system, are used
+    	String emuType;
+    	whiteListedPacks = getWhitelistedEmus();
+    	for (EmulatorPackage emuPack : emuPacks)
+    	{        		
+    		emuType = emuPack.getEmulator().getExecutable().getType();
+    		logger.debug("Found emulator executable type: " + emuType);
+    		if (emuType.equals("exe") && osName.matches("Windows.*") || 
+    				emuType.equals("ELF") && osName.matches("Linux") || 
+    				emuType.equals("jar")) {
+    			logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
+    					" matches host operating system, so can be used");
+
+    			for (EmulatorPackage whitePack: whiteListedPacks)
+    			{
+    				if (emuPack.getPackage().getId() == whitePack.getPackage().getId())
+    				{
+    					logger.info("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " is on whitelist, can be used");
+    					finalPacks.add(emuPack);
+    					break;
+    				}
+    			}           
+    		}
+    		else {
+    			logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
+    					" does not match host operating system, so cannot be used");
+    		}
+    	}
+
+    	logger.info("Final list of " + finalPacks.size() + " emulators matching hardware '" + hw + "' after removing non-whitelised emulators: " + finalPacks);
+    	return new ArrayList<EmulatorPackage>(finalPacks);
     }
 
     /**

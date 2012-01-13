@@ -46,8 +46,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.Logger;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;

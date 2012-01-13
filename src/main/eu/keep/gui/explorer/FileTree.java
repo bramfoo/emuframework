@@ -38,7 +38,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+
 import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -69,10 +71,25 @@ public class FileTree extends JTree {
     }
 
     public File getSelectedFile() {
-        FileTreeNode node = (FileTreeNode)((DefaultMutableTreeNode)super.getLastSelectedPathComponent()).getUserObject();
-        return node == null ? null : node.file;
+    	DefaultMutableTreeNode lastSelectedNode = (DefaultMutableTreeNode)super.getLastSelectedPathComponent();    	
+    	if (lastSelectedNode == null) {
+    		return null;
+    	} else {
+    		FileTreeNode node = (FileTreeNode)lastSelectedNode.getUserObject();
+    		return node == null ? null : node.file;
+    	}
     }
 
+    public File getClickedFile(MouseEvent e) {
+    	DefaultMutableTreeNode clickedNode = (DefaultMutableTreeNode)super.getPathForLocation(e.getX(), e.getY()).getLastPathComponent();
+    	if (clickedNode == null) {
+    		return null;
+    	} else {
+    		FileTreeNode node = (FileTreeNode)clickedNode.getUserObject();
+    		return node == null ? null : node.file;
+    	}
+    }
+    
     private void initListeners() {
         addTreeExpansionListener(new TreeExpansionListener() {
             public void treeCollapsed(TreeExpansionEvent event) {

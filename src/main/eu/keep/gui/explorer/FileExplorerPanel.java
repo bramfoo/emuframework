@@ -37,9 +37,11 @@ import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,13 +54,14 @@ import java.util.List;
 
 public class FileExplorerPanel extends JPanel implements ActionListener {
 
-    private static final Logger logger = Logger.getLogger(FileExplorerPanel.class.getName());
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public File selectedFile;
+    public File clickedFile;
     private GUI parent;
     private JButton autoStart;
     private JButton checkEnvironment;
-    private JButton info;
+    private JMenuItem info;
     private FileTree tree;
     
     public FileExplorerPanel(GUI p) {
@@ -75,19 +78,15 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
         autoStart = new JButton("auto start");
         checkEnvironment = new JButton("check environment");
-        info = new JButton("info");
 
         autoStart.setEnabled(false);
         checkEnvironment.setEnabled(false);
-        info.setEnabled(false);
 
         autoStart.addActionListener(this);
         checkEnvironment.addActionListener(this);
-        info.addActionListener(this);
 
         buttonPanel.add(autoStart);
         buttonPanel.add(checkEnvironment);
-        buttonPanel.add(info);
 
         final File[] roots = File.listRoots();
         final JComboBox rootsCombo = new JComboBox(roots);
@@ -96,10 +95,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         if(roots.length > 0) {
             File start = roots[0];
-
             for(File root : roots) {
                 String name = root.getAbsolutePath().toUpperCase();
-
                 // skip possible disk drives in case of Windows
                 if(!(name.startsWith("A:") || name.startsWith("B:"))) {
                     start = root;
@@ -107,29 +104,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                 }
             }
             rootsCombo.setSelectedItem(start);
-
-            tree = new FileTree(new FileTreeNode(start));
-
-            tree.addMouseListener(new MouseAdapter(){
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    try {
-                        parent.getConfigPanel().clear();
-                        File selected = tree.getSelectedFile();
-
-                        if(selected != null) {
-                            select(selected);
-
-                            if(selected.isFile() && e.getClickCount() >= 2) {
-                                doAutoStart();
-                            }
-                        }
-                    }
-                    catch(Exception ex) {
-                        logger.warn(ex.getMessage());
-                    }
-                }
-            });
+            initFileTree(start);
         }
         else {
             logger.error("Could not read the file system.");
@@ -142,11 +117,66 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             }
         });
 
+        
         super.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 30) - 30, GUI.HEIGHT));
         super.add(rootsCombo, BorderLayout.NORTH);
         super.add(new JScrollPane(tree), BorderLayout.CENTER);
         super.add(buttonPanel, BorderLayout.SOUTH);
     }
+
+    /**
+     * Initialise the fileTree
+     * @param start the root directory at the top of the tree
+     */
+	private void initFileTree(File start) {
+		tree = new FileTree(new FileTreeNode(start));
+
+		// Add mouse listeners
+		tree.addMouseListener(new MouseAdapter() {
+		    @Override
+			public void mouseClicked(MouseEvent e) {
+				// Only Left button click events are relevant: select file and possibly fire of autostart
+				if (e.getButton() == MouseEvent.BUTTON1) {                	
+					try {
+						parent.getConfigPanel().clear();
+						File selected = tree.getSelectedFile();
+						if(selected != null) {
+							select(selected);
+							// Double-click fires off autoStart workflow
+							if(selected.isFile() && e.getClickCount() >= 2) {
+								doAutoStart();
+							}                            
+						}
+					}
+					catch(Exception ex) {
+						logger.warn("warning: " + ExceptionUtils.getStackTrace(ex));
+					}
+				} 
+			}            	
+			@Override
+			public void mousePressed(MouseEvent e) {
+				processPopupEvents(e);
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				processPopupEvents(e);            		
+			}
+			private void processPopupEvents(MouseEvent e) throws HeadlessException {
+				// Only Right button click events are relevant: show popup menu with info link
+				if (e.getButton() == MouseEvent.BUTTON3 && e.isPopupTrigger()) {
+					File clicked = tree.getClickedFile(e);
+					if (clicked.isFile()) {
+						clickedFile = clicked;
+						final JPopupMenu popUp = new JPopupMenu();                        
+						info = new JMenuItem("properties");
+						info.addActionListener(FileExplorerPanel.this);
+						popUp.add(info);
+						popUp.show((Component)e.getSource(), e.getX(), e.getY());
+					}
+				}
+			}
+		});
+	}
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -179,13 +209,13 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         }
 
         if (e.getSource() == info) {
-            parent.lock("Getting meta data from file: " + selectedFile + ", please wait...");
+            parent.lock("Getting meta data from file: " + clickedFile + ", please wait...");
             (new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        Map<String, java.util.List<String>> techMetaData = parent.model.getTechMetadata(selectedFile);
-                        Map<String, java.util.List<String>> descMetaData = parent.model.getFileInfo(selectedFile);
+                        Map<String, java.util.List<String>> techMetaData = parent.model.getTechMetadata(clickedFile);
+                        Map<String, java.util.List<String>> descMetaData = parent.model.getFileInfo(clickedFile);
 
                         String[][] data = new String[techMetaData.size() + descMetaData.size()][];
 
@@ -203,7 +233,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                             data[index++] = new String[]{key, value.substring(1, value.length()-1)};
                         }
 
-                        new InfoTableDialog(parent, selectedFile, data);
+                        new InfoTableDialog(parent, clickedFile, data);
                         parent.unlock("Done.");
                     } catch (IOException ex) {
                         parent.unlock("ERROR : " + ex.getMessage());
@@ -219,7 +249,6 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 	private void doAutoStart() {
 		parent.clear();
 		checkEnvironment.setEnabled(false);
-		info.setEnabled(false);
 
 		parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
 		(new Thread(new Runnable() {
@@ -313,17 +342,15 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		})).start();
 	}
 
-    void select(File file) {
+    private void select(File file) {
         if(file != null) {
             boolean isFile = file.isFile();
             autoStart.setEnabled(isFile);
             checkEnvironment.setEnabled(isFile);
-            info.setEnabled(isFile);
             selectedFile = isFile ? file : null;
         }
     }
     
-
     public void setEnabled(boolean enabled) {
         this.autoStart.setEnabled(enabled);
     }
