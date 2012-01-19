@@ -41,6 +41,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -57,10 +59,14 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     public File selectedFile;
-    public File clickedFile;
+    private File clickedFile;
     private GUI parent;
+
+    private JPanel explorerPanel;
+    private JPanel noObjectPanel;
     private JButton autoStart;
     private JButton checkEnvironment;
+    private JButton startWithoutObject;
     private JMenuItem info;
     private FileTree tree;
     
@@ -74,25 +80,27 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         super.setLayout(new BorderLayout(5, 5));
 
-        // button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
-        autoStart = new JButton("auto start");
-        checkEnvironment = new JButton("check environment");
+        explorerPanel = initExplorerPanel();
+        noObjectPanel = initNoObjectPanel();
+        
+        super.add(explorerPanel, BorderLayout.SOUTH);
+        super.add(noObjectPanel, BorderLayout.NORTH);
+    }
 
-        autoStart.setEnabled(false);
-        checkEnvironment.setEnabled(false);
+    /**
+     * Initialise the FileExplorer Panel
+     * @return the FileExplorer Panel, containing a dropdown to select the root file-system,
+     * 			a fileTree to browse to the desired file, and two buttons to start emulation
+     * 			automatically or to select pathways, emulators and software manually.
+     */
+	private JPanel initExplorerPanel() {
 
-        autoStart.addActionListener(this);
-        checkEnvironment.addActionListener(this);
-
-        buttonPanel.add(autoStart);
-        buttonPanel.add(checkEnvironment);
-
+		// Roots dropdown
         final File[] roots = File.listRoots();
         final JComboBox rootsCombo = new JComboBox(roots);
 
+        // FileTree
         tree = null;
-
         if(roots.length > 0) {
             File start = roots[0];
             for(File root : roots) {
@@ -117,13 +125,62 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             }
         });
 
-        
-        super.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 30) - 30, GUI.HEIGHT));
-        super.add(rootsCombo, BorderLayout.NORTH);
-        super.add(new JScrollPane(tree), BorderLayout.CENTER);
-        super.add(buttonPanel, BorderLayout.SOUTH);
-    }
+		// button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 5));
+        autoStart = new JButton("auto start");
+        checkEnvironment = new JButton("check environment");
 
+        autoStart.setEnabled(false);
+        checkEnvironment.setEnabled(false);
+
+        autoStart.addActionListener(this);
+        checkEnvironment.addActionListener(this);
+
+        buttonPanel.add(autoStart);
+        buttonPanel.add(checkEnvironment);
+
+
+        // Add everything together
+        JPanel explorerPanel = new JPanel(new BorderLayout(5, 5));    
+        explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-200));        
+        explorerPanel.setBorder(new FileExplorerBorder("Start Environment with Digital Object"));        
+
+        explorerPanel.add(rootsCombo, BorderLayout.NORTH);
+        explorerPanel.add(new JScrollPane(tree), BorderLayout.CENTER);
+        explorerPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+		return explorerPanel;
+	}
+
+    /**
+     * Initialise the FileExplorer Panel
+     * @return the FileExplorer Panel, containing a dropdown to select the root file-system,
+     * 			a fileTree to browse to the desired file, and two buttons to start emulation
+     * 			automatically or to select pathways, emulators and software manually.
+     */
+	private JPanel initNoObjectPanel() {
+		
+		// button panel
+        startWithoutObject = new JButton("start");
+        startWithoutObject.setEnabled(true);
+        startWithoutObject.addActionListener(this);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 5));
+        buttonPanel.add(startWithoutObject);
+
+        
+        // Add everything together
+        JPanel noObjectPanel = new JPanel();
+        noObjectPanel.setLayout(new BoxLayout(noObjectPanel, BoxLayout.Y_AXIS));    
+        TitledBorder noObjectBorder = new TitledBorder("Start Environment without Digital Object");
+        noObjectBorder.setTitlePosition(TitledBorder.BELOW_TOP);
+        noObjectPanel.setBorder(noObjectBorder);    
+        
+        noObjectPanel.add(buttonPanel); 
+
+		return noObjectPanel;
+	}
+		
     /**
      * Initialise the fileTree
      * @param start the root directory at the top of the tree
@@ -185,10 +242,9 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             if(selectedFile != null) {
             	doAutoStart();
             }
-        }
-
-        if (e.getSource() == checkEnvironment) {
-            parent.clear();
+        } 
+        else if (e.getSource() == checkEnvironment) {
+            parent.getConfigPanel().clear();
             parent.lock("Characterizing file: " + selectedFile + ", please wait...");
             (new Thread(new Runnable() {
                 @Override
@@ -207,8 +263,16 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                 }
             })).start();
         }
+        else if (e.getSource() == startWithoutObject) {
+        	
+        	// Prepare the configPanel for No Object
+        	parent.getConfigPanel().loadNoObject();
 
-        if (e.getSource() == info) {
+        	// Clear the ExplorerPanel
+        	clearExplorerPanel();
+        	enableExplorerPanel(false);    	
+        }
+        else if (e.getSource() == info) {
             parent.lock("Getting meta data from file: " + clickedFile + ", please wait...");
             (new Thread(new Runnable() {
                 @Override
@@ -247,7 +311,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
      * Start the automatic emulation process on the selected file.
      */
 	private void doAutoStart() {
-		parent.clear();
+		parent.getConfigPanel().clear();
 		checkEnvironment.setEnabled(false);
 
 		parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
@@ -351,7 +415,60 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         }
     }
     
+    /**
+     * Enable/Disable this panel
+     * @param enabled true to enable this panel, false to disable
+     */
+    @Override
     public void setEnabled(boolean enabled) {
-        this.autoStart.setEnabled(enabled);
+    	this.enableExplorerPanel(enabled);
+    	this.enableNoObjectPanel(enabled);
     }
+        
+    /**
+     * Enable/Disable the FileExplorer panel
+     * @param enabled true to enable the FileExplorer panel, false to disable
+     */
+    private void enableExplorerPanel(boolean enabled) {
+        this.autoStart.setEnabled(enabled);
+        this.checkEnvironment.setEnabled(enabled);    	
+    }
+    
+    /**
+     * Clear the FileExplorer panel
+     */
+    private void clearExplorerPanel() {
+    	tree.clearSelection();
+    	selectedFile = null;
+    	clickedFile = null;
+    }
+    
+    /**
+     * Enable/Disable the NoObject panel
+     * @param enabled true to enable the NoObject panel, false to disable
+     */
+    private void enableNoObjectPanel(boolean enabled) {
+    	this.startWithoutObject.setEnabled(enabled);
+    }
+    
+    /**
+     * Custom border class, extending TitledBorder but with some extra padding at the top 
+     * 
+     * @author nooe
+     *
+     */
+    private class FileExplorerBorder extends TitledBorder {
+
+    	public FileExplorerBorder(String title) {
+    		super(title);
+    	    this.setTitlePosition(TitledBorder.BELOW_TOP);
+    	}
+    	
+    	@Override
+        public Insets getBorderInsets
+        (Component c) {
+           return new Insets(40,14,14,14);
+       }
+    }
+    
 }

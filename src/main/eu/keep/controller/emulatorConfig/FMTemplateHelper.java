@@ -124,181 +124,170 @@ public class FMTemplateHelper {
      * @return A Map containing a default configuration, based on the provided environment and files
      * @throws IOException If an error occurs while loading a template
      */
-    public Map<String, List<Map<String, String>>> generateDefaults(ConfigEnv env, List<File> digObjs, List<File> softImg) throws IOException
-    {
-        Map<String, List<Map<String, String>>> defaultOpts = new HashMap<String, List<Map<String, String>>>(); 
-        
-        TemplateBuilder tb = env.getTemplateBuilder();
-        File emuDir = env.getEmuDir();
-        Pathway pw = env.getPathway();
-        // Create a list of images that need wrapping
-        List<File> unwrappedSoftImg = new ArrayList<File>();
+    public Map<String, List<Map<String, String>>> generateDefaults(ConfigEnv env, List<File> digObjs, List<File> softImg) 
+    		throws IOException {
 
-        // Generate default options
-        // Load a template to access the attributes (initialise for getTemplateArgs)
-        try {
-            tb.loadTemplate(CLI_TEMPLATE_FILE);
-        }
-        catch (IOException ioe) {
-            logger.error("Error loading template: " + ioe.toString());
-            throw ioe;
-        }
-        
-        // Note that all generic options get wrapped in a list to fit in the template setup (supporting multiple floppy/fixed disks)
-            logger.info("Creating default emulator configuration");
+    	Map<String, List<Map<String, String>>> defaultOpts = new HashMap<String, List<Map<String, String>>>(); 
 
-            List<Map<String, String>> r = new ArrayList<Map<String, String>>();
-            Map<String, String> root = createRoot(tb, digObjs, env, emuDir);
-            r.add(root);
-            defaultOpts.put("root", r);
-            logger.debug("Root: " + r);
-            
-            // TODO: Split into separate methods; only assign fields defined in getTemplateArgs()
-            // Floppy disks (type, num, digobj, inserted)
-            logger.debug("Generating floppy disks: " + digObjs);
-            List<Map<String, String>> f = new ArrayList<Map<String, String>>();
-            int numDisk = 0;
-            for (File digObj : digObjs)
-            {
-                Map<String, String> floppy = tb.getTemplateArgs().get("floppyDisks");
-                floppy.put("inserted", "true");
-                floppy.put("num", (new Integer(numDisk)).toString());
+    	TemplateBuilder tb = env.getTemplateBuilder();
+    	File emuDir = env.getEmuDir();
+    	Pathway pw = env.getPathway();
+    	// Create a list of images that need wrapping
+    	List<File> unwrappedSoftImg = new ArrayList<File>();
 
-                // Determine floppy image needed
-                if (pw.getHardwarePlatform().getName().contains("x86"))
-                {
-                    logger.debug("Customizing floppy disk for x86");
-                    // x86, so wrap the object in a disk if it fits
-                    if (digObj.length() < FloppyDiskImage.MAX_FILE_SIZE)
-                    {
-                        FloppyDiskImage fdi = new FloppyDiskImage();
-                        File diskfile = new File(emuDir, "floppy_" + numDisk + ".img");
-                        if (pw.getObjectFormat().getId().equalsIgnoreCase("FFT-1015"))
-                        {
-                        	// Special case for autostarting WP5.1 with a given filename
-                        	fdi.injectDigitalObject(diskfile, digObj, "DOC.WPS");
-                        	logger.debug("Adding specific floppy disk customisation for file format FFT-1015");
-                        }
-                        else {
-                        	fdi.injectDigitalObject(diskfile, digObj);
-                        }
+    	// Generate default options
+    	// Load a template to access the attributes (initialise for getTemplateArgs)
+    	try {
+    		tb.loadTemplate(CLI_TEMPLATE_FILE);
+    	}
+    	catch (IOException ioe) {
+    		logger.error("Error loading template: " + ioe.toString());
+    		throw ioe;
+    	}
 
-                        floppy.put("digobj", diskfile.toString());
-                        floppy.put("type", FloppyDiskType.getDiskType(diskfile).name());
-                        f.add(floppy);
-                    }
-                    else
-                    {
-                        // Add it to the fixed-disk list
-                        logger.debug("Marking digital object as requiring fixed-disk wrapping: " + digObj);
-                        unwrappedSoftImg.add(digObj);
-                    }
-                }
-                else
-                {
-                    floppy.put("digobj", digObj.getAbsolutePath());
-                    floppy.put("type", FloppyDiskType.getDiskType(digObj).name());
-                    f.add(floppy);
-                }
+    	// Note that all generic options get wrapped in a list to fit in the template setup (supporting multiple floppy/fixed disks)
+    	logger.info("Creating default emulator configuration");
 
-                numDisk++;
-            }
-            logger.debug("floppyDisks: " + f);
-            defaultOpts.put("floppyDisks", f);
+    	List<Map<String, String>> r = new ArrayList<Map<String, String>>();
+    	Map<String, String> root = createRoot(tb, digObjs, env, emuDir);
+    	r.add(root);
+    	defaultOpts.put("root", r);
+    	logger.debug("Root: " + r);
 
-            
-            // Fixed disks (master, index, enabled, swImg, cylinders, heads, sectorsPerTrack)
-            logger.debug("Generating fixed disks for: " + softImg + " and " + unwrappedSoftImg);
-            numDisk = 0;
-            List<Map<String, String>> h = new ArrayList<Map<String, String>>();
-            for (File swImg : softImg)
-            {
-                logger.debug("Generating fixed disk config for: " + swImg);
-                Map<String, String> fixed = tb.getTemplateArgs().get("fixedDisks");
-                fixed.put("enabled", "true");
-                fixed.put("master", numDisk == 0 ? "true" : "false" );
-                fixed.put("index", (new Integer(numDisk)).toString());
-                fixed.put("swImg", swImg.getPath());
-                if (pw.getHardwarePlatform().getName().contains("x86"))
-                {
-	                List<Integer> chs = DiskUtilities.determineCHS(swImg);
-	                logger.debug("Fixed disk config: " + chs.toString());
-	                fixed.put("cylinders", chs.get(0).toString());
-	                fixed.put("heads", chs.get(1).toString());
-	                fixed.put("sectorsPerTrack", chs.get(2).toString());
-                }
-                else
-                {
-	                fixed.put("cylinders", "0");
-	                fixed.put("heads", "0");
-	                fixed.put("sectorsPerTrack", "0");
-                }
-                logger.debug("Adding fixed disk config: " + fixed);
-                h.add(fixed);
-                numDisk++;
-            }
-            // Now loop over the unwrapped digital objects
-            for (File unwrappedImg : unwrappedSoftImg)
-            {
-                if (!DiskUtilities.isISO9660(unwrappedImg))
-                {
-                    logger.debug("Generating fixed disk image for: " + unwrappedImg);
-                    Map<String, String> unwrapped = new HashMap<String, String>();
-                    unwrapped.put("enabled", "true");
-                    unwrapped.put("master", numDisk == 0 ? "true" : "false" );
-                    unwrapped.put("index", (new Integer(numDisk)).toString());
+    	// TODO: Split into separate methods; only assign fields defined in getTemplateArgs()
+    	// Floppy disks (type, num, digobj, inserted)
+    	logger.debug("Generating floppy disks: " + digObjs);
+    	List<Map<String, String>> f = new ArrayList<Map<String, String>>();
+    	int numDisk = 0;
+    	for (File digObj : digObjs) {
+    		if (digObj != null) {
+    			Map<String, String> floppy = tb.getTemplateArgs().get("floppyDisks");
+    			floppy.put("inserted", "true");
+    			floppy.put("num", (new Integer(numDisk)).toString());
 
-                    // Wrap it in a image
-                    File diskfile = new File(emuDir, "fixed_" + numDisk + ".img");
-                    VariableFixedDiskImage vfdi = new VariableFixedDiskImage();
-                    int vfdiSize = ((int) Math.ceil(unwrappedImg.length() / ((double) 1024*1000*10))) * 10; // Round to nearest 10MB
-                    vfdiSize = Math.max(vfdiSize, 20); // Fixed disk should be at least 16MB, rounded up to 20MB
-                    logger.debug("Creating fixed disk of " + vfdiSize + "MB to hold d.o. of size " + unwrappedImg.length() + " (~ " + unwrappedImg.length() / ((double)1024*1000) +"MB)");
-                    vfdi.injectDigitalObject(diskfile, unwrappedImg, vfdiSize);
-                    
-                    unwrapped.put("swImg", diskfile.toString());
-                    List<Integer> chs = DiskUtilities.determineCHS(diskfile);
-                    logger.debug("Fixed disk config: " + chs.toString());
-                    unwrapped.put("cylinders", chs.get(0).toString());
-                    unwrapped.put("heads", chs.get(1).toString());
-                    unwrapped.put("sectorsPerTrack", chs.get(2).toString());
-                    logger.debug("Adding fixed disk config: " + unwrapped);
-                    h.add(unwrapped);
-                }
-                else
-                {
-                    // Attach it as an optical disk
-                    logger.debug("Attaching digital object as (unwrapped) ISO9660 optical disk: " + unwrappedImg);
-                    Map<String, String> optical = new HashMap<String, String>();
-                    optical.put("enabled", "true");
-                    optical.put("master", "false" );
-                    optical.put("index", "2");
-                    optical.put("swImg", unwrappedImg.toString());
-                    optical.put("cylinders", "0");
-                    optical.put("heads", "255");
-                    optical.put("sectorsPerTrack", "63");
-                    logger.debug("Adding fixed disk config: " + optical);
-                    h.add(optical);
-                }
-            }
-            logger.debug("fixedDisks: " + h);
-            defaultOpts.put("fixedDisks", h);
-            
-            logger.debug("Default config: " + defaultOpts);
-        
-        return defaultOpts;
+    			// Determine floppy image needed
+    			if (pw.getHardwarePlatform().getName().contains("x86")) {
+    				logger.debug("Customizing floppy disk for x86");
+    				// x86, so wrap the object in a disk if it fits
+    				if (digObj.length() < FloppyDiskImage.MAX_FILE_SIZE) {
+    					FloppyDiskImage fdi = new FloppyDiskImage();
+    					File diskfile = new File(emuDir, "floppy_" + numDisk + ".img");
+    					if (pw.getObjectFormat().getId().equalsIgnoreCase("FFT-1015")) {
+    						// Special case for autostarting WP5.1 with a given filename
+    						fdi.injectDigitalObject(diskfile, digObj, "DOC.WPS");
+    						logger.debug("Adding specific floppy disk customisation for file format FFT-1015");
+    					}
+    					else {
+    						fdi.injectDigitalObject(diskfile, digObj);
+    					}
+
+    					floppy.put("digobj", diskfile.toString());
+    					floppy.put("type", FloppyDiskType.getDiskType(diskfile).name());
+    					f.add(floppy);
+    				}
+    				else {
+    					// Add it to the fixed-disk list
+    					logger.debug("Marking digital object as requiring fixed-disk wrapping: " + digObj);
+    					unwrappedSoftImg.add(digObj);
+    				}
+    			}
+    			else {
+    				floppy.put("digobj", digObj.getAbsolutePath());
+    				floppy.put("type", FloppyDiskType.getDiskType(digObj).name());
+    				f.add(floppy);
+    			}
+
+    			numDisk++;
+    		}
+    	}
+    	logger.debug("floppyDisks: " + f);
+    	defaultOpts.put("floppyDisks", f);
+
+
+    	// Fixed disks (master, index, enabled, swImg, cylinders, heads, sectorsPerTrack)
+    	logger.debug("Generating fixed disks for: " + softImg + " and " + unwrappedSoftImg);
+    	numDisk = 0;
+    	List<Map<String, String>> h = new ArrayList<Map<String, String>>();
+    	for (File swImg : softImg) {
+    		logger.debug("Generating fixed disk config for: " + swImg);
+    		Map<String, String> fixed = tb.getTemplateArgs().get("fixedDisks");
+    		fixed.put("enabled", "true");
+    		fixed.put("master", numDisk == 0 ? "true" : "false" );
+    		fixed.put("index", (new Integer(numDisk)).toString());
+    		fixed.put("swImg", swImg.getPath());
+    		if (pw.getHardwarePlatform().getName().contains("x86")) {
+    			List<Integer> chs = DiskUtilities.determineCHS(swImg);
+    			logger.debug("Fixed disk config: " + chs.toString());
+    			fixed.put("cylinders", chs.get(0).toString());
+    			fixed.put("heads", chs.get(1).toString());
+    			fixed.put("sectorsPerTrack", chs.get(2).toString());
+    		}
+    		else {
+    			fixed.put("cylinders", "0");
+    			fixed.put("heads", "0");
+    			fixed.put("sectorsPerTrack", "0");
+    		}
+    		logger.debug("Adding fixed disk config: " + fixed);
+    		h.add(fixed);
+    		numDisk++;
+    	}
+    	// Now loop over the unwrapped digital objects
+    	for (File unwrappedImg : unwrappedSoftImg) {
+    		if (!DiskUtilities.isISO9660(unwrappedImg)) {
+    			logger.debug("Generating fixed disk image for: " + unwrappedImg);
+    			Map<String, String> unwrapped = new HashMap<String, String>();
+    			unwrapped.put("enabled", "true");
+    			unwrapped.put("master", numDisk == 0 ? "true" : "false" );
+    			unwrapped.put("index", (new Integer(numDisk)).toString());
+
+    			// Wrap it in a image
+    			File diskfile = new File(emuDir, "fixed_" + numDisk + ".img");
+    			VariableFixedDiskImage vfdi = new VariableFixedDiskImage();
+    			int vfdiSize = ((int) Math.ceil(unwrappedImg.length() / ((double) 1024*1000*10))) * 10; // Round to nearest 10MB
+    			vfdiSize = Math.max(vfdiSize, 20); // Fixed disk should be at least 16MB, rounded up to 20MB
+    			logger.debug("Creating fixed disk of " + vfdiSize + "MB to hold d.o. of size " + unwrappedImg.length() + " (~ " + unwrappedImg.length() / ((double)1024*1000) +"MB)");
+    			vfdi.injectDigitalObject(diskfile, unwrappedImg, vfdiSize);
+
+    			unwrapped.put("swImg", diskfile.toString());
+    			List<Integer> chs = DiskUtilities.determineCHS(diskfile);
+    			logger.debug("Fixed disk config: " + chs.toString());
+    			unwrapped.put("cylinders", chs.get(0).toString());
+    			unwrapped.put("heads", chs.get(1).toString());
+    			unwrapped.put("sectorsPerTrack", chs.get(2).toString());
+    			logger.debug("Adding fixed disk config: " + unwrapped);
+    			h.add(unwrapped);
+    		}
+    		else {
+    			// Attach it as an optical disk
+    			logger.debug("Attaching digital object as (unwrapped) ISO9660 optical disk: " + unwrappedImg);
+    			Map<String, String> optical = new HashMap<String, String>();
+    			optical.put("enabled", "true");
+    			optical.put("master", "false" );
+    			optical.put("index", "2");
+    			optical.put("swImg", unwrappedImg.toString());
+    			optical.put("cylinders", "0");
+    			optical.put("heads", "255");
+    			optical.put("sectorsPerTrack", "63");
+    			logger.debug("Adding fixed disk config: " + optical);
+    			h.add(optical);
+    		}
+    	}
+    	logger.debug("fixedDisks: " + h);
+    	defaultOpts.put("fixedDisks", h);
+
+    	logger.debug("Default config: " + defaultOpts);
+
+    	return defaultOpts;
     }
     
     private Map<String, String> createRoot(TemplateBuilder tb, List<File> digObjs, ConfigEnv env, File emuDir) throws IOException {
         // Root (digobj, configDir, configFile)
         Map<String, String> root = tb.getTemplateArgs().get("root");
         // Only put in those that are necessary
-        if (root.containsKey("digobj"))
-        {
+        if (root.containsKey("digobj") && digObjs.get(0) != null) {
         	root.put("digobj", digObjs.get(0).getAbsolutePath());
         }
-        if (root.containsKey("configFile"))
-        {
+        if (root.containsKey("configFile")) {
             if (env.hasXmlTemplate())
                 root.put("configFile", new File(XML_CONFIG_FILE).toString());
             else if (env.hasPropsTemplate())
@@ -306,8 +295,7 @@ public class FMTemplateHelper {
             else
                 root.put("configFile", new File("noConfFileDefined").toString());
         }
-        if (root.containsKey("configDir"))
-        {
+        if (root.containsKey("configDir")) {
         	root.put("configDir", emuDir.toString());
         }
         

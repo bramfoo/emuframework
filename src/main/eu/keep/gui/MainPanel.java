@@ -60,10 +60,6 @@ public class MainPanel extends JPanel {
         initGUI();
     }
 
-    void clear() {
-        configPanel.clear();
-    }
-
     private void initGUI() {
         super.setLayout(new BorderLayout(5, 5));
         tabbedPane = new JTabbedPane();

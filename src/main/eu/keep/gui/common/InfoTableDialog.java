@@ -141,7 +141,7 @@ public class InfoTableDialog extends JFrame {
         super.setLocation(parentX + (parentW / 2) - (getWidth() / 2),
                 parentY + (parentH / 2) - (getHeight() / 2));
 
-        super.setTitle("file: " + file.getName());
+        super.setTitle(file == null ? "no object" : ("file: " + file.getName()));
         super.setResizable(false);
         super.setVisible(true);
     }

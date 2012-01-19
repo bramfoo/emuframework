@@ -355,10 +355,14 @@ public class Kernel implements CoreEngineModel {
     public List<Pathway> getPathways(Format format) throws IOException {
 
     	// Query technical registry and EF database for pathways 
-    	List<Pathway> pathways;
-    	pathways = characteriser.generatePathway(format);
-    	pathways.addAll(downloader.getPathwayByFileFormat(format.getName()));
-
+    	List<Pathway> pathways = new ArrayList<Pathway>();
+    	if (format.getName().equals("no object")) {
+    		pathways = downloader.getAllPathways();
+    	} else {    	
+    		pathways = characteriser.generatePathway(format);
+    		pathways.addAll(downloader.getPathwayByFileFormat(format.getName()));
+    	}
+    	
     	// Filter by application and OS language
     	List<Pathway> filteredPathways = new ArrayList<Pathway>();
     	for (Pathway pathway : pathways) {
@@ -468,7 +472,6 @@ public class Kernel implements CoreEngineModel {
 
     	logger.info("Found " + emuPacks.size() + " emulators matching hardware '" + hw + "': " + emuPacks);
 
-
     	// Detect current host operating system
     	String osName;
     	try {
@@ -575,7 +578,28 @@ public class Kernel implements CoreEngineModel {
     		throw e;
     	}
 
-    	Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = new HashMap<EmulatorPackage, List<SoftwarePackage>>();
+    	// Now find compatible Emulator-Software pairs.
+    	Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = 
+    			matchEmulatorAndSoftwareLists(emuPacks, swPacks);
+    	logger.info("Found compatible emulator-images pairs: " + emuSwMap);
+    	
+    	return new HashMap<EmulatorPackage, List<SoftwarePackage>>(emuSwMap);
+    }
+
+    /**
+     * Match emulators with a list of associated software images and filter all by language
+     * @param emuPacks the list of input Emulators
+     * @param swPacks the list of input Software images
+     * @return Map<EmulatorPackage, List<SoftwarePackage>> A map of emulators with their
+     *         associated list of compatible software images, all filtered on the languages 
+     *         that the user has indicated as acceptable.
+     * @throws IOException If an error occurs while connecting the Emulator/Software Archive
+     */
+	private Map<EmulatorPackage, List<SoftwarePackage>> matchEmulatorAndSoftwareLists(
+			List<EmulatorPackage> emuPacks, List<SoftwarePackage> swPacks)
+			throws IOException {
+		
+		Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = new HashMap<EmulatorPackage, List<SoftwarePackage>>();
     	List<String> formats_emu;
 
     	try {
@@ -629,10 +653,8 @@ public class Kernel implements CoreEngineModel {
     		logger.error("Inappropriate ID requested: " + e.getMessage());
     		throw new IOException("Inappropriate ID requested: " + e.getMessage());
     	}
-
-    	logger.info("Found compatible emulator-images pairs: " + emuSwMap);
-    	return new HashMap<EmulatorPackage, List<SoftwarePackage>>(emuSwMap);
-    }
+		return emuSwMap;
+	}
 
     /**
      * @inheritDoc
@@ -753,7 +775,7 @@ public class Kernel implements CoreEngineModel {
                 throw new IOException("Failed to find file required for preparation: " + e.toString());
             }
 
-        ArrayList<File> digObjs = new ArrayList<File>();
+        List<File> digObjs = new ArrayList<File>();
         digObjs.add(digObj);
         return controller.prepareConfiguration(emuDir, digObjs, swImgs, emuExec, pathway);
     }

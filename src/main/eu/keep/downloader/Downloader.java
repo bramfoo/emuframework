@@ -384,6 +384,24 @@ public class Downloader {
     }
 
     /**
+     * Returns a list of all available pathways
+     * @return List of pathways
+     * @throws IOException If a connection error occurs when contacting the Software Archive
+     */
+    public List<Pathway> getAllPathways() throws IOException {
+        try {
+            return softwareArchive.getAllPathways();
+        }
+    	catch (IOException e) {
+    		processIOException(e, "software archive");
+    	}
+    	catch (WebServiceException wse) {
+    		processWebServiceException(wse, "Software archive");
+    	}
+		return null;
+    }
+
+    /**
      * Returns the software package file format
      * @param imageID software package ID
      * @return String representing the format name

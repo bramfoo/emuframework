@@ -32,6 +32,7 @@ package eu.keep.gui;
 
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
+import eu.keep.gui.config.ConfigPanel;
 import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
 import eu.keep.gui.settings.WhitelistFrame;
@@ -63,9 +64,9 @@ import org.apache.log4j.Logger;
 public class GUI extends JFrame {
 
     public static final int WIDTH_UNIT = 10;
-    public static final int TOTAL_WIDTH_UNITS = 95;
+    public static final int TOTAL_WIDTH_UNITS = 105;
     public static final int WIDTH = WIDTH_UNIT * TOTAL_WIDTH_UNITS;
-    public static final int HEIGHT = 700;
+    public static final int HEIGHT = 900;
     public static final String PROP_FILE_NAME = "gui.properties";
     public static final String PROP_FILE_NAME_KERNEL = "user.properties";
     private static final Logger logger = Logger.getLogger(GUI.class.getName());
@@ -94,7 +95,7 @@ public class GUI extends JFrame {
         String fileName = "eu/keep/" + PROP_FILE_NAME;
 
         if (!new File(fileName).exists()) {
-            throw new FileNotFoundException(fileName);
+            throw new FileNotFoundException("file not found: " + fileName);
         }
 
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
@@ -120,11 +121,7 @@ public class GUI extends JFrame {
         initActionListeners();
     }
 
-    public void clear() {
-        tabPanel.clear();
-    }
-
-    public eu.keep.gui.config.ConfigPanel getConfigPanel() {
+    public ConfigPanel getConfigPanel() {
         return tabPanel.configPanel;
     }
 
@@ -496,6 +493,17 @@ public class GUI extends JFrame {
         GUI.enableComponentWithChildren(tabPanel, false);
     }
 
+    /**
+     * Enable the components on this frame and display the message on the "log-label".
+     *
+     * @param message the message to be displayed on the "log-label".
+     */
+    public void unlock(String message) {
+        GUI.enableComponentWithChildren(tabPanel, true);
+        logLabel.setText(message);
+        super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+    }
+
     public void reloadModel() {
         try {
             model = new Kernel(PROP_FILE_NAME_KERNEL);
@@ -507,17 +515,6 @@ public class GUI extends JFrame {
             logLabel.setText("Failed to reload the Kernel with the new Settings. Please change the settings.");
             super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
-    }
-
-    /**
-     * Enable the components on this frame and display the message on the "log-label".
-     *
-     * @param message the message to be displayed on the "log-label".
-     */
-    public void unlock(String message) {
-        GUI.enableComponentWithChildren(tabPanel, true);
-        logLabel.setText(message);
-        super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
     /**

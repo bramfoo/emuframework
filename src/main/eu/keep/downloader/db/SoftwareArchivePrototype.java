@@ -61,10 +61,12 @@ import eu.keep.softwarearchive.SoftwareArchivePortType;
 import eu.keep.softwarearchive.SoftwareArchiveService;
 import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.EfFormat;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.pathway.RegistryType;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
+import eu.keep.characteriser.Format;
 import eu.keep.downloader.SoftwareArchive;
 import eu.keep.util.FileUtilities;
 
@@ -157,6 +159,34 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
         return pwl.getPathway();
     }
     
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public List<Pathway> getAllPathways() throws ConnectException, SocketTimeoutException, WebServiceException {
+        logger.info("Invoking getAllPathways...");
+
+        PathwayList pwl = new PathwayList();
+        
+        // Request a timer to display progress
+        Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+        try {
+             pwl = port.getAllPathways();
+             logger.debug("Retrieved list of size: " + pwl.getPathway().size());
+        }
+        catch (WebServiceException e) {
+            processWebServiceException(e, "Error retrieving pathway by file format: ");       	
+        }
+        finally {
+            // Stop the timer
+            t.cancel();
+        }
+
+        logger.info("Retrieved " + pwl.getPathway().size() + " Pathways");
+        return pwl.getPathway();
+	}
+
     /**
      * {@inheritDoc}
      */

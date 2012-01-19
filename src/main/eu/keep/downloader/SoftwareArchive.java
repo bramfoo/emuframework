@@ -30,6 +30,7 @@
 */
 package eu.keep.downloader;
 
+import eu.keep.characteriser.Format;
 import eu.keep.downloader.db.DBRegistry;
 import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.EfFormat;
@@ -63,6 +64,17 @@ public interface SoftwareArchive {
             throws ConnectException, SocketTimeoutException, WebServiceException;
 
     /**
+     * Returns a list of all available pathways
+     * @return List of pathways
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
+     */
+	public abstract List<Pathway> getAllPathways()
+			throws ConnectException, SocketTimeoutException, WebServiceException;
+
+	
+	/**
      * Returns a list of software packages based on a given pathway
      * @param pw Pathway object describing the environment configuration
      * @return List of software packages
@@ -129,6 +141,9 @@ public interface SoftwareArchive {
     /**
      * Get all registries from the database
      * @return List<DBRegistry> a list of registries
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
      */
     public List<DBRegistry> getRegistries() throws ConnectException, SocketTimeoutException, WebServiceException;
 
@@ -136,6 +151,9 @@ public interface SoftwareArchive {
      * Updates registries in the database. These registries must already exist in the database.
      * @param registries The list of registries to update
      * @return True if successful, false otherwise
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
      */
     public boolean updateRegistries(List<DBRegistry> registries) throws ConnectException, SocketTimeoutException, WebServiceException;
 
@@ -143,6 +161,9 @@ public interface SoftwareArchive {
      * Inserts registries in the database
      * @param registries The list of registries to insert into the database
      * @return True if successful, false otherwise
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
      */
     public boolean setRegistries(List<DBRegistry> registries) throws ConnectException, SocketTimeoutException, WebServiceException;
 

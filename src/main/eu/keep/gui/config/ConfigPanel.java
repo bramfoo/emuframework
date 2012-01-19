@@ -49,6 +49,7 @@ import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -111,18 +112,7 @@ public class ConfigPanel extends JPanel {
                 (new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        try {
-                            List<Pathway> paths = parent.model.getPathways(frmt);
-                            if (paths.isEmpty()) {
-                                parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
-                            } else {
-                                parent.unlock("Found " + paths.size() + " suitable dependencies");
-                                ConfigPanel.this.loadPathways(paths);
-                            }
-                        } catch (IOException e1) {
-                            parent.unlock("ERROR: " + e1.getMessage());
-                            e1.printStackTrace();
-                        }
+                    	ConfigPanel.this.findPathwaysForFormat(frmt);
                     }
                 })).start();
             }
@@ -286,13 +276,35 @@ public class ConfigPanel extends JPanel {
 
     public void loadFormats(List<Format> formatList) {
         clear();
-        explorerPanel.setEnabled(false);
+//        explorerPanel.setEnabled(false);
         setEnableFormats(true);
         for (Format f : formatList) {
             formatsDropDown.addItem(new FormatWrapper(f));
         }
     }
 
+    /**
+     * Initialise the ConfigPanel for when a user wants to start an environment without Digital Object
+     */
+    public void loadNoObject() {
+    	
+    	// Clear the entire panel
+    	clear();
+    	
+    	// Load the Formats dropdown with a dummy element 'no object'
+    	List<Format> formats = new ArrayList<Format>();
+    	Format noObjectFmt = new Format("no object", "-");
+    	formats.add(noObjectFmt);
+    	this.loadFormats(formats);
+    	
+        // Load all possible pathways in the Pathways dropdown
+        findPathwaysForFormat(noObjectFmt);
+
+    	// Disable the Formats dropdown and the 'find dependencies' button
+        formatsDropDown.setEnabled(false);
+        findDependencies.setEnabled(false);	
+    }
+    
     public void loadPathways(List<Pathway> paths) {
         setEnablePathways(true);
         pathwaysDropDown.removeAllItems();
@@ -308,6 +320,25 @@ public class ConfigPanel extends JPanel {
             softwareDropDown.addItem(new SoftwarePackageWrapper(s));
         }
     }
+
+    /**
+     * Find pathways given an input file Format and load them into the Pathways dropdown
+     * @param frmt the input file Format
+     */
+    private void findPathwaysForFormat(final Format frmt) {
+		try {
+		    List<Pathway> paths = parent.model.getPathways(frmt);
+		    if (paths.isEmpty()) {
+		        parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
+		    } else {
+		        parent.unlock("Found " + paths.size() + " suitable dependencies");
+		        loadPathways(paths);
+		    }
+		} catch (IOException e1) {
+		    parent.unlock("ERROR: " + e1.getMessage());
+		    e1.printStackTrace();
+		}
+	}
 
     // drop down #1
     private void setEnableFormats(boolean enable) {
@@ -411,9 +442,7 @@ public class ConfigPanel extends JPanel {
     private void setupGUI() {
         super.setLayout(new BorderLayout(2, 2));
 
-        JPanel rightMainPanel = new JPanel(new BorderLayout(5, 5));
-
-        explorerPanel = new FileExplorerPanel(parent);
+        explorerPanel = new FileExplorerPanel(parent);         
         super.add(explorerPanel, BorderLayout.WEST);
 
         JPanel topRightPanel = new JPanel(new GridLayout(4, 1, 1, 1));
@@ -495,11 +524,11 @@ public class ConfigPanel extends JPanel {
 
         // reset all components
         clear();
-
+        
+        JPanel rightMainPanel = new JPanel(new BorderLayout(5, 5));
         rightMainPanel.add(topRightPanel, BorderLayout.NORTH);
         rightMainPanel.add(new JScrollPane(configTree), BorderLayout.CENTER);
         rightMainPanel.add(bottomPanel, BorderLayout.SOUTH);
-
         super.add(rightMainPanel, BorderLayout.EAST);
     }
 
@@ -517,10 +546,9 @@ public class ConfigPanel extends JPanel {
         startConfig.setEnabled(enabled);
         saveConfig.setEnabled(enabled);
     }
-
-
     
-    /**
+
+	/**
      * Wrapper used to display EmulatorPackage in GUI
      */
     class EmulatorPackageWrapper {
@@ -556,12 +584,12 @@ public class ConfigPanel extends JPanel {
         public String toString() {
             StringBuilder b = new StringBuilder(softwarePackage.getDescription());
 
-            if(!softwarePackage.getOs().isEmpty()) {
-                b.append(", ");
-                for(OperatingSystemType os : softwarePackage.getOs()) {
-                    b.append(os.getName()).append(" ").append(os.getVersion()).append(" ");
-                }
-            }
+//            if(!softwarePackage.getOs().isEmpty()) {
+//                b.append(", ");
+//                for(OperatingSystemType os : softwarePackage.getOs()) {
+//                    b.append(os.getName()).append(" ").append(os.getVersion()).append(" ");
+//                }
+//            }
 
             return b.toString();
         }
