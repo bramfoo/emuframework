@@ -53,7 +53,6 @@ $
                    xmlns:pw="http://softwarearchive.keep.eu/Pathway"
 		   		   xmlns:xmime="http://www.w3.org/2005/05/xmlmime">  
                      
-            <!-- http://www.ibm.com/developerworks/xml/library/ws-tip-imports.html -->
             <xs:import namespace="http://softwarearchive.keep.eu/SoftwarePackage" 
                       schemaLocation="SoftwarePackageSchema.xsd"/>            
             <xs:import namespace="http://softwarearchive.keep.eu/Pathway" 
@@ -141,6 +140,12 @@ $
         <wsdl:part name="parameters" element="tns:pathwayList"/>
     </wsdl:message>      
 
+    <wsdl:message name="GetAllPathwaysInput">
+    </wsdl:message>
+    <wsdl:message name="GetAllPathwaysOutput">
+        <wsdl:part name="parameters" element="tns:pathwayList"/>
+    </wsdl:message>
+
     <wsdl:message name="GetSoftwarePackagesByPathwayInput">
         <wsdl:part name="parameters1" element="pw:pathway"/>
     </wsdl:message>
@@ -209,6 +214,11 @@ $
            <wsdl:output message="tns:GetPathwaysByFileFormatOutput"/>
         </wsdl:operation>
         
+        <wsdl:operation name="GetAllPathways">
+           <wsdl:input message="tns:GetAllPathwaysInput"/>
+           <wsdl:output message="tns:GetAllPathwaysOutput"/>
+        </wsdl:operation>
+        
         <wsdl:operation name="GetSoftwarePackagesByPathway">
            <wsdl:input message="tns:GetSoftwarePackagesByPathwayInput"/>
            <wsdl:output message="tns:GetSoftwarePackagesByPathwayOutput"/>
@@ -272,6 +282,16 @@ $
                       
         <wsdl:operation name="GetPathwaysByFileFormat">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetPathwaysByFileFormat" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetAllPathways">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetAllPathways" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
             </wsdl:input>

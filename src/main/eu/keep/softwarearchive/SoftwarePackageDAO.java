@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
@@ -76,17 +77,17 @@ public interface SoftwarePackageDAO {
     /**
      * Returns the database rows of a query on a view based on an image ID
      * @param id Column ID
-     * @param primaryColumn The column to be used as clause. If true, uses img_id; if false uses any of "os_id", "app_id", depending on view queried
+     * @param primaryCol The column to be used as clause. If true, uses img_id; if false uses any of "os_id", "app_id", depending on view queried
      * @param viewName The view to be queried. Currently supports 'img', 'os' and 'app'
-     * @param List<String> Columns names to be returned. The column data must all be of type VARCHAR2! 
+     * @param columnNames Columns names to be returned. The column data must all be of type VARCHAR2! 
      * @return Map of lists, with the column name as key and a list for the values
      */
     public List<List<String>> getViewData(String id, boolean primaryCol, String viewName, List<String> columnNames);
 
     /**
      * Returns the values the 'pathways' view
-     * @param String File Format name
-     * @param List<String> Columns names to be returned. The column data must all be of type VARCHAR2! 
+     * @param fileFormat File Format name. If null, <b>all</b> pathways will be returned
+     * @param columnNames Columns names to be returned. The column data must all be of type VARCHAR2! 
      * @return Map of lists, with the column name as key and a list for the values
      */
     public List<List<String>> getPathwaysView(String fileFormat, List<String> columnNames);

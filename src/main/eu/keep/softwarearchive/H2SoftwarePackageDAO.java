@@ -42,6 +42,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
@@ -53,7 +54,7 @@ import eu.keep.softwarearchive.pathway.RegistryType;
 public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 
 	private final Logger LOGGER                          = Logger.getLogger(this.getClass().getName());
-	private Connection          conn;
+	private Connection   conn;
 
 	// Main tables
 	private static final String FILEFORMAT_NAME               = "fileformats";
@@ -79,6 +80,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	private static final String SELECT_OS_PACK_VIEW_ON_OS      = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_id=?";
 	private static final String SELECT_IMG_PACK_VIEW_ON_IMG    = "SELECT * FROM " + IMG_PACK_VIEW + " WHERE image_id=?";
 	private static final String SELECT_PATHWAY_VIEW_ON_FF      = "SELECT * FROM " + PATHWAY_VIEW + " WHERE fileformat_name=?";
+	private static final String SELECT_ALL_PATHWAY_VIEW        = "SELECT * FROM " + PATHWAY_VIEW;
 	private static final String SELECT_OS_VIEW_ON_OS           = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_name=?";
 
 	// Joins
@@ -230,24 +232,29 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	@Override
 	public List<List<String>> getPathwaysView(String fileFormat, List<String> columnNames) {
 
-		// sanity check
-		if (fileFormat == null || fileFormat.length() == 0) {
-			throw new IllegalArgumentException("Invalid file format");
-		}
-
-		LOGGER.debug("Retrieving pathways for file format '" + fileFormat + "'");
 		List<List<String>> pathways = new ArrayList<List<String>>();
+		String query = "";
+		PreparedStatement pstmt = null;
+		
 		try {
-			PreparedStatement pstmt = null;
+			// If fileFormat is null, then we need to get all pathways
+			if (fileFormat == null || fileFormat.length() == 0) {
+				LOGGER.debug("Retrieving all available pathways.");
+				query = SELECT_ALL_PATHWAY_VIEW;
+				pstmt = conn.prepareStatement(query);
+			} else {
+				LOGGER.debug("Retrieving pathways for file format '" + fileFormat + "'");
+				query = SELECT_PATHWAY_VIEW_ON_FF;
+				pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, fileFormat);
+			}
+
 			ResultSet rs = null;
 			try {
-				pstmt = conn.prepareStatement(SELECT_PATHWAY_VIEW_ON_FF);
-				pstmt.setString(1, fileFormat);
 				rs = pstmt.executeQuery();
 				while (rs.next()) {
 					List<String> pathway = new ArrayList<String>();
-					for (String name : columnNames)
-					{
+					for (String name : columnNames) {
 						pathway.add(rs.getString(name));
 					}
 					pathways.add(pathway);
@@ -260,11 +267,15 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 			}
 		}
 		catch (SQLException e) {
-			LOGGER.info("Database: Error while retrieving row in 'pathways' for file format=" + fileFormat + ": " + e);
-			e.printStackTrace();
+			if (fileFormat == null || fileFormat.length() == 0) {
+				LOGGER.error("Database: Error while retrieving row in 'pathways': " + ExceptionUtils.getStackTrace(e));								
+			} else {
+				LOGGER.error("Database: Error while retrieving row in 'pathways' for file format=" + 
+							fileFormat + ": " + ExceptionUtils.getStackTrace(e));				
+			}
 			throw new RuntimeException(e);
 		}
-		LOGGER.debug("Found " + pathways.size() + " pathways for file format '" + fileFormat + "'");
+		LOGGER.debug("Found " + pathways.size() + " pathways.");
 		return pathways;
 	}
 

@@ -35,6 +35,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -52,6 +53,8 @@ import java.util.Properties;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 
 /**
  * A Junit Test class for {@link eu.keep.softwarearchive.H2SoftwarePackageDAO}

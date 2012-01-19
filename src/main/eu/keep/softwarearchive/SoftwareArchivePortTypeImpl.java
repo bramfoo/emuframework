@@ -148,8 +148,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     @Override
     public PathwayList getPathwaysByFileFormat(String fileFormat) {
     	LOG.info("Retrieving pathways for file format: " + fileFormat + "...");
-        PathwayList pwList = new PathwayList();
-        
+
     	// The following combinations are valid pathways:
     	// Format->Platform
     	// Format->OS->Platform
@@ -164,9 +163,49 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         LOG.debug("Pathways found: " + pathways);
         
         if (pathways.size() == 0)
-        	return pwList;
+        	return new PathwayList();
 
-        // Loop over results
+        PathwayList pwList = createPathwayList(pathways);
+
+        LOG.info("Returning " + pwList.getPathway().size() + " pathway(s) for file format: " + fileFormat);
+        return pwList;
+    }
+
+	@Override
+	public PathwayList getAllPathways() {
+    	LOG.info("Retrieving all available pathways...");
+
+    	// The following combinations are valid pathways:
+    	// Format->Platform
+    	// Format->OS->Platform
+        // Format->App->OS->Platform
+        List<String> columnNames = new ArrayList<String>();
+        // The following columns will be retrieved, so add them to the List
+        columnNames.add("FILEFORMAT_ID");
+        columnNames.add("APP_ID");
+        columnNames.add("OS_ID");
+        columnNames.add("PLATFORM_ID");
+        List<List<String>> pathways = spDAO.getPathwaysView(null, columnNames);
+        LOG.debug(pathways.size() + " Pathways found");
+        
+        if (pathways.size() == 0)
+        	return new PathwayList();
+
+        PathwayList pwList = createPathwayList(pathways);
+
+        LOG.info("Returning " + pwList.getPathway().size() + " pathway(s)");
+        return pwList;
+	}
+
+    /**
+     * Convert the result of a query on the PathwaysView to a PathwayList object
+     * @param pathways the result of a query on the PathwaysView
+     * @return a PathwayList object based on the input pathways.
+     */
+	private PathwayList createPathwayList(List<List<String>> pathways) {
+
+		// Loop over results
+        PathwayList pwList = new PathwayList();
         for(List<String> pathway : pathways) {
         	Pathway pw = createPathway();
         	
@@ -176,16 +215,14 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
         	// Either of App/OS could be null 
         	String item = it.next();
-        	if (item == null)
-        	{
+        	if (item == null) {
         		pw.getApplication().setId("-1");
         		pw.getApplication().setName("N/A");
         	}
         	else
         		pw.setApplication(createAppType(item, false).get(0));
         	item = it.next();
-        	if (item == null)
-        	{
+        	if (item == null) {
         		pw.getOperatingSystem().setId("-1");
         		pw.getOperatingSystem().setName("N/A");
         	}
@@ -197,9 +234,9 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
             LOG.debug("Pathway added: [" + pathwayToString(pw) + "]");
             pwList.getPathway().add(pw);
         }
-        LOG.info("Returning " + pwList.getPathway().size() + " pathway(s) for file format: " + fileFormat);
-        return pwList;
-    }
+		return pwList;
+	}
+	
 
 	/**
      * Return a list of Software Packages based on a pathway
@@ -437,8 +474,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
      * @param id ID of the software image
      * @return Software Package for the requested software image
      */
-    private SoftwarePackage createSoftwarePack(String id)
-    {
+    private SoftwarePackage createSoftwarePack(String id) {
     	LOG.trace("Creating Software Package for software ID: " + id);
     	
     	List<List<String>> results;
