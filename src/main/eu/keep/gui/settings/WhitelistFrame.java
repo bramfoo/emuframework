@@ -67,8 +67,7 @@ public class WhitelistFrame extends JFrame {
         parent = p;
         fileName = fn;
 
-        parent.setEnabled(false);
-        parent.getGlassPane().setVisible(true);
+        parent.showGlassPane();
 
         // read the properties file
         properties = new Properties();
@@ -131,8 +130,7 @@ public class WhitelistFrame extends JFrame {
     }
 
     private void close() {
-        parent.getGlassPane().setVisible(false);
-        parent.setEnabled(true);
+        parent.hideGlassPane();
         this.dispose();
     }
 

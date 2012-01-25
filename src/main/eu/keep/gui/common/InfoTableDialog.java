@@ -74,9 +74,7 @@ public class InfoTableDialog extends JFrame {
         }
 
         parent = gui;
-
-        parent.setEnabled(false);
-        parent.getGlassPane().setVisible(true);
+        parent.showGlassPane();
 
         super.addWindowListener(new WindowAdapter() {
             @Override
@@ -121,8 +119,7 @@ public class InfoTableDialog extends JFrame {
 
         // link to parent GUI
         parent = gui;
-        parent.setEnabled(false);
-        parent.getGlassPane().setVisible(true);
+        parent.showGlassPane();
 
         super.addWindowListener(new WindowAdapter() {
             @Override
@@ -252,8 +249,7 @@ public class InfoTableDialog extends JFrame {
 
 	
 	private void close() {
-        parent.getGlassPane().setVisible(false);
-        parent.setEnabled(true);
+        parent.hideGlassPane();
         this.dispose();
     }
 

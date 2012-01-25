@@ -264,13 +264,21 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
             })).start();
         }
         else if (e.getSource() == startWithoutObject) {
-        	
-        	// Prepare the configPanel for No Object
-        	parent.getConfigPanel().loadNoObject();
 
         	// Clear the ExplorerPanel
         	clearExplorerPanel();
         	enableExplorerPanel(false);    	
+
+        	parent.lock("Downloading all supported dependencies. Please wait...");
+
+        	(new Thread(new Runnable() {
+        		@Override
+        		public void run() {
+        			// Prepare the configPanel for No Object
+        			parent.getConfigPanel().loadNoObject();                        
+        		}
+        	})).start();
+        
         }
         else if (e.getSource() == info) {
             parent.lock("Getting meta data from file: " + clickedFile + ", please wait...");

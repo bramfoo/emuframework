@@ -122,20 +122,23 @@ public class ConfigPanel extends JPanel {
         findEmus.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		final Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
-        		parent.lock("Loading configuration for dependency: " + path + ", please wait...");
+        		PathwayWrapper selectedPathway = (PathwayWrapper) pathwaysDropDown.getSelectedItem();
+        		final Pathway path = selectedPathway.pathway;
+        		parent.lock("Loading configuration for dependency: " + selectedPathway + ", please wait...");
         		(new Thread(new Runnable() {
         			@Override
         			public void run() {
         				try {
-        					if (!parent.model.isPathwaySatisfiable(path)) {
-        						parent.unlock("Sorry, path is not satisfiable given the available emulators, " +
-        								"software images and acceptable languages.");
-        					} else {                            	
+        					String message = "Sorry, path is not satisfiable given the available emulators, " +
+        							"software images and acceptable languages.";
+        					if (parent.model.isPathwaySatisfiable(path)) {
         						Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
-        						parent.unlock("Found " + emuMap.size() + " suitable emulators");
-        						ConfigPanel.this.loadEmus(emuMap);
+        						if (!emuMap.isEmpty()) {
+        							message = "Found " + emuMap.size() + " suitable emulators";
+        							ConfigPanel.this.loadEmus(emuMap);
+        						}
         					}
+        					parent.unlock(message);
         				} catch (IOException e1) {
         					parent.unlock("ERROR: " + e1.getMessage());
         				}
@@ -150,17 +153,17 @@ public class ConfigPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 final EmulatorPackageWrapper swObj = (EmulatorPackageWrapper) emulatorsDropDown.getSelectedItem();
                 final EmulatorPackage emu = swObj.emulatorPackage;
-                final Pathway path = ((PathwayWrapper) pathwaysDropDown.getSelectedItem()).pathway;
+                final PathwayWrapper selectedPathway = (PathwayWrapper) pathwaysDropDown.getSelectedItem();
                 parent.lock("Finding software packages for " + emu.getEmulator().getName() + " " +
-                        emu.getEmulator().getVersion() + " and path: " + path + ", please wait...");
+                        emu.getEmulator().getVersion() + " and path: " + selectedPathway + ", please wait...");
                 (new Thread(new Runnable() {
                     @Override
                     public void run() {
                         List<SoftwarePackage> swList = swObj.softwareList;
                         if (swList.isEmpty()) {
-                            parent.unlock("Sorry, could not find a software package for: " + new PathwayWrapper(path).toString());
+                            parent.unlock("Sorry, could not find a software package for: " + selectedPathway.toString());
                         } else {
-                            parent.unlock("Found " + swList.size() + " software packages for " + new PathwayWrapper(path).toString());
+                            parent.unlock("Found " + swList.size() + " software packages for " + selectedPathway.toString());
                             ConfigPanel.this.loadSoftware(swList);
                         }
                     }
@@ -509,11 +512,11 @@ public class ConfigPanel extends JPanel {
         configTree = new JTree(configModel);
         configTree.setCellRenderer(new ConfigTreeCellRenderer());
         configTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        // Textfield and buttons beneath the config tree
         JPanel bottomPanel = new JPanel(new BorderLayout(5, 5));
         configTxt = new HighlightTextField();
         bottomPanel.add(configTxt, BorderLayout.CENTER);
-
-        // buttons beneath the config tree
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         startConfig = new JButton("start");

@@ -39,9 +39,9 @@ public class GlassPane extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         Color bg = super.getBackground();
-        Color alpha = new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 200);
+        Color alpha = new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 150);
         g.setColor(alpha);
-        // Parent height - 32, to make sure status bar is always fully visible.
+        // bottom at (parent bottom - 32), to make sure status bar is always fully visible.
         g.fillRect(0, 0, super.getParent().getWidth(), super.getParent().getHeight() - 32);
     }
 }

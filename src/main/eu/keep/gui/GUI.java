@@ -156,8 +156,7 @@ public class GUI extends JFrame {
                     return;
                 }
 
-                GUI.this.getGlassPane().setVisible(true);
-                GUI.this.setEnabled(false);
+                GUI.this.showGlassPane();
 
                 final JDialog dialog = new JDialog();
                 dialog.setLayout(new BorderLayout(5, 5));
@@ -171,8 +170,7 @@ public class GUI extends JFrame {
                 dialog.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        GUI.this.setEnabled(true);
-                        GUI.this.getGlassPane().setVisible(false);
+                        GUI.this.hideGlassPane();
                         dialog.dispose();
                     }
                 });
@@ -489,9 +487,17 @@ public class GUI extends JFrame {
      */
     public void lock(String message) {
         logLabel.setText(message);
+        showGlassPane();
         super.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-        GUI.enableComponentWithChildren(tabPanel, false);
     }
+
+    /**
+     * Display the GlassPane for this frame
+     */
+	public void showGlassPane() {
+		this.getGlassPane().setVisible(true);
+        this.setEnabled(false);
+	}
 
     /**
      * Enable the components on this frame and display the message on the "log-label".
@@ -499,11 +505,21 @@ public class GUI extends JFrame {
      * @param message the message to be displayed on the "log-label".
      */
     public void unlock(String message) {
-        GUI.enableComponentWithChildren(tabPanel, true);
         logLabel.setText(message);
+        hideGlassPane();
         super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
 
+    /**
+     * Hide the GlassPane for this frame
+     */
+	public void hideGlassPane() {
+		this.getGlassPane().setVisible(false);
+        this.setEnabled(true);
+	}
+
+    
+    
     public void reloadModel() {
         try {
             model = new Kernel(PROP_FILE_NAME_KERNEL);

@@ -53,8 +53,7 @@ public class InsertDialog extends JDialog {
         dataModel = model;
         inputFields = new ArrayList<JTextField>();
 
-        parent.setEnabled(false);
-        parent.getGlassPane().setVisible(true);
+        parent.showGlassPane();
 
         super.addWindowListener(new WindowAdapter() {
             @Override
@@ -82,8 +81,7 @@ public class InsertDialog extends JDialog {
     }
 
     private void close() {
-        parent.getGlassPane().setVisible(false);
-        parent.setEnabled(true);
+        parent.hideGlassPane();
         this.dispose();
     }
 

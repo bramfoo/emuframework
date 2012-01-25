@@ -66,8 +66,7 @@ public class SettingsFrame extends JFrame {
         fileName = fn;
         valueMap = new LinkedHashMap<String, EFPropertyEditor>();
 
-        parent.setEnabled(false);
-        parent.getGlassPane().setVisible(true);
+        parent.showGlassPane();
 
         // read the properties file
         properties = new Properties();
@@ -100,8 +99,7 @@ public class SettingsFrame extends JFrame {
     }
 
     private void close() {
-        parent.getGlassPane().setVisible(false);
-        parent.setEnabled(true);
+        parent.hideGlassPane();
         this.dispose();
     }
 

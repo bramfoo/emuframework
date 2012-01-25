@@ -92,8 +92,7 @@ public class LanguageSettingsFrame extends JFrame {
         super("language settings");
 
         parent = p;
-        parent.setEnabled(false);
-        parent.getGlassPane().setVisible(true);
+        parent.showGlassPane();
 
         // read the properties file
         kernelFileName = fnKernel;
@@ -457,8 +456,7 @@ public class LanguageSettingsFrame extends JFrame {
 	 * Close this Frame
 	 */
 	private void close() {
-        parent.getGlassPane().setVisible(false);
-        parent.setEnabled(true);
+        parent.hideGlassPane();
         this.dispose();
     }
 	
