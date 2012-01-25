@@ -180,7 +180,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         // Add everything together
         JPanel noObjectPanel = new JPanel();
         noObjectPanel.setLayout(new BoxLayout(noObjectPanel, BoxLayout.Y_AXIS));    
-        TitledBorder noObjectBorder = new TitledBorder("Start Environment without Digital Object");
+        TitledBorder noObjectBorder = new TitledBorder("");
+        RBLanguages.set(noObjectBorder, "Start Environment without Digital Object");
         noObjectBorder.setTitlePosition(TitledBorder.BELOW_TOP);
         noObjectPanel.setBorder(noObjectBorder);    
         

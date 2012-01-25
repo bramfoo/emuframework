@@ -480,9 +480,14 @@ public class ConfigPanel extends JPanel {
         // the 'format' components
         JPanel formatsPanel = new JPanel();
         formatsPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel formatsLabel = new JLabel(RBLanguages.get("found_formats") + ":");
+
+        JLabel formatsLabel = new JLabel();
+        RBLanguages.set(formatsLabel, "found_formats");
+
         formatsDropDown = new JComboBox();
-        findDependencies = new JButton(RBLanguages.get("find_dependencies"));
+        findDependencies = new JButton();
+        RBLanguages.set(findDependencies, "find_dependencies");
+
         formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         findDependencies.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -494,9 +499,14 @@ public class ConfigPanel extends JPanel {
         // the 'pathway' components
         JPanel pathwaysPanel = new JPanel();
         pathwaysPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel pathwaysLabel = new JLabel(RBLanguages.get("dependencies") + ":");
+
+        JLabel pathwaysLabel = new JLabel();
+        RBLanguages.set(pathwaysLabel, "dependencies");
+
         pathwaysDropDown = new JComboBox();
-        findEmus = new JButton(RBLanguages.get("find_emulators"));
+        findEmus = new JButton();
+        RBLanguages.set(findEmus, "find_emulators");
+
         pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         findEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -508,9 +518,15 @@ public class ConfigPanel extends JPanel {
         // the 'emulator' components
         JPanel emuPanel = new JPanel();
         emuPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel emuLabel = new JLabel(RBLanguages.get("emulators") + ":");
+
+        JLabel emuLabel = new JLabel();
+        RBLanguages.set(emuLabel, "emulators");
+
         emulatorsDropDown = new JComboBox();
-        findSoftware = new JButton(RBLanguages.get("find_software"));
+
+        findSoftware = new JButton();
+        RBLanguages.set(findSoftware, "find_software");
+
         emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         findSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -522,9 +538,13 @@ public class ConfigPanel extends JPanel {
         // the 'software' components
         JPanel swPanel = new JPanel();
         swPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel swLabel = new JLabel(RBLanguages.get("software") + ":");
+        JLabel swLabel = new JLabel();
+        RBLanguages.set(swLabel, "software");
+
         softwareDropDown = new JComboBox();
-        prepareConfig = new JButton(RBLanguages.get("prepare_config"));
+        prepareConfig = new JButton();
+        RBLanguages.set(prepareConfig, "prepare_config");
+
         swLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         softwareDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         prepareConfig.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -546,9 +566,13 @@ public class ConfigPanel extends JPanel {
         bottomPanel.add(configTxt, BorderLayout.CENTER);
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        startConfig = new JButton(RBLanguages.get("start"));
+        startConfig = new JButton();
+        RBLanguages.set(startConfig, "start");
+
         buttonsPanel.add(startConfig);
-        saveConfig = new JButton(RBLanguages.get("save"));
+        saveConfig = new JButton();
+        RBLanguages.set(saveConfig, "save");
+
         buttonsPanel.add(saveConfig);
         bottomPanel.add(buttonsPanel, BorderLayout.EAST);
 
