@@ -488,8 +488,8 @@ public class ConfigPanel extends JPanel {
         findDependencies = new JButton();
         RBLanguages.set(findDependencies, "find_dependencies");
 
-        formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
-        formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 14, 25));
+        formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 36, 25));
         findDependencies.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         formatsPanel.add(formatsLabel);
         formatsPanel.add(formatsDropDown);
@@ -507,8 +507,8 @@ public class ConfigPanel extends JPanel {
         findEmus = new JButton();
         RBLanguages.set(findEmus, "find_emulators");
 
-        pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
-        pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 14, 25));
+        pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 36, 25));
         findEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         pathwaysPanel.add(pathwaysLabel);
         pathwaysPanel.add(pathwaysDropDown);
@@ -527,8 +527,8 @@ public class ConfigPanel extends JPanel {
         findSoftware = new JButton();
         RBLanguages.set(findSoftware, "find_software");
 
-        emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
-        emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 14, 25));
+        emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 36, 25));
         findSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         emuPanel.add(emuLabel);
         emuPanel.add(emulatorsDropDown);
@@ -545,8 +545,8 @@ public class ConfigPanel extends JPanel {
         prepareConfig = new JButton();
         RBLanguages.set(prepareConfig, "prepare_config");
 
-        swLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
-        softwareDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
+        swLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 14, 25));
+        softwareDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 36, 25));
         prepareConfig.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
         swPanel.add(swLabel);
         swPanel.add(softwareDropDown);

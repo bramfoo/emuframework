@@ -105,9 +105,6 @@ public final class RBLanguages {
         else if(component instanceof JTextComponent) {
             ((JTextComponent)component).setText(text);
         }
-        else if(component instanceof TitledBorder) {
-            ((TitledBorder)component).setTitle(text);
-        }
         else {
             logger.error("Could not set the text for component: " + component.getClass().getName());
         }

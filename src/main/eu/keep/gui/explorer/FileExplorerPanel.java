@@ -150,10 +150,18 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         JPanel explorerPanel = new JPanel(new BorderLayout(5, 5));    
         explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-200));
         FileExplorerBorder border = new FileExplorerBorder("");
-        RBLanguages.set(border, "start_environment");
+
+        JPanel north = new JPanel(new BorderLayout(5, 5));
+
+        JLabel explanation = new JLabel();
+        explanation.setFont(new Font(null, Font.BOLD, 12));
+        RBLanguages.set(explanation, "start_environment");
+        north.add(explanation, BorderLayout.NORTH);
         explorerPanel.setBorder(border);
 
-        explorerPanel.add(rootsCombo, BorderLayout.NORTH);
+        north.add(rootsCombo, BorderLayout.SOUTH);
+
+        explorerPanel.add(north, BorderLayout.NORTH);
         explorerPanel.add(new JScrollPane(tree), BorderLayout.CENTER);
         explorerPanel.add(buttonPanel, BorderLayout.SOUTH);
         
@@ -169,23 +177,28 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 	private JPanel initNoObjectPanel() {
 		
 		// button panel
-        startWithoutObject = new JButton("start");
+        startWithoutObject = new JButton();
+        RBLanguages.set(startWithoutObject, "start");
         startWithoutObject.setEnabled(true);
         startWithoutObject.addActionListener(this);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 5));
         buttonPanel.add(startWithoutObject);
 
-        
         // Add everything together
         JPanel noObjectPanel = new JPanel();
-        noObjectPanel.setLayout(new BoxLayout(noObjectPanel, BoxLayout.Y_AXIS));    
+        noObjectPanel.setLayout(new BorderLayout(5, 5));
         TitledBorder noObjectBorder = new TitledBorder("");
-        RBLanguages.set(noObjectBorder, "Start Environment without Digital Object");
+
+        JLabel explanation = new JLabel();
+        explanation.setFont(new Font(null, Font.BOLD, 12));
+        RBLanguages.set(explanation, "start_environment_without");
+        noObjectPanel.add(explanation, BorderLayout.WEST);
+
         noObjectBorder.setTitlePosition(TitledBorder.BELOW_TOP);
         noObjectPanel.setBorder(noObjectBorder);    
         
-        noObjectPanel.add(buttonPanel); 
+        noObjectPanel.add(buttonPanel, BorderLayout.EAST);
 
 		return noObjectPanel;
 	}
