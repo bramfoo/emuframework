@@ -73,6 +73,7 @@ public class LanguageSettingsFrame extends JFrame {
     private final Properties guiProperties;
     private final String kernelFileName;
     private final String guiFileName;
+    private Language guiLanguage = Language.en;
 
     private Set<Language> availableLanguages = new HashSet<Language>();
     private Set<Language> acceptedLanguages = new HashSet<Language>();
@@ -156,74 +157,42 @@ public class LanguageSettingsFrame extends JFrame {
 	 */
 	private void addLanguagePanel(JPanel mainPanel) {		
 
-        String lang = guiProperties.getProperty("language");
+        guiLanguage = Language.valueOf(guiProperties.getProperty("language"));
 
 		// Buttons for available language options
-        final JRadioButton english = new JRadioButton(Language.en.getLanguageName(), lang.equals(Language.en.getLanguageId()));
-        final JRadioButton german = new JRadioButton(Language.de.getLanguageName(), lang.equals(Language.de.getLanguageId()));
-        final JRadioButton french = new JRadioButton(Language.fr.getLanguageName(), lang.equals(Language.fr.getLanguageId()));
-        final JRadioButton dutch = new JRadioButton(Language.nl.getLanguageName(), lang.equals(Language.nl.getLanguageId()));
+        final JRadioButton english = new JRadioButton(Language.en.getLanguageName(), guiLanguage == Language.en);
+        final JRadioButton german = new JRadioButton(Language.de.getLanguageName(), guiLanguage == Language.de);
+        final JRadioButton french = new JRadioButton(Language.fr.getLanguageName(), guiLanguage == Language.fr);
+        final JRadioButton dutch = new JRadioButton(Language.nl.getLanguageName(), guiLanguage == Language.nl);
 
-        english.addChangeListener(new ChangeListener() {
+        english.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if(english.isSelected()) {
-                    RBLanguages.change(Language.en);
-                    try {
-                        guiProperties.setProperty("language", Language.en.getLanguageId());
-                        acceptLanguages();
-                    } catch (IOException ex) {
-                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                guiLanguage = Language.en;
             }
         });
 
-        german.addChangeListener(new ChangeListener() {
+        german.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if (german.isSelected()) {
-                    RBLanguages.change(Language.de);
-                    try {
-                        guiProperties.setProperty("language", Language.de.getLanguageId());
-                        acceptLanguages();
-                    } catch (IOException ex) {
-                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                guiLanguage = Language.de;
             }
         });
 
-        french.addChangeListener(new ChangeListener() {
+        french.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if(french.isSelected()) {
-                    RBLanguages.change(Language.fr);
-                    try {
-                        guiProperties.setProperty("language", Language.fr.getLanguageId());
-                        acceptLanguages();
-                    } catch (IOException ex) {
-                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                guiLanguage = Language.fr;
             }
         });
 
-        dutch.addChangeListener(new ChangeListener() {
+        dutch.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                if(dutch.isSelected()) {
-                    RBLanguages.change(Language.nl);
-                    try {
-                        guiProperties.setProperty("language", Language.nl.getLanguageId());
-                        acceptLanguages();
-                    } catch (IOException ex) {
-                        logger.error("Could not save " + kernelFileName + ": " + ex.getMessage());
-                    }
-                }
+            public void actionPerformed(ActionEvent e) {
+                guiLanguage = Language.nl;
             }
         });
-        
+
         ButtonGroup group = new ButtonGroup();
         group.add(english);
         group.add(german);
@@ -377,9 +346,10 @@ public class LanguageSettingsFrame extends JFrame {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String parentMessage = RBLanguages.get("successfully_saved_settings");
+                String parentMessage = "";
                 try {
                 	LanguageSettingsFrame.this.acceptLanguages();
+                    parentMessage = RBLanguages.get("successfully_saved_settings");
                     LanguageSettingsFrame.this.close();
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
@@ -415,6 +385,11 @@ public class LanguageSettingsFrame extends JFrame {
 	 * @throws FileNotFoundException if the user.properties file could not be opened.
 	 */
 	private void acceptLanguages() throws IOException {
+
+        // set the new GUI language and save the choice to the properties file
+        RBLanguages.change(guiLanguage);
+        guiProperties.setProperty("language", guiLanguage.getLanguageId());
+
 		// Collect the selected languages
 		StringBuilder newProperty = new StringBuilder();
 		if (checkBoxList.isNoneSelected()) {
