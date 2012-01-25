@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.ea;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.ea.model.Emulator;
 import eu.keep.gui.wizard.swa.SWAWizardAdd;
 import eu.keep.util.Language;
@@ -60,10 +61,7 @@ public class Step1_Emulator extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 1</h2>" +
-                "<p>Add an emulator by filling in the appropriate information and " +
-                "selecting a locally installed directory in which an emulator is installed. " +
-                "In the root of this directory, a valid FreeMarker template should be present.</p>";
+        final String explanation = RBLanguages.get("ea_add_emu_explanation");
 
         Vector<Vector<String>> emuIDs = DBUtil.query(DBUtil.DB.EA, "select emulator_id from emulatorarchive.emulators");
         final String emulator_id = DBUtil.createUniqueIntID(emuIDs, 0);
@@ -72,13 +70,13 @@ public class Step1_Emulator extends JPanel {
         final JTextField txtVersion = SWAWizardAdd.createTxtField(d, false);
         final JComboBox exeCombo = new JComboBox(new String[]{"exe", "jar", "ELF"});
         exeCombo.setPreferredSize(d);
-        final JButton btnExe = new JButton("browse...");
+        final JButton btnExe = new JButton(RBLanguages.get("browse") + "...");
         btnExe.setPreferredSize(d);
         final JTextField txtDescription = SWAWizardAdd.createTxtField(d, false);
         final JComboBox langIdCombo = new JComboBox(Language.values());
         langIdCombo.setSelectedItem(Language.en);
         langIdCombo.setPreferredSize(d);
-        final JButton btnFolder = new JButton("browse...");
+        final JButton btnFolder = new JButton(RBLanguages.get("browse") + "...");
         btnFolder.setPreferredSize(d);
         final JTextField txtUserInstructions = SWAWizardAdd.createTxtField(d, false);
 
@@ -165,7 +163,7 @@ public class Step1_Emulator extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step1);
                 parent.add(parent.step2, BorderLayout.CENTER);
-                parent.log("2/2, select hardware and image format");
+                parent.log("2/2, " + RBLanguages.get("select_hardware"));
                 parent.validate();
                 parent.repaint();
             }
@@ -201,24 +199,13 @@ public class Step1_Emulator extends JPanel {
         if(!(new File(folder, "templateCLI.ftl").exists() ||
                 new File(folder, "templateXML.ftl").exists() ||
                 new File(folder, "templateProps.ftl").exists())) {
-            parent.log("no valid template file inside: " + folder);
+            parent.log(RBLanguages.get("no_valid_template") + ": " + folder);
             return;
         }
 
         emu = new Emulator(folder, emulator_id, name, version, exec_type, exec_name, description, language_id,
                 package_name, package_type, package_version, _package, user_instructions);
 
-        /*
-        System.out.printf(
-                "INSERT INTO emulatorarchive.emulators (emulator_id, name, version,exec_type, exec_name, description, \n" +
-                "                                       language_id, package_name, package_type, package_version,     \n" +
-                "                                       package, user_instructions)                                   \n" +
-                "VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, FILE_READ(%s), %s);                                   \n",
-                emulator_id, name, version, exec_type, exec_name, description, language_id,
-                package_name, package_type, package_version, _package, user_instructions
-
-        );
-        */
         next.setEnabled(true);
     }
 }

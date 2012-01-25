@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.swa;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.ImageFormat;
 import eu.keep.gui.wizard.swa.model.Platform;
 import net.miginfocom.swing.MigLayout;
@@ -54,9 +55,7 @@ public class Step3_HardwareAndFormat extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 3</h2>\n" +
-                "<p>On what hardware platform, and file system, does " +
-                "the operating system selected in the previous step run?</p>";
+        final String explanation = RBLanguages.get("swa_hw_and_fs_explanation");
 
         final Vector<Vector<String>> platformData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT platform_id, name, description, creator, production_start, production_end, reference FROM softwarearchive.platforms");
@@ -86,10 +85,10 @@ public class Step3_HardwareAndFormat extends JPanel {
         center.add(new JLabel("<html>" + explanation + "</html>"),              "span 2 1 wrap" );
         center.add(new JLabel(" "),                                             "wrap"          ); // empty line
         center.add(new JLabel(" "),                                             "wrap"          ); // empty line
-        center.add(new JLabel("hardware platform: ")                                            );
+        center.add(new JLabel(RBLanguages.get("hardware_platform") + ": ")                      );
         center.add(platformCombo,                                               "wrap"          );
         center.add(new JLabel(" "),                                             "wrap"          ); // empty line
-        center.add(new JLabel("file system: ")                                                  );
+        center.add(new JLabel(RBLanguages.get("file_system") + ": ")                            );
         center.add(imageFormatCombo,                                            "wrap"          );
 
         final JButton previous = new JButton("<html>&larr;</html>");
@@ -108,7 +107,7 @@ public class Step3_HardwareAndFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step3);
                 parent.add(parent.step2, BorderLayout.CENTER);
-                parent.log("2/5, select an operating system");
+                parent.log("2/5, " + RBLanguages.get("select_os"));
                 parent.validate();
                 parent.repaint();
             }
@@ -119,7 +118,7 @@ public class Step3_HardwareAndFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step3);
                 parent.add(parent.step4, BorderLayout.CENTER);
-                parent.log("4/5, select the ZIP file");
+                parent.log("4/5, " + RBLanguages.get("select_zip"));
                 parent.validate();
                 parent.repaint();
             }

@@ -44,6 +44,7 @@ import javax.swing.border.MatteBorder;
 import javax.swing.table.TableCellRenderer;
 
 import eu.keep.gui.util.InfoTableCell;
+import eu.keep.gui.util.RBLanguages;
 
 
 public class LineWrapCellRenderer extends JTextArea implements
@@ -63,7 +64,7 @@ public class LineWrapCellRenderer extends JTextArea implements
 		try {
 			cellValue = (InfoTableCell)value;
     	} catch (ClassCastException cce) {
-    		throw new RuntimeException("Invalid table entry type: " + value.getClass());    		
+    		throw new RuntimeException(RBLanguages.get("invalid_table_entry_type") + ": " + value.getClass());
     	}
 
 		// Change style of cell if it's a section header

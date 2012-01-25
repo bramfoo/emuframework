@@ -34,6 +34,7 @@ import eu.keep.downloader.Downloader;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
@@ -62,7 +63,7 @@ public class WhitelistFrame extends JFrame {
     private Object[][] data;
 
     public WhitelistFrame(GUI p, String fn) {
-        super("emulator whitelist");
+        super(RBLanguages.get("emulator_whitelist"));
 
         parent = p;
         fileName = fn;

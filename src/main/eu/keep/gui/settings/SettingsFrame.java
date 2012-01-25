@@ -60,7 +60,7 @@ public class SettingsFrame extends JFrame {
     private final Map<String, EFPropertyEditor> valueMap;
     
     public SettingsFrame(GUI p, String fn, List<EFProperty> editableProperties) {
-        super("settings");
+        super(RBLanguages.get("settings"));
 
         parent = p;
         fileName = fn;
@@ -153,8 +153,11 @@ public class SettingsFrame extends JFrame {
 
         mainPanel.add(instructions, BorderLayout.NORTH);
 
-        JButton save = new JButton("save");
-        JButton cancel = new JButton("cancel");
+        JButton save = new JButton();
+        RBLanguages.set(save, "save");
+
+        JButton cancel = new JButton();
+        RBLanguages.set(cancel, "cancel");
 
         save.addActionListener(new ActionListener() {
             @Override
@@ -167,7 +170,7 @@ public class SettingsFrame extends JFrame {
                     properties.store(new FileOutputStream(fileName), null);
                     
                     // Restart the Kernel
-                    parent.lock("Saving the new settings and restarting the Emulation Framework. Please wait...");
+                    parent.lock(RBLanguages.get("restarting_ef") + " " + RBLanguages.get("log_please_wait") + "...");
                     (new Thread(new Runnable() {
                         @Override
                         public void run() {

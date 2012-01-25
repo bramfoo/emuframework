@@ -97,6 +97,4 @@ public class MainPanel extends JPanel {
     void loadFormats(List<Format> formats) {
         configPanel.loadFormats(formats);
     }
-    
-    
 }

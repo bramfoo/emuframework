@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.ea;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.ea.model.*;
 import eu.keep.gui.wizard.ea.model.ImageFormat;
 import net.miginfocom.swing.MigLayout;
@@ -72,8 +73,8 @@ public class ConfirmPanel extends JPanel {
         center.add(new JLabel(" "), "wrap"); // empty line
 
         final JButton previous = new JButton("<html>&larr;</html>");
-        final JButton cancel = new JButton("cancel");
-        final JButton confirm = new JButton("confirm");
+        final JButton cancel = new JButton(RBLanguages.get("cancel"));
+        final JButton confirm = new JButton(RBLanguages.get("confirm"));
 
         buttons.add(previous);
         buttons.add(cancel);
@@ -87,7 +88,7 @@ public class ConfirmPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.confirm);
                 parent.add(parent.step2, BorderLayout.CENTER);
-                parent.log("2/2, select hardware and image format");
+                parent.log("2/2, " + RBLanguages.get("select_hardware"));
                 parent.validate();
                 parent.repaint();
             }
@@ -96,10 +97,10 @@ public class ConfirmPanel extends JPanel {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Object[] options = {"Yes, exit wizard", "No, don't exit"};
+                Object[] options = {RBLanguages.get("yes_exit"), RBLanguages.get("no_exit")};
                 int returnValue = JOptionPane.showOptionDialog(parent,
-                        "Are you sure you want to cancel this operation?\n\nAll information will be discarded!",
-                        "Cancel?",
+                        RBLanguages.get("sure_cancel") + "\n\n" + RBLanguages.get("all_information_discarded") + "!",
+                        RBLanguages.get("cancel") + "?",
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
                 if (returnValue == JOptionPane.YES_OPTION) {
@@ -113,8 +114,8 @@ public class ConfirmPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Object[] options = {"Yes", "Cancel"};
                 int returnValue = JOptionPane.showOptionDialog(parent,
-                        "Are you sure you want to commit the changes?",
-                        "Commit changes?",
+                        RBLanguages.get("sure_commit"),
+                        RBLanguages.get("commit_changes") + "?",
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
                 if (returnValue == JOptionPane.YES_OPTION) {
@@ -123,7 +124,7 @@ public class ConfirmPanel extends JPanel {
                     confirm.setEnabled(false);
 
                     parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                    parent.log("committing changes, please wait...");
+                    parent.log(RBLanguages.get("committing_changes") + ". " + RBLanguages.get("log_please_wait") + "...");
                     parent.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     parent.setEnabled(false);
 
@@ -142,8 +143,8 @@ public class ConfirmPanel extends JPanel {
 
                                 execute(
                                         DBUtil.DB.EA, // database
-                                        "successfully inserted " + emu.name + " in the database", // success
-                                        "could not insert " + emu.name + " in the database", // error
+                                        "successfully inserted " + emu.name, // success
+                                        "could not insert " + emu.name, // error
                                         "INSERT INTO emulatorarchive.emulators " +
                                                 "(emulator_id, name, version, exec_type, exec_name, description, language_id, package_name, package_type, package_version, package, user_instructions) " +
                                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, FILE_READ(?), ?)", // sql
@@ -168,10 +169,10 @@ public class ConfirmPanel extends JPanel {
                                 );
 
                                 // Yay, all went okay!
-                                parent.log("Successfully committed changes!");
+                                parent.log(RBLanguages.get("committed_changes") + "!");
 
                             } catch (Exception ex) {
-                                parent.log("ERROR: " + ex.getMessage());
+                                parent.log(RBLanguages.get("error") + ": " + ex.getMessage());
                                 confirm.setEnabled(false);
                             }
 
@@ -181,7 +182,7 @@ public class ConfirmPanel extends JPanel {
                         }
                     })).start();
                 } else {
-                    parent.log("commit canceled");
+                    parent.log(RBLanguages.get("commit_canceled"));
                 }
             }
         });
@@ -239,14 +240,7 @@ public class ConfirmPanel extends JPanel {
         final String format = parent.step2.format.name;
 
         String text = String.format(
-                "<html>\n" +
-                        "<h3>Please confirm the following changes to the Emulator Archive:</h3>\n" +
-                        " <ul>" +
-                        "  <li>the emulator <b>%s</b> is going to be added to the Emulator Archive;</li>" +
-                        "  <li><b>%s</b> is installed in the directory <b>%s</b>;</li>" +
-                        "  <li>which emulates <b>%s</b> hardware;</li>" +
-                        "  <li>and whose disk image file format is <b>%s</b>;</li>" +
-                        "</html>",
+                RBLanguages.get("confirm_commit"),
                 emu.name,               // <li> 1
                 emu.name, emu.folder,   // <li> 2
                 hardware,               // <li> 3

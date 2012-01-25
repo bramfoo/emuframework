@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.swa;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.ImageBlob;
 import net.miginfocom.swing.MigLayout;
 
@@ -56,15 +57,13 @@ public class Step4_ZippedImage extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 4</h2>\n" +
-                "<p>Please point where the zipped image containing " +
-                "the operating system and application is located on your local disk.</p>";
+        final String explanation = RBLanguages.get("swa_zip_explanation");
 
         final Vector<Vector<String>> blobIDs = DBUtil.query(DBUtil.DB.SWA, "SELECT image_id FROM softwarearchive.imageblobs");
         final String blobID = DBUtil.createUniqueStringID(blobIDs,  0);
 
         final JTextField txtPath = SWAWizardAdd.createTxtField(d, true);
-        final JButton browse = new JButton("browse...");
+        final JButton browse = new JButton(RBLanguages.get("browse") + "...");
 
         center.add(new JLabel(" "),                                             "wrap"          ); // empty line
         center.add(new JLabel("<html>" + explanation + "</html>"),              "span 2 1 wrap" );
@@ -89,7 +88,7 @@ public class Step4_ZippedImage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step4);
                 parent.add(parent.step3, BorderLayout.CENTER);
-                parent.log("3/5, select a hardware platform and file system");
+                parent.log("3/5, " + RBLanguages.get("select_hp_and_fs"));
                 parent.validate();
                 parent.repaint();
             }
@@ -100,7 +99,7 @@ public class Step4_ZippedImage extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step4);
                 parent.add(parent.step5, BorderLayout.CENTER);
-                parent.log("5/5, select a file format");
+                parent.log("5/5, " + RBLanguages.get("select_file_format"));
                 parent.validate();
                 parent.repaint();
             }
@@ -110,7 +109,7 @@ public class Step4_ZippedImage extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final JFileChooser fileChooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("ZIP files", "zip");
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("ZIP " + RBLanguages.get("files"), "zip");
                 fileChooser.setFileFilter(filter);
 
                 int returnValue = fileChooser.showOpenDialog(parent);

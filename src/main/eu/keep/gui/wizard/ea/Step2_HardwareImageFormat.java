@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.ea;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.ea.model.Hardware;
 import eu.keep.gui.wizard.ea.model.ImageFormat;
 import net.miginfocom.swing.MigLayout;
@@ -58,9 +59,7 @@ public class Step2_HardwareImageFormat extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 2</h2>" +
-                "<p>Select a hardware platform and disk image format " +
-                "for the emulator from the two drop down boxes below.</p>";
+        final String explanation = RBLanguages.get("ea_hw_explanation");
 
         Vector<Vector<String>> hardwareData = DBUtil.query(DBUtil.DB.EA, "select hardware_id, name from emulatorarchive.hardware");
         Vector<Vector<String>> imageFormatData = DBUtil.query(DBUtil.DB.EA, "select imageformat_id, name from emulatorarchive.imageformats");
@@ -87,9 +86,9 @@ public class Step2_HardwareImageFormat extends JPanel {
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("hardware platform: ")                                    );
+        center.add(new JLabel(RBLanguages.get("hardware_platform") + ": ")              );
         center.add(hardwareCombo,                                       "wrap"          );
-        center.add(new JLabel("image format: ")                                         );
+        center.add(new JLabel(RBLanguages.get("image_format") + ": ")                                         );
         center.add(imageFormatCombo,                                    "wrap"          );
 
         final JButton previous = new JButton("<html>&larr;</html>");
@@ -107,7 +106,7 @@ public class Step2_HardwareImageFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step2);
                 parent.add(parent.step1, BorderLayout.CENTER);
-                parent.log("1/2, select an emulator");
+                parent.log("1/2, " + RBLanguages.get("select_emulator"));
                 parent.validate();
                 parent.repaint();
             }
@@ -118,7 +117,7 @@ public class Step2_HardwareImageFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step2);
                 parent.add(parent.confirm, BorderLayout.CENTER);
-                parent.log("please confirm");
+                parent.log(RBLanguages.get("please_confirm"));
                 parent.confirm.init();
                 parent.validate();
                 parent.repaint();

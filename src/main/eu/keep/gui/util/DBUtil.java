@@ -307,9 +307,6 @@ public final class DBUtil {
                     if (type != Types.BLOB) {
                         row.add(rs.getString(i));
                     }
-                    else {
-                        // TODO warn?
-                    }
                 }
                 data.add(row);
             }

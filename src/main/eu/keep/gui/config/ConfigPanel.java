@@ -30,11 +30,13 @@
  */
 package eu.keep.gui.config;
 
+import antlr.RuleBlock;
 import eu.keep.characteriser.Format;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.gui.explorer.FileExplorerPanel;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.softwarearchive.pathway.OperatingSystemType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
@@ -108,10 +110,24 @@ public class ConfigPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 final Format frmt = ((FormatWrapper)formatsDropDown.getSelectedItem()).format;
-                parent.lock("Finding dependencies for: " + frmt + ", please wait...");
+                parent.lock(RBLanguages.get("find_dependencies_for") + ": " + frmt + ", " + RBLanguages.get("log_please_wait") + "...");
                 (new Thread(new Runnable() {
                     @Override
                     public void run() {
+
+                        try {
+                            List<Pathway> paths = parent.model.getPathways(frmt);
+                            if (paths.isEmpty()) {
+                                parent.unlock(RBLanguages.get("error_no_suitable_dependency") + ": " + frmt);
+                            } else {
+                                parent.unlock(RBLanguages.get("num_dependencies") + ": " + paths.size());
+                                ConfigPanel.this.loadPathways(paths);
+                            }
+                        } catch (IOException e1) {
+                            parent.unlock(RBLanguages.get("error") + ": " + e1.getMessage());
+                            e1.printStackTrace();
+                        }
+
                     	ConfigPanel.this.findPathwaysForFormat(frmt);
                     }
                 })).start();
@@ -122,25 +138,30 @@ public class ConfigPanel extends JPanel {
         findEmus.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-        		PathwayWrapper selectedPathway = (PathwayWrapper) pathwaysDropDown.getSelectedItem();
+
+                PathwayWrapper selectedPathway = (PathwayWrapper) pathwaysDropDown.getSelectedItem();
         		final Pathway path = selectedPathway.pathway;
-        		parent.lock("Loading configuration for dependency: " + selectedPathway + ", please wait...");
+        		parent.lock(RBLanguages.get("load_dependencies") + ": " + path + ", " + RBLanguages.get("log_please_wait") + "...");
+
         		(new Thread(new Runnable() {
         			@Override
         			public void run() {
         				try {
-        					String message = "Sorry, path is not satisfiable given the available emulators, " +
-        							"software images and acceptable languages.";
+        					String message = RBLanguages.get("path_not_satisfiable");
+
         					if (parent.model.isPathwaySatisfiable(path)) {
+
         						Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
+        						ConfigPanel.this.loadEmus(emuMap);
+
         						if (!emuMap.isEmpty()) {
-        							message = "Found " + emuMap.size() + " suitable emulators";
+        							message = RBLanguages.get("num_emulators") + ": " + emuMap.size();
         							ConfigPanel.this.loadEmus(emuMap);
         						}
         					}
         					parent.unlock(message);
         				} catch (IOException e1) {
-        					parent.unlock("ERROR: " + e1.getMessage());
+        					parent.unlock(RBLanguages.get("error") + ": " + e1.getMessage());
         				}
         			}
         		})).start();
@@ -154,16 +175,22 @@ public class ConfigPanel extends JPanel {
                 final EmulatorPackageWrapper swObj = (EmulatorPackageWrapper) emulatorsDropDown.getSelectedItem();
                 final EmulatorPackage emu = swObj.emulatorPackage;
                 final PathwayWrapper selectedPathway = (PathwayWrapper) pathwaysDropDown.getSelectedItem();
-                parent.lock("Finding software packages for " + emu.getEmulator().getName() + " " +
-                        emu.getEmulator().getVersion() + " and path: " + selectedPathway + ", please wait...");
+                final Pathway path = selectedPathway.pathway;
+
+                parent.lock(RBLanguages.get("finding_software_for") + ": " + emu.getEmulator().getName() + " " +
+                        emu.getEmulator().getVersion() + ", " + RBLanguages.get("path") +
+                        ": " + path + ", " + RBLanguages.get("log_please_wait") + "...");
+
                 (new Thread(new Runnable() {
                     @Override
                     public void run() {
                         List<SoftwarePackage> swList = swObj.softwareList;
+
                         if (swList.isEmpty()) {
-                            parent.unlock("Sorry, could not find a software package for: " + selectedPathway.toString());
-                        } else {
-                            parent.unlock("Found " + swList.size() + " software packages for " + selectedPathway.toString());
+                            parent.unlock(RBLanguages.get("no_software_for") + ": " + selectedPathway.toString());
+                        }
+                        else {
+                            parent.unlock(RBLanguages.get("num_software_found") + ": " + selectedPathway.toString());
                             ConfigPanel.this.loadSoftware(swList);
                         }
                     }
@@ -180,7 +207,7 @@ public class ConfigPanel extends JPanel {
                 final EmulatorPackageWrapper swObj = (EmulatorPackageWrapper) emulatorsDropDown.getSelectedItem();
                 final EmulatorPackage emu = swObj.emulatorPackage;
 
-                parent.lock("Loading configuration for: " + swPack.getDescription() + ", please wait...");
+                parent.lock(RBLanguages.get("load_configuration") + ": " + swPack.getDescription() + ", " + RBLanguages.get("log_please_wait") + "...");
 
                 (new Thread(new Runnable() {
                     @Override
@@ -192,14 +219,14 @@ public class ConfigPanel extends JPanel {
                             Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
 
                             if (configMap.isEmpty()) {
-                                parent.unlock("Sorry, could not find a configuration for: " + swPack.getDescription());
+                                parent.unlock(RBLanguages.get("no_configuration_for") + ": " + swPack.getDescription());
                             } else {
-                                parent.unlock("Found " + configMap.size() + " configurations for: " + swPack.getDescription());
+                                parent.unlock(RBLanguages.get("num_configurations") + ": " + configMap.size());
                                 ConfigPanel.this.loadConfiguration(configMap);
                             }
 
                         } catch (IOException e1) {
-                            parent.unlock("ERROR: " + e1.getMessage());
+                            parent.unlock(RBLanguages.get("error") + ": " + e1.getMessage());
                         }
                     }
                 })).start();
@@ -238,7 +265,7 @@ public class ConfigPanel extends JPanel {
                 final EmulatorPackageWrapper swObj = (EmulatorPackageWrapper) emulatorsDropDown.getSelectedItem();
                 final EmulatorPackage emu = swObj.emulatorPackage;
 
-                parent.lock("Starting emulator with custom configuration, please wait...");
+                parent.lock(RBLanguages.get("start_custom_configuration") + ", " + RBLanguages.get("log_please_wait") + "...");
 
                 (new Thread(new Runnable() {
                     @Override
@@ -246,7 +273,7 @@ public class ConfigPanel extends JPanel {
                         try {
                             parent.model.setEmuConfig(configModel.getMap(), lastConfiguredID);
                             parent.model.runEmulationProcess(lastConfiguredID);
-                            parent.unlock("Emulation process started.");
+                            parent.unlock(RBLanguages.get("emulation_started"));
 
                             new InfoTableDialog(
                                     ConfigPanel.this.parent,
@@ -256,7 +283,7 @@ public class ConfigPanel extends JPanel {
                             );
 
                         } catch (Exception ex) {
-                            parent.unlock("ERROR: " + ex.getMessage());
+                            parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
                         }
                     }
                 })).start();
@@ -453,9 +480,9 @@ public class ConfigPanel extends JPanel {
         // the 'format' components
         JPanel formatsPanel = new JPanel();
         formatsPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel formatsLabel = new JLabel("Found formats:");
+        JLabel formatsLabel = new JLabel(RBLanguages.get("found_formats") + ":");
         formatsDropDown = new JComboBox();
-        findDependencies = new JButton("Find dependencies");
+        findDependencies = new JButton(RBLanguages.get("find_dependencies"));
         formatsLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         formatsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         findDependencies.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -467,9 +494,9 @@ public class ConfigPanel extends JPanel {
         // the 'pathway' components
         JPanel pathwaysPanel = new JPanel();
         pathwaysPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel pathwaysLabel = new JLabel("Dependencies:");
+        JLabel pathwaysLabel = new JLabel(RBLanguages.get("dependencies") + ":");
         pathwaysDropDown = new JComboBox();
-        findEmus = new JButton("Find emulators");
+        findEmus = new JButton(RBLanguages.get("find_emulators"));
         pathwaysLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         pathwaysDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         findEmus.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -481,9 +508,9 @@ public class ConfigPanel extends JPanel {
         // the 'emulator' components
         JPanel emuPanel = new JPanel();
         emuPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel emuLabel = new JLabel("Emulators:");
+        JLabel emuLabel = new JLabel(RBLanguages.get("emulators") + ":");
         emulatorsDropDown = new JComboBox();
-        findSoftware = new JButton("Find software");
+        findSoftware = new JButton(RBLanguages.get("find_software"));
         emuLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         emulatorsDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         findSoftware.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -495,9 +522,9 @@ public class ConfigPanel extends JPanel {
         // the 'software' components
         JPanel swPanel = new JPanel();
         swPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-        JLabel swLabel = new JLabel("Software:");
+        JLabel swLabel = new JLabel(RBLanguages.get("software") + ":");
         softwareDropDown = new JComboBox();
-        prepareConfig = new JButton("Prepare config");
+        prepareConfig = new JButton(RBLanguages.get("prepare_config"));
         swLabel.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 9, 25));
         softwareDropDown.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 41, 25));
         prepareConfig.setPreferredSize(new Dimension(GUI.WIDTH_UNIT * 15, 25));
@@ -519,9 +546,9 @@ public class ConfigPanel extends JPanel {
         bottomPanel.add(configTxt, BorderLayout.CENTER);
         JPanel buttonsPanel = new JPanel();
         buttonsPanel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        startConfig = new JButton("start");
+        startConfig = new JButton(RBLanguages.get("start"));
         buttonsPanel.add(startConfig);
-        saveConfig = new JButton("save");
+        saveConfig = new JButton(RBLanguages.get("save"));
         buttonsPanel.add(saveConfig);
         bottomPanel.add(buttonsPanel, BorderLayout.EAST);
 

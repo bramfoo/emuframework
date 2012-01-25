@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.mockito.cglib.core.Local;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.text.JTextComponent;
 import java.io.*;
 import java.util.*;
@@ -45,12 +46,12 @@ public final class RBLanguages {
     private static final Logger logger = Logger.getLogger(RBLanguages.class.getName());
     private static final String BUNDLE = "eu/keep/GUIBundle";
 
-    private static Map<JComponent, String> components;
+    private static Map<Object, String> components;
     private static Locale currentLocale;
     private static ResourceBundle messages;
 
     static {
-        components = new HashMap<JComponent, String>();
+        components = new HashMap<Object, String>();
 
         String fileName = "eu/keep/gui.properties";
         Properties props = new Properties();
@@ -78,21 +79,21 @@ public final class RBLanguages {
         currentLocale = new Locale(language.getLanguageId());
         messages = ResourceBundle.getBundle(BUNDLE, currentLocale);
 
-        for(Map.Entry<JComponent, String> entry : components.entrySet()) {
+        for(Map.Entry<Object, String> entry : components.entrySet()) {
             setText(entry.getKey(), entry.getValue());
         }
     }
 
-    public String get(String key) {
+    public static String get(String key) {
         return messages.getString(key);
     }
 
-    public static void set(JComponent component, String key) {
+    public static void set(Object component, String key) {
         components.put(component, key);
         setText(component, key);
     }
 
-    private static void setText(JComponent component, String key) {
+    private static void setText(Object component, String key) {
         String text = messages.getString(key);
 
         if(component instanceof JLabel) {
@@ -103,6 +104,9 @@ public final class RBLanguages {
         }
         else if(component instanceof JTextComponent) {
             ((JTextComponent)component).setText(text);
+        }
+        else if(component instanceof TitledBorder) {
+            ((TitledBorder)component).setTitle(text);
         }
         else {
             logger.error("Could not set the text for component: " + component.getClass().getName());

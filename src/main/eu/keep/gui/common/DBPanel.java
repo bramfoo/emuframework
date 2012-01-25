@@ -37,6 +37,8 @@ import java.awt.event.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import eu.keep.gui.util.RBLanguages;
 import org.apache.log4j.Logger;
 
 public class DBPanel extends JPanel {
@@ -51,8 +53,6 @@ public class DBPanel extends JPanel {
     private JComboBox tableDropDown;
     private JComboBox viewDropDown;
     private JTable dataTable;
-    private JButton removeButton;
-    private JButton insertButton;
     private boolean tableSelected;
 
     public DBPanel(GUI gui, String dbUrl, String schema, String dbUsr, String dbPwd) {
@@ -62,7 +62,7 @@ public class DBPanel extends JPanel {
             conn = DriverManager.getConnection(dbUrl, dbUsr, dbPwd);
         } catch (SQLException e) {
             conn = null;
-            logger.warn("Could not connect to the database: " + e.getMessage());
+            logger.warn(RBLanguages.get("log_error_connect_db") + ": " + e.getMessage());
         }
 
         dataModel = new DBDataTableModel(parent, conn);
@@ -74,8 +74,6 @@ public class DBPanel extends JPanel {
 
     private void clear() {
         dataModel.clear();
-        insertButton.setEnabled(false);
-        removeButton.setEnabled(false);
     }
 
     // TODO move to central DB- or util-class
@@ -113,15 +111,14 @@ public class DBPanel extends JPanel {
                     clear();
                 }
                 else {
-                    parent.lock("Loading table: " + schema + "." + selectedTable + ", please wait...");
+                    parent.lock(RBLanguages.get("log_loading_table") + ": " + schema + "." + selectedTable + ", " +
+                            RBLanguages.get("log_please_wait") + "...");
                     tableSelected = true;
                     (new Thread(new Runnable() {
                         @Override
                         public void run() {
                             DBPanel.this.dataModel.load(schema + "." + selectedTable);
-                            insertButton.setEnabled(true);
-                            removeButton.setEnabled(false);
-                            parent.unlock("Loaded table: " + schema + "." + selectedTable);
+                            parent.unlock(RBLanguages.get("log_loaded_table") + ": " + schema + "." + selectedTable);
                         }
                     })).start();
                 }
@@ -141,25 +138,17 @@ public class DBPanel extends JPanel {
                     clear();
                 }
                 else {
-                    parent.lock("Loading view: " + schema + "." + selectedView + ", please wait...");
+                    parent.lock(RBLanguages.get("log_loading_view") + ": " + schema + "." + selectedView + ", " +
+                            RBLanguages.get("log_please_wait") + "...");
                     tableSelected = false;
                     (new Thread(new Runnable() {
                         @Override
                         public void run() {
                             DBPanel.this.dataModel.load(schema + "." + selectedView);
-                            insertButton.setEnabled(false);
-                            removeButton.setEnabled(false);
-                            parent.unlock("Loaded view: " + schema + "." + selectedView);
+                            parent.unlock(RBLanguages.get("log_loaded_view") + ": " + schema + "." + selectedView);
                         }
                     })).start();
                 }
-            }
-        });
-
-        dataTable.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                removeButton.setEnabled(tableSelected);
             }
         });
 
@@ -169,41 +158,6 @@ public class DBPanel extends JPanel {
             	if (dataTable.isEnabled()) {
                     dataModel.remember(dataTable.getSelectedRow());            		
             	}
-            }
-        });
-
-        insertButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(dataModel == null) {
-                    return;
-                }
-                new InsertDialog(parent, dataModel);
-            }
-        });
-
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int value = JOptionPane.showConfirmDialog(parent,
-                        "Are you sure you want to remove the selected record?\n\n" +
-                        "This operation cannot be undone!\n", "",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE);
-
-                if(value == JOptionPane.YES_OPTION) {
-                    parent.lock("Trying to remove a record...");
-                    try {
-                        DBPanel.this.dataModel.removeSelected();
-                        parent.unlock("Successfully removed the record.");
-                        removeButton.setEnabled(false);
-                    } catch (Exception ex) {
-                        parent.unlock("ERROR: " + ex.getMessage());
-                    }
-                }
-                else {
-                    parent.unlock("Remove record cancelled.");
-                }
             }
         });
     }
@@ -226,15 +180,9 @@ public class DBPanel extends JPanel {
         tablePanel.add(viewDropDown);
 
         dataTable = new JTable(dataModel);
-        JPanel dataButtonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        removeButton = new JButton("remove");
-        insertButton = new JButton("insert");
-        dataButtonPanel.add(insertButton);
-        dataButtonPanel.add(removeButton);
 
         super.add(tablePanel, BorderLayout.NORTH);
         super.add(new JScrollPane(dataTable), BorderLayout.CENTER);
-        super.add(dataButtonPanel, BorderLayout.SOUTH);
 
         clear();
     }

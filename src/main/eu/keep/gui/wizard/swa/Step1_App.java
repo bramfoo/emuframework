@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.swa;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.App;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
@@ -55,9 +56,7 @@ public class Step1_App extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 1</h2>" +
-                "<p>Select an existing application which you want to " +
-                "associate with a certain file format, or create a new application.</p>";
+        final String explanation = RBLanguages.get("swa_app_explanation");
 
         final Vector<Vector<String>> appData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions from softwarearchive.apps");
@@ -89,30 +88,30 @@ public class Step1_App extends JPanel {
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("select an existing application: ")                       );
+        center.add(new JLabel(RBLanguages.get("select_existing_application") + ": ")    );
         center.add(appsCombo,                                           "wrap"          );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("or create a new application"),           "span 2 1 wrap" );
+        center.add(new JLabel(RBLanguages.get("new_application")),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("name: ")                                                 );
+        center.add(new JLabel(RBLanguages.get("name") + ": ")                           );
         center.add(txtName, "wrap"                                                      );
-        center.add(new JLabel("version: ")                                              );
+        center.add(new JLabel(RBLanguages.get("version") + ": ")                        );
         center.add(txtVersion,                                          "wrap"          );
-        center.add(new JLabel("description: ")                                          );
+        center.add(new JLabel(RBLanguages.get("description") + ": ")                    );
         center.add(txtDescription,                                      "wrap"          );
-        center.add(new JLabel("creator: ")                                              );
+        center.add(new JLabel(RBLanguages.get("creator") + ": ")                        );
         center.add(txtCreator,                                          "wrap"          );
-        center.add(new JLabel("release date: ")                                         );
+        center.add(new JLabel(RBLanguages.get("release_date") + ": ")                   );
         center.add(txtReleaseDate,                                      "wrap"          );
-        center.add(new JLabel("license: ")                                              );
+        center.add(new JLabel(RBLanguages.get("license") + ": ")                        );
         center.add(txtLicense,                                          "wrap"          );
-        center.add(new JLabel("language: ")                                             );
+        center.add(new JLabel(RBLanguages.get("language") + ": ")                       );
         center.add(langIdCombo,                                         "wrap"          );
-        center.add(new JLabel("reference: ")                                            );
+        center.add(new JLabel(RBLanguages.get("reference") + ": ")                      );
         center.add(txtReference,                                        "wrap"          );
-        center.add(new JLabel("user instructions: ")                                    );
+        center.add(new JLabel(RBLanguages.get("user_instructions") + ": ")              );
         center.add(txtUserInstructions,                                 "wrap"          );
 
         final JButton previous = new JButton("<html>&larr;</html>");
@@ -130,7 +129,7 @@ public class Step1_App extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step1);
                 parent.add(parent.step0, BorderLayout.CENTER);
-                parent.log("Introduction");
+                parent.log(RBLanguages.get("introduction"));
                 parent.validate();
                 parent.repaint();
             }
@@ -149,7 +148,7 @@ public class Step1_App extends JPanel {
                 }
                 parent.remove(parent.step1);
                 parent.add(parent.step2, BorderLayout.CENTER);
-                parent.log("2/5, select an operating system");
+                parent.log("2/5, " + RBLanguages.get("select_os"));
                 parent.validate();
                 parent.repaint();
             }

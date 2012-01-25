@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.swa;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.*;
 import net.miginfocom.swing.MigLayout;
 import org.apache.log4j.Logger;
@@ -63,8 +64,8 @@ public class ConfirmPanel extends JPanel {
         center.add(new JLabel(" "), "wrap"); // empty line
 
         final JButton previous = new JButton("<html>&larr;</html>");
-        final JButton cancel = new JButton("cancel");
-        final JButton confirm = new JButton("confirm");
+        final JButton cancel = new JButton(RBLanguages.get("cancel"));
+        final JButton confirm = new JButton(RBLanguages.get("confirm"));
 
         buttons.add(previous);
         buttons.add(cancel);
@@ -78,7 +79,7 @@ public class ConfirmPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.confirm);
                 parent.add(parent.step5, BorderLayout.CENTER);
-                parent.log("5/5, select a file format");
+                parent.log("5/5, " + RBLanguages.get("select_file_format"));
                 parent.validate();
                 parent.repaint();
             }
@@ -87,10 +88,10 @@ public class ConfirmPanel extends JPanel {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Object[] options = {"Yes, exit wizard", "No, don't exit"};
+                Object[] options = {RBLanguages.get("yes_exit"), RBLanguages.get("no_exit")};
                 int returnValue = JOptionPane.showOptionDialog(parent,
-                        "Are you sure you want to cancel this operation?\n\nAll information will be discarded!",
-                        "Cancel?",
+                        RBLanguages.get("sure_cancel") + "\n\n" + RBLanguages.get("all_information_discarded") + "!",
+                        RBLanguages.get("cancel") + "?",
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
                 if (returnValue == JOptionPane.YES_OPTION) {
@@ -102,10 +103,10 @@ public class ConfirmPanel extends JPanel {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Object[] options = {"Yes", "Cancel"};
+                Object[] options = {RBLanguages.get("yes"), RBLanguages.get("cancel")};
                 int returnValue = JOptionPane.showOptionDialog(parent,
-                        "Are you sure you want to commit the changes?",
-                        "Commit changes?",
+                        RBLanguages.get("sure_commit"),
+                        RBLanguages.get("commit_changes") + "?",
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
                 if (returnValue == JOptionPane.YES_OPTION) {
@@ -114,7 +115,7 @@ public class ConfirmPanel extends JPanel {
                     confirm.setEnabled(false);
 
                     parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                    parent.log("committing changes, please wait...");
+                    parent.log(RBLanguages.get("committing_changes") + ", " + RBLanguages.get("log_please_wait") + "...");
                     parent.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     parent.setEnabled(false);
 
@@ -239,11 +240,11 @@ public class ConfirmPanel extends JPanel {
                                 );
 
                                 // Yay, all went okay!
-                                parent.log("Successfully committed changes!");
+                                parent.log(RBLanguages.get("committed_changes") + "!");
 
                             }
                             catch (Exception ex) {
-                                parent.log("ERROR: " + ex.getMessage());
+                                parent.log(RBLanguages.get("error") + ": " + ex.getMessage());
                             }
 
                             parent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -253,7 +254,7 @@ public class ConfirmPanel extends JPanel {
                     })).start();
                 }
                 else {
-                    parent.log("commit canceled");
+                    parent.log(RBLanguages.get("commit_canceled"));
                 }
             }
         });
@@ -275,18 +276,9 @@ public class ConfirmPanel extends JPanel {
         String fileFormat = wizard.step5.fileFormat.name;
 
         String text = String.format(
-                "<html>\n" +
-                        "<h2>Please confirm the following changes to the Software Archive:</h2>\n" +
-                        "<ul>\n" +
-                        "  <li>%s: <b>%s</b>;</li>\n" +
-                        "  <li><b>%s</b> will run on the %s operating system: <b>%s</b>;</li>\n" +
-                        "  <li>the disk images associated with <b>%s</b> will have <b>%s</b> as its platform and <b>%s</b> as its file system;</li>\n" +
-                        "  <li>the zipped file containing <b>%s</b> and <b>%s</b> is located at: <b>%s</b>;</li>\n" +
-                        "  <li>the file format <b>%s</b> will be associated with <b>%s</b>.</li>\n" +
-                        "</ul>\n" +
-                        "</html>",
-                (newApp ? "you added the new application" : "you selected the existing application"), appName,  // <li> 1
-                appName, (newOS ? "newly added" : "existing"), osName,                                          // <li> 2
+                RBLanguages.get("swa_confirm_commit"),
+                (newApp ? RBLanguages.get("added_new_application") : RBLanguages.get("selected_existing_application")), appName,  // <li> 1
+                appName, (newOS ? RBLanguages.get("newly_added") : RBLanguages.get("existing")), osName,                          // <li> 2
                 osName, platform, imageFormat,                                                                  // <li> 3
                 osName, appName, zipPath,                                                                       // <li> 4
                 fileFormat, appName                                                                             // <li> 5

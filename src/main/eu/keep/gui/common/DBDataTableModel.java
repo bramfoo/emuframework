@@ -31,6 +31,7 @@
 package eu.keep.gui.common;
 
 import eu.keep.gui.*;
+import eu.keep.gui.util.RBLanguages;
 import org.apache.log4j.Logger;
 
 import javax.swing.event.TableModelEvent;
@@ -330,15 +331,15 @@ public class DBDataTableModel extends DefaultTableModel implements TableModelLis
             return;
         }
 
-        parent.lock("Saving row: " + (row + 1) + ", please wait...");
+        parent.lock(RBLanguages.get("log_saving_row") + " " + (row + 1) + ", " + RBLanguages.get("log_please_wait") + "...");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     saveRecord(new Vector<String>(selectedRowBackup), col, newValue, columnNames, columnTypes);
-                    parent.unlock("Saved row: " + (row+1));
+                    parent.unlock(RBLanguages.get("log_saved_row") + ": " + (row+1));
                 } catch (Exception ex) {
-                    parent.unlock("ERROR: " + ex.getMessage());
+                    parent.unlock(RBLanguages.get("error") + ex.getMessage());
                     DBDataTableModel.this.setValueAt(oldValue, row, col);
                 }
             }

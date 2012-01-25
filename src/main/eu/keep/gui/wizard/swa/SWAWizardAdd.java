@@ -30,6 +30,8 @@
  */
 package eu.keep.gui.wizard.swa;
 
+import eu.keep.gui.util.RBLanguages;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -41,7 +43,7 @@ public class SWAWizardAdd extends JFrame {
 
     public static final Color LIGHT_RED = new Color(255, 212, 222);
 
-    protected static final String MANDATORY_MESSAGE = "<mandatory field>";
+    protected static final String MANDATORY_MESSAGE = "<" + RBLanguages.get("mandatory_field") + ">";
 
     protected Step0_Introduction step0;
     protected Step1_App step1;

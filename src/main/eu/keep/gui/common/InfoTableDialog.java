@@ -33,6 +33,7 @@ package eu.keep.gui.common;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.InfoTableCell;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.softwarearchive.pathway.ApplicationType;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.Language;
@@ -60,7 +61,7 @@ public class InfoTableDialog extends JFrame {
 
         if (dataList.length == 0) {
             colNames = new String[]{""};
-            tableData = new InfoTableCell[][]{{new InfoTableCell("No additional information about the file(s) available.", false)}};
+            tableData = new InfoTableCell[][]{{new InfoTableCell(RBLanguages.get("log_no_more_info"), false)}};
         } else {
             for (int row = 0; row<dataList.length; row++) {
             	String[] dataRow = dataList[row];
@@ -114,7 +115,7 @@ public class InfoTableDialog extends JFrame {
         }
         if (tableData.length == 0) {
             colNames = new String[]{""};
-            tableData = new InfoTableCell[][]{{new InfoTableCell("No additional information about the file(s) available.", false)}};
+            tableData = new InfoTableCell[][]{{new InfoTableCell(RBLanguages.get("log_no_more_info"), false)}};
         }
 
         // link to parent GUI
@@ -154,32 +155,32 @@ public class InfoTableDialog extends JFrame {
 
 		// Add Section Title: "Emulator"
         row = new ArrayList<InfoTableCell>();
-        row.add(new InfoTableCell("Emulator", true));
+        row.add(new InfoTableCell(RBLanguages.get("emulator"), true));
         row.add(new InfoTableCell("", true));
         dataList.add(row);
 
         row = new ArrayList<InfoTableCell>();
-        row.add(new InfoTableCell("Name", false));
+        row.add(new InfoTableCell(RBLanguages.get("name"), false));
         row.add(new InfoTableCell(e.getName(), false));
         dataList.add(row);
 
         row = new ArrayList<InfoTableCell>();
-        row.add(new InfoTableCell("Version", false));
+        row.add(new InfoTableCell(RBLanguages.get("version"), false));
         row.add(new InfoTableCell(e.getVersion(), false));
         dataList.add(row);
 
         row = new ArrayList<InfoTableCell>();
-        row.add(new InfoTableCell("Description", false));
+        row.add(new InfoTableCell(RBLanguages.get("description"), false));
         row.add(new InfoTableCell(e.getDescription(), false));
         dataList.add(row);
 
         row = new ArrayList<InfoTableCell>();
-        row.add(new InfoTableCell("Exe Type", false));
+        row.add(new InfoTableCell(RBLanguages.get("exe_type"), false));
         row.add(new InfoTableCell(e.getExecutable().getType(), false));
         dataList.add(row);
 
         row = new ArrayList<InfoTableCell>();
-        row.add(new InfoTableCell("User instructions", false));
+        row.add(new InfoTableCell(RBLanguages.get("user_instructions"), false));
         row.add(new InfoTableCell(e.getUserInstructions(), false));
         dataList.add(row);
 	}
@@ -206,42 +207,42 @@ public class InfoTableDialog extends JFrame {
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("Version", false));
+            row.add(new InfoTableCell(RBLanguages.get("version"), false));
             row.add(new InfoTableCell(app.getVersion(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("Description", false));
+            row.add(new InfoTableCell(RBLanguages.get("description"), false));
             row.add(new InfoTableCell(app.getDescription(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("Creator", false));
+            row.add(new InfoTableCell(RBLanguages.get("creator"), false));
             row.add(new InfoTableCell(app.getCreator(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("Language", false));
+            row.add(new InfoTableCell(RBLanguages.get("language"), false));
             row.add(new InfoTableCell((Language.valueOf(app.getLanguageId())).getLanguageName(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("License", false));
+            row.add(new InfoTableCell(RBLanguages.get("license"), false));
             row.add(new InfoTableCell(app.getLicense(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("Release Date", false));
+            row.add(new InfoTableCell(RBLanguages.get("release_date"), false));
             row.add(new InfoTableCell(app.getReleaseDate(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("Reference(s)", false));
+            row.add(new InfoTableCell(RBLanguages.get("reference_s"), false));
             row.add(new InfoTableCell(app.getReference(), false));
             dataList.add(row);
 
             row = new ArrayList<InfoTableCell>();
-            row.add(new InfoTableCell("User instructions", false));
+            row.add(new InfoTableCell(RBLanguages.get("user_instructions"), false));
             row.add(new InfoTableCell(app.getUserInstructions(), false));
             dataList.add(row);
         }
@@ -330,9 +331,9 @@ public class InfoTableDialog extends JFrame {
                                 Desktop.getDesktop().browse(new URI(u));
                             } catch(Exception ex) {
                                 JOptionPane.showMessageDialog(InfoTableDialog.this,
-                                        "The underlying operating system could not open " + u +
-                                        "\n\nMore info: " + ex.getMessage(),
-                                        "Error",
+                                        RBLanguages.get("errorOpenURI") + " " + u +
+                                        "\n\n" + ex.getMessage(),
+                                        RBLanguages.get("error"),
                                         JOptionPane.ERROR_MESSAGE);
                             }
                         }
@@ -340,7 +341,7 @@ public class InfoTableDialog extends JFrame {
                     popUp.add(url);
                 }
 
-                JMenuItem cancel = new JMenuItem("cancel");
+                JMenuItem cancel = new JMenuItem(RBLanguages.get("cancel"));
                 cancel.setAlignmentX(JComponent.LEFT_ALIGNMENT);
                 cancel.addActionListener(new ActionListener() {
                     @Override

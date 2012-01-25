@@ -129,14 +129,14 @@ public class GUI extends JFrame {
      * Tries to stop the application gracefully and cleaning up the mess it left behind :)
      */
     private void gracefulExit() {
-        logger.info("Exiting the EF GUI");
+        logger.info(RBLanguages.get("log_exit_gui"));
         try {
             model.cleanUp();
             model.stop();
             GUI.this.dispose();
             System.exit(0);
         } catch (Exception e) {
-            logger.warn("Something went wrong while exiting the model:");
+            logger.warn(RBLanguages.get("log_error_exit_model"));
             e.printStackTrace();
             System.exit(1);
         }
@@ -298,7 +298,8 @@ public class GUI extends JFrame {
         settingsMenu.add(addresses);
 
         // Emulator whitelist option
-        JMenuItem whitelist = new JMenuItem("Emulator whitelist");
+        JMenuItem whitelist = new JMenuItem();
+        RBLanguages.set(whitelist, "whitelist");
         whitelist.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -316,12 +317,14 @@ public class GUI extends JFrame {
      * @return the Tools menu
      */
     private JMenu initToolsMenu(boolean eaAdmin, boolean swaAdmin) {
-        JMenu toolsMenu = new JMenu("Tools");
+        JMenu toolsMenu = new JMenu();
+        RBLanguages.set(toolsMenu, "toolsMenu");
         toolsMenu.setMnemonic(KeyEvent.VK_T);
 
         // Option to start Add Emulator wizard
         if (eaAdmin) {
-            JMenuItem addEmulator = new JMenuItem("Add an Emulator");
+            JMenuItem addEmulator = new JMenuItem();
+            RBLanguages.set(addEmulator, "addEmulator");
             addEmulator.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -335,7 +338,8 @@ public class GUI extends JFrame {
             });
             toolsMenu.add(addEmulator);
 
-            JMenuItem removeEmulator = new JMenuItem("Remove an Emulator");
+            JMenuItem removeEmulator = new JMenuItem();
+            RBLanguages.set(removeEmulator, "removeEmulator");
             removeEmulator.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -352,7 +356,8 @@ public class GUI extends JFrame {
 
         // Option to start Add Software wizard
         if (swaAdmin) {
-            JMenuItem addSoftware = new JMenuItem("Add Software");
+            JMenuItem addSoftware = new JMenuItem();
+            RBLanguages.set(addSoftware, "addSoftware");
             addSoftware.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -366,7 +371,8 @@ public class GUI extends JFrame {
             });
             toolsMenu.add(addSoftware);
 
-            JMenuItem removeSoftware = new JMenuItem("Remove Software");
+            JMenuItem removeSoftware = new JMenuItem();
+            RBLanguages.set(removeSoftware, "removeSoftware");
             removeSoftware.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -390,10 +396,12 @@ public class GUI extends JFrame {
      * @return the help menu
      */
     private JMenu initHelpMenu() {
-        JMenu helpMenu = new JMenu("Help");
+        JMenu helpMenu = new JMenu();
+        RBLanguages.set(helpMenu, "help");
         helpMenu.setMnemonic(KeyEvent.VK_H);
 
-        JMenuItem onlineDocItem = new JMenuItem("Online documentation");
+        JMenuItem onlineDocItem = new JMenuItem();
+        RBLanguages.set(onlineDocItem, "onlineDocItem");
         onlineDocItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -402,15 +410,16 @@ public class GUI extends JFrame {
                     Desktop.getDesktop().browse(new URI(uri));
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(GUI.this,
-                            "The underlying operating system could not open " + uri +
-                                    "\n\nMore info: " + ex.getMessage(),
-                            "Error",
+                            RBLanguages.get("errorOpenURI") + uri +
+                                    "\n\n" + ex.getMessage(),
+                            RBLanguages.get("error"),
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        JMenuItem onlineForum = new JMenuItem("Online forum");
+        JMenuItem onlineForum = new JMenuItem();
+        RBLanguages.set(onlineForum, "onlineForum");
         onlineForum.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -419,15 +428,16 @@ public class GUI extends JFrame {
                     Desktop.getDesktop().browse(new URI(uri));
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(GUI.this,
-                            "The underlying operating system could not open " + uri +
-                                    "\n\nMore info: " + ex.getMessage(),
+                            RBLanguages.get("log_error_open_uri") + " " + uri +
+                                    "\n\n" + RBLanguages.get("more_info") + " " + ex.getMessage(),
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        JMenuItem aboutItem = new JMenuItem("About");
+        JMenuItem aboutItem = new JMenuItem();
+        RBLanguages.set(aboutItem, "about");
         aboutItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -523,12 +533,12 @@ public class GUI extends JFrame {
     public void reloadModel() {
         try {
             model = new Kernel(PROP_FILE_NAME_KERNEL);
-            unlock("Successfully restarted the Emulation Framework with the new settings.");
+            unlock(RBLanguages.get("log_restart_emu"));
         } catch (IOException e) {
-            logger.fatal("Could not restart Kernel: ");
+            logger.fatal(RBLanguages.get("log_error_restart_kernel") + " ");
             e.printStackTrace();
             model = null;
-            logLabel.setText("Failed to reload the Kernel with the new Settings. Please change the settings.");
+            logLabel.setText(RBLanguages.get("log_error_reload_kernel"));
             super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         }
     }
@@ -568,7 +578,7 @@ public class GUI extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
             model = null;
-            logger.fatal("Could not recover from failed CoreEngineModel.init()");
+            logger.fatal(RBLanguages.get("log_error_init"));
             System.exit(1);
         }
 
@@ -585,32 +595,32 @@ public class GUI extends JFrame {
                     boolean eaAdmin = false;
                     File ea = new File("ea");
                     if (ea.exists() && ea.isDirectory() && ea.list().length > 0) {
-                        logger.info("Found local instance of Emulator Archive in directory " + ea.getAbsolutePath() +
-                                ". Starting Emulator Archive admin mode.");
+                        logger.info(RBLanguages.get("log_found_local_ea") + " " + ea.getAbsolutePath() + ". " +
+                                RBLanguages.get("log_start_ea_admin"));
                         eaAdmin = true;
                     } else {
-                        logger.info("No local instance of Emulator Archive found.");
+                        logger.info(RBLanguages.get("log_no_local_ea"));
                     }
 
                     // Check if the SWA admin mode should be started
                     boolean swaAdmin = false;
                     File swa = new File("swa");
                     if (swa.exists() && swa.isDirectory() && swa.list().length > 0) {
-                        logger.info("Found local instance of Software Archive in directory " + swa.getAbsolutePath() +
-                                ". Starting Software Archive admin mode.");
+                        logger.info(RBLanguages.get("log_found_local_swa") + " " + swa.getAbsolutePath() + ". " +
+                                RBLanguages.get("log_start_swa_admin"));
                         swaAdmin = true;
                     } else {
-                        logger.info("No local instance of Software Archive found.");
+                        logger.info(RBLanguages.get("log_no_local_swa"));
                     }
 
                     if (!eaAdmin && !swaAdmin) {
-                        logger.info("Starting Emulation Framework in client mode.");
+                        logger.info(RBLanguages.get("log_start_emu_client"));
                     }
 
-                    logger.info("Initializing the GUI...");
+                    logger.info(RBLanguages.get("log_init_gui"));
                     GUI gui = new GUI(m, eaAdmin, swaAdmin);
                     gui.setVisible(true);
-                    logger.debug("Started the GUI successfully.");
+                    logger.debug(RBLanguages.get("log_started_gui"));
                 } catch (IOException e) {
                     logger.fatal(e.getMessage());
                 }

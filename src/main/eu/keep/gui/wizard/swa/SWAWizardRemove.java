@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.swa;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.Img;
 import org.apache.log4j.Logger;
 
@@ -74,7 +75,7 @@ public class SWAWizardRemove extends JFrame {
 
         final JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         final JComboBox swCombo = new JComboBox(swVec);
-        final JButton delete = new JButton("delete");
+        final JButton delete = new JButton(RBLanguages.get("delete"));
 
         mainPanel.add(swCombo, BorderLayout.CENTER);
         mainPanel.add(delete, BorderLayout.EAST);
@@ -85,10 +86,10 @@ public class SWAWizardRemove extends JFrame {
 
                 final Img img = (Img) swCombo.getSelectedItem();
 
-                Object[] options = {"Yes", "Cancel"};
+                Object[] options = {RBLanguages.get("yes"), RBLanguages.get("cancel")};
                 int returnValue = JOptionPane.showOptionDialog(SWAWizardRemove.this,
-                        "Are you sure you want to remove " + img + "?\n This operation cannot be undone!",
-                        "Delete software",
+                        RBLanguages.get("sure_remove") + ": " + img + "?\n" + RBLanguages.get("warn_no_undo") + "!",
+                        RBLanguages.get("delete") + " " + RBLanguages.get("software"),
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 
                 if (returnValue == JOptionPane.YES_OPTION) {
@@ -102,13 +103,13 @@ public class SWAWizardRemove extends JFrame {
                                 DBUtil.update(DBUtil.DB.SWA, "DELETE FROM softwarearchive.images WHERE image_id=?", img.image_id);
 
                                 JOptionPane.showMessageDialog(SWAWizardRemove.this,
-                                        "Successfully deleted: " + swCombo.getSelectedItem(),
-                                        "Error",
+                                        RBLanguages.get("successfully_deleted") + ": " + swCombo.getSelectedItem(),
+                                        "",
                                         JOptionPane.INFORMATION_MESSAGE);
                             } catch (Exception ex) {
                                 JOptionPane.showMessageDialog(SWAWizardRemove.this,
-                                        "Could not remove " + swCombo.getSelectedItem() + ": " + ex.getMessage(),
-                                        "Error",
+                                        RBLanguages.get("could_not_remove") + ": " + swCombo.getSelectedItem() + ": " + ex.getMessage(),
+                                        "",
                                         JOptionPane.ERROR_MESSAGE);
                             }
                         }

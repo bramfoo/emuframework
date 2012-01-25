@@ -31,6 +31,7 @@
 package eu.keep.gui.wizard.swa;
 
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.OpSys;
 import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
@@ -55,8 +56,7 @@ public class Step2_OpSys extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 2</h2>\n" +
-                "<p>On what operating system does the selected application run?</p>";
+        final String explanation = RBLanguages.get("swa_app_os_explanation");
 
         final Vector<Vector<String>> opSysData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT opsys_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions from softwarearchive.opsys");
@@ -89,30 +89,30 @@ public class Step2_OpSys extends JPanel {
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("select an existing operating system: ")                  );
+        center.add(new JLabel(RBLanguages.get("existing_os") + ": ")                    );
         center.add(opSysCombo,                                          "wrap"          );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("or create a new operating system"),      "span 2 1 wrap" );
+        center.add(new JLabel(RBLanguages.get("new_os")),               "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("name: ")                                                 );
+        center.add(new JLabel(RBLanguages.get("name") + ": ")                           );
         center.add(txtName, "wrap"                                                      );
-        center.add(new JLabel("version: ")                                              );
+        center.add(new JLabel(RBLanguages.get("version") + ": ")                        );
         center.add(txtVersion,                                          "wrap"          );
-        center.add(new JLabel("description: ")                                          );
+        center.add(new JLabel(RBLanguages.get("description") + ": ")                    );
         center.add(txtDescription,                                      "wrap"          );
-        center.add(new JLabel("creator: ")                                              );
+        center.add(new JLabel(RBLanguages.get("creator") + ": ")                        );
         center.add(txtCreator,                                          "wrap"          );
-        center.add(new JLabel("release date: ")                                         );
+        center.add(new JLabel(RBLanguages.get("release_date") + ": ")                   );
         center.add(txtReleaseDate,                                      "wrap"          );
-        center.add(new JLabel("license: ")                                              );
+        center.add(new JLabel(RBLanguages.get("license") + ": ")                        );
         center.add(txtLicense,                                          "wrap"          );
-        center.add(new JLabel("language id: ")                                          );
+        center.add(new JLabel(RBLanguages.get("language") + ": ")                       );
         center.add(langIdCombo,                                         "wrap"          );
-        center.add(new JLabel("reference: ")                                            );
+        center.add(new JLabel(RBLanguages.get("reference") + ": ")                      );
         center.add(txtReference,                                        "wrap"          );
-        center.add(new JLabel("user instructions: ")                                    );
+        center.add(new JLabel(RBLanguages.get("user_instructions") + ": ")              );
         center.add(txtUserInstructions,                                 "wrap"          );
 
         final JButton previous = new JButton("<html>&larr;</html>");
@@ -131,7 +131,7 @@ public class Step2_OpSys extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step2);
                 parent.add(parent.step1, BorderLayout.CENTER);
-                parent.log("1/5, select an application");
+                parent.log("1/5, " + RBLanguages.get("select_app"));
                 parent.validate();
                 parent.repaint();
             }
@@ -150,7 +150,7 @@ public class Step2_OpSys extends JPanel {
                 }
                 parent.remove(parent.step2);
                 parent.add(parent.step3, BorderLayout.CENTER);
-                parent.log("3/5, select a hardware platform and file system");
+                parent.log("3/5, " + RBLanguages.get("select_hp_and_fs"));
                 parent.validate();
                 parent.repaint();
             }

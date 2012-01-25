@@ -34,6 +34,7 @@ import eu.keep.characteriser.Format;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -41,7 +42,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
@@ -80,6 +80,9 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         super.setLayout(new BorderLayout(5, 5));
 
+
+        // button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
         explorerPanel = initExplorerPanel();
         noObjectPanel = initNoObjectPanel();
         
@@ -127,8 +130,11 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
 		// button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 5));
-        autoStart = new JButton("auto start");
-        checkEnvironment = new JButton("check environment");
+        autoStart = new JButton();
+        RBLanguages.set(autoStart, "autoStart");
+
+        checkEnvironment = new JButton();
+        RBLanguages.set(checkEnvironment, "checkEnvironment");
 
         autoStart.setEnabled(false);
         checkEnvironment.setEnabled(false);
@@ -142,8 +148,10 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         // Add everything together
         JPanel explorerPanel = new JPanel(new BorderLayout(5, 5));    
-        explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-200));        
-        explorerPanel.setBorder(new FileExplorerBorder("Start Environment with Digital Object"));        
+        explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-200));
+        FileExplorerBorder border = new FileExplorerBorder("");
+        RBLanguages.set(border, "start_environment");
+        explorerPanel.setBorder(border);
 
         explorerPanel.add(rootsCombo, BorderLayout.NORTH);
         explorerPanel.add(new JScrollPane(tree), BorderLayout.CENTER);
@@ -225,7 +233,9 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 					if (clicked.isFile()) {
 						clickedFile = clicked;
 						final JPopupMenu popUp = new JPopupMenu();                        
-						info = new JMenuItem("properties");
+						info = new JMenuItem();
+                        RBLanguages.set(info, "properties");
+
 						info.addActionListener(FileExplorerPanel.this);
 						popUp.add(info);
 						popUp.show((Component)e.getSource(), e.getX(), e.getY());
@@ -245,20 +255,20 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         } 
         else if (e.getSource() == checkEnvironment) {
             parent.getConfigPanel().clear();
-            parent.lock("Characterizing file: " + selectedFile + ", please wait...");
+            parent.lock(RBLanguages.get("characterizing_file") + ": " + selectedFile + ", " + RBLanguages.get("log_please_wait") + "...");
             (new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         java.util.List<Format> formats = parent.model.characterise(selectedFile);
                         if (formats.isEmpty()) {
-                            parent.unlock("Could not determine the format of file: " + selectedFile);
+                            parent.unlock(RBLanguages.get("could_not_determine_format") + ": " + selectedFile);
                         } else {
-                            parent.unlock("Done, found " + formats.size() + " possible format(s)");
+                            parent.unlock(RBLanguages.get("number_of_formats") + ": " + formats.size());
                             parent.loadFormats(formats);
                         }
                     } catch (IOException ex) {
-                        parent.unlock("ERROR :: " + ex.getMessage());
+                        parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
                     }
                 }
             })).start();
@@ -281,7 +291,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         
         }
         else if (e.getSource() == info) {
-            parent.lock("Getting meta data from file: " + clickedFile + ", please wait...");
+            parent.lock(RBLanguages.get("getting_meta_data") + ": " + clickedFile + ", " + RBLanguages.get("log_please_wait") + "...");
             (new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -306,9 +316,9 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                         }
 
                         new InfoTableDialog(parent, clickedFile, data);
-                        parent.unlock("Done.");
+                        parent.unlock(RBLanguages.get("done"));
                     } catch (IOException ex) {
-                        parent.unlock("ERROR : " + ex.getMessage());
+                        parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
                     }
                 }
             })).start();
@@ -322,7 +332,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		parent.getConfigPanel().clear();
 		checkEnvironment.setEnabled(false);
 
-		parent.lock("Preparing to start emulation process for: " + selectedFile + ", please wait...");
+		parent.lock(RBLanguages.get("preparing_start_emulation") + ": " + selectedFile + ", " + RBLanguages.get("log_please_wait") + "...");
 		(new Thread(new Runnable() {
 		    @Override
 		    public void run() {
@@ -330,7 +340,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		            java.util.List<Format> formats = parent.model.characterise(selectedFile);
 
 		            if (formats.isEmpty()) {
-		                parent.unlock("Could not determine the format of file: " + selectedFile);
+		                parent.unlock(RBLanguages.get("could_not_determine_format") + ": " + selectedFile);
 		            }
 		            else {
 		                parent.loadFormats(formats);
@@ -342,7 +352,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                parent.getConfigPanel().enableOptions(false);
 
 		                if (paths.isEmpty()) {
-		                    parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
+		                    parent.unlock(RBLanguages.get("didnt_find_dependency") + ": " + frmt + ".");
 		                }
 		                else {
 		                    parent.getConfigPanel().loadPathways(paths);
@@ -352,12 +362,12 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                    Pathway path = paths.get(0);
 
 		                    if (!parent.model.isPathwaySatisfiable(path)) {
-		                        parent.unlock("Sorry, " + path + " is not satisfiable");
+		                        parent.unlock(RBLanguages.get("not_satisfiable_path") + ": " + path);
 		                    }
 		                    else {
 		                        Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
 		                        if (emuMap.isEmpty()) {
-		                            parent.unlock("Didn't find an emulator for dependency: " + paths);
+		                            parent.unlock(RBLanguages.get("didnt_find_emulator") + ": " + paths);
 		                        }
 		                        else {
 		                            parent.getConfigPanel().loadEmus(emuMap);
@@ -376,7 +386,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                            }
 
 		                            if (swList == null || swList.isEmpty()) {
-		                                parent.unlock("Sorry, could not find a software package for: " + path);
+		                                parent.unlock(RBLanguages.get("no_software_package") + ": " + path);
 		                            }
 		                            else {
 		                                parent.getConfigPanel().loadSoftware(swList);
@@ -389,7 +399,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                                Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
 
 		                                if (configMap.isEmpty()) {
-		                                    parent.unlock("Sorry, could not find a configuration for: " + swPack.getDescription());
+		                                    parent.unlock(RBLanguages.get("no_configuration") + ": " + swPack.getDescription());
 		                                } else {
 		                                    parent.getConfigPanel().loadConfiguration(configMap);
 		                                    parent.getConfigPanel().enableOptions(false);
@@ -397,7 +407,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                                    // run
 		                                    parent.model.setEmuConfig(configMap, lastConfiguredID);
 		                                    parent.model.runEmulationProcess(lastConfiguredID);
-		                                    parent.unlock("Emulation process started.");
+		                                    parent.unlock(RBLanguages.get("emulation_started"));
 
 		                                    new InfoTableDialog(parent, selectedFile, emu, swPack);
 		                                }
@@ -407,7 +417,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                }
 		            }
 		        } catch (IOException ex) {
-		            parent.unlock("ERROR : " + ex.getMessage());
+		            parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
 		        }
 		        parent.getConfigPanel().enableOptions(true);
 		    }

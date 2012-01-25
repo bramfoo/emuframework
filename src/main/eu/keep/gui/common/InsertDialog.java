@@ -31,6 +31,7 @@
 package eu.keep.gui.common;
 
 import eu.keep.gui.GUI;
+import eu.keep.gui.util.RBLanguages;
 
 import javax.swing.*;
 import java.awt.*;
@@ -75,7 +76,7 @@ public class InsertDialog extends JDialog {
         super.setLocation(parentX + (parentW / 2) - (getWidth() / 2),
                 parentY + (parentH / 2) - (getHeight() / 2));
 
-        super.setTitle("Insert new record in: " + model.selectedTableName);
+        super.setTitle(RBLanguages.get("insert_record_in") + ": " + model.selectedTableName);
         super.setResizable(false);
         super.setVisible(true);
     }
@@ -108,7 +109,7 @@ public class InsertDialog extends JDialog {
         okButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parent.lock("Trying to insert a new record...");
+                parent.lock(RBLanguages.get("try_insert_record") + "...");
                 java.util.List<String> data = new ArrayList<String>();
                 for(JTextField field : inputFields) {
                     String s = field.getText().trim();
@@ -119,10 +120,10 @@ public class InsertDialog extends JDialog {
                 }
                 try {
                     dataModel.insert(data);
-                    parent.unlock("Successfully inserted a new record.");
+                    parent.unlock(RBLanguages.get("success_insert_record"));
                     InsertDialog.this.close();
                 } catch (Exception ex) {
-                    parent.unlock("ERROR: " + ex.getMessage());
+                    parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
                     ex.printStackTrace();
                 }
             }
@@ -138,8 +139,8 @@ public class InsertDialog extends JDialog {
         }
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
-        cancelButton = new JButton("cancel");
-        okButton = new JButton("OK");
+        cancelButton = new JButton(RBLanguages.get("cancel"));
+        okButton = new JButton(RBLanguages.get("ok"));
         buttonPanel.add(cancelButton);
         buttonPanel.add(okButton);
 

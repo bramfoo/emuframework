@@ -89,7 +89,7 @@ public class LanguageSettingsFrame extends JFrame {
      * @param fnGUI    filename of gui.properties file
      */
     public LanguageSettingsFrame(GUI p, String fnKernel, String fnGUI) {
-        super("language settings");
+        super(RBLanguages.get("language_settings"));
 
         parent = p;
         parent.showGlassPane();
@@ -237,7 +237,7 @@ public class LanguageSettingsFrame extends JFrame {
         buttonGroupPanel.add(dutch);
         
         // User instructions
-        JLabel languageInstructions = new JLabel("Language");
+        JLabel languageInstructions = new JLabel(RBLanguages.get("language"));
         
         // Add everything to the main panel
         mainPanel.add(languageInstructions);
@@ -253,12 +253,7 @@ public class LanguageSettingsFrame extends JFrame {
 		boolean allLanguagesAccepted = initAcceptedLanguages();
 
 		// User instructions
-		JLabel acceptedLanguageInstructions = new JLabel("<html>" +
-				"The Emulation Framework contains emulators and software with different user languages." +
-				"Select here the emulator and software languages which you wish to accept. <br><br>" +
-				"Deselecting languages here means that emulators and software that use " +
-				"this language will not be shown or selected by the Emulation Framework." +
-				"</html>");
+		JLabel acceptedLanguageInstructions = new JLabel(RBLanguages.get("user_instructions_languages"));
 		
 		// List of checkboxes for each available language
 		JPanel checkBoxesPanel = new JPanel(new MigLayout(
@@ -378,19 +373,17 @@ public class LanguageSettingsFrame extends JFrame {
 	 */
 	private void addButtonPanel(JPanel mainPanel) {
         // Save button
-        JButton save = new JButton("save");
+        JButton save = new JButton(RBLanguages.get("save"));
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String parentMessage = "Successfully saved the new settings.";
+                String parentMessage = RBLanguages.get("successfully_saved_settings");
                 try {
                 	LanguageSettingsFrame.this.acceptLanguages();
                     LanguageSettingsFrame.this.close();
                 } catch (IOException ex) {
                     JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-                    parentMessage = "<html>New settings saved successfully in the Emulation Framework, " +
-                    		"but could not be saved for future restart.<br> Next time the Emulation Framework starts" +
-                    		"the settings will be the same as before the last change.</html>";
+                    parentMessage = RBLanguages.get("successfully_saved_settings_session_only");
                     LanguageSettingsFrame.this.close();
                 } catch (IllegalArgumentException iae) {
                     JOptionPane.showMessageDialog(parent, iae.getMessage(), "", JOptionPane.ERROR_MESSAGE);
@@ -401,7 +394,7 @@ public class LanguageSettingsFrame extends JFrame {
         });
 
         // Cancel button
-        JButton cancel = new JButton("cancel");
+        JButton cancel = new JButton(RBLanguages.get("cancel"));
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -425,10 +418,7 @@ public class LanguageSettingsFrame extends JFrame {
 		// Collect the selected languages
 		StringBuilder newProperty = new StringBuilder();
 		if (checkBoxList.isNoneSelected()) {
-			String errorMessage = "<html>" +
-					"You have selected no acceptable languages for emulators and software.<br>" + 
-					"Please select at least one acceptable language." + 
-					"</html>";
+			String errorMessage = RBLanguages.get("no_acceptable_languages");
 			throw new IllegalArgumentException(errorMessage);
 		} else if (checkBoxList.isAllSelected()) {
 			newProperty.append("all");
@@ -441,7 +431,7 @@ public class LanguageSettingsFrame extends JFrame {
 		}
 
 		// Update Kernel
-		parent.lock("Saving the new language settings...");
+		parent.lock(RBLanguages.get("saving_new_language_settings") + "...");
 		parent.model.setAcceptedLanguages(acceptedLanguages);
 
 		// Save selection in user.properties

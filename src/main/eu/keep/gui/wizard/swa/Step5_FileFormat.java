@@ -34,6 +34,7 @@ import edu.harvard.hul.ois.fits.FitsOutput;
 import eu.keep.characteriser.FitsTool;
 import eu.keep.characteriser.Format;
 import eu.keep.gui.util.DBUtil;
+import eu.keep.gui.util.RBLanguages;
 import eu.keep.gui.wizard.swa.model.FileFormat;
 import net.miginfocom.swing.MigLayout;
 
@@ -58,10 +59,7 @@ public class Step5_FileFormat extends JPanel {
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        final String explanation = "<h2>Step 5</h2>\n" +
-                "<p>Select an existing file format that will be " +
-                "associated with the application selected in step 1/5, or create " +
-                "a new file format by pointing to a local file on your hard disk</p>";
+        final String explanation = RBLanguages.get("swa_file_format_explanation");
 
         final Vector<Vector<String>> fileFormatData = DBUtil.query(DBUtil.DB.SWA,
                 "SELECT fileformat_id, name, version, description, reference from softwarearchive.fileformats");
@@ -74,7 +72,7 @@ public class Step5_FileFormat extends JPanel {
         final JComboBox formatsCombo = new JComboBox(existingFileFormats);
         formatsCombo.setPreferredSize(d);
 
-        final JButton browse = new JButton("browse...");
+        final JButton browse = new JButton(RBLanguages.get("browse") + "...");
         final JComboBox fitsOut = new JComboBox();
         fitsOut.setEnabled(false);
         fitsOut.setPreferredSize(d);
@@ -89,20 +87,20 @@ public class Step5_FileFormat extends JPanel {
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("select an existing file format: ")                       );
+        center.add(new JLabel(RBLanguages.get("select_existing_file_format") + ": ")    );
         center.add(formatsCombo,                                        "wrap"          );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
-        center.add(new JLabel("or create a new file format"),           "span 2 1 wrap" );
+        center.add(new JLabel(RBLanguages.get("new_file_format")),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(browse                                                               );
         center.add(fitsOut, "wrap"                                                      );
-        center.add(new JLabel("version: ")                                              );
+        center.add(new JLabel(RBLanguages.get("version") + ": ")                        );
         center.add(txtVersion,                                          "wrap"          );
-        center.add(new JLabel("description: ")                                          );
+        center.add(new JLabel(RBLanguages.get("description") + ": ")                    );
         center.add(txtDescription,                                      "wrap"          );
-        center.add(new JLabel("reference: ")                                            );
+        center.add(new JLabel(RBLanguages.get("reference") + ": ")                      );
         center.add(txtReference,                                        "wrap"          );
 
         final JButton previous = new JButton("<html>&larr;</html>");
@@ -121,7 +119,7 @@ public class Step5_FileFormat extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 parent.remove(parent.step5);
                 parent.add(parent.step4, BorderLayout.CENTER);
-                parent.log("4/5, select the ZIP file");
+                parent.log("4/5, " + RBLanguages.get("select_zip"));
                 parent.validate();
                 parent.repaint();
             }
@@ -138,7 +136,7 @@ public class Step5_FileFormat extends JPanel {
                 parent.remove(parent.step5);
                 parent.confirm.init();
                 parent.add(parent.confirm, BorderLayout.CENTER);
-                parent.log("Please confirm SWA changes");
+                parent.log(RBLanguages.get("confirm_swa_changes"));
                 parent.validate();
                 parent.repaint();
             }
@@ -182,7 +180,7 @@ public class Step5_FileFormat extends JPanel {
 
                     parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
-                    parent.log("5/5, Characterizing file: " + f.getName() + ", please wait...");
+                    parent.log("5/5, " + RBLanguages.get("characterizing_file") + ": " + f.getName() + ", " + RBLanguages.get("log_please_wait") + "...");
 
                     (new Thread(new Runnable() {
                         @Override
@@ -203,11 +201,11 @@ public class Step5_FileFormat extends JPanel {
                                 }
                                 fitsOut.setEnabled(true);
                                 next.setEnabled(true);
-                                parent.log("5/5, Finished characterizing.");
+                                parent.log("5/5, " + RBLanguages.get("finished_characterizing"));
 
                             } catch(Exception ex) {
                                 next.setEnabled(false);
-                                parent.log("5/5, Something went wrong while characterizing " + f.getName() + ", aborted operation.");
+                                parent.log("5/5, " + RBLanguages.get("wrong_characterizing") + ": " + f.getName() + ", " + RBLanguages.get("aborted_operation"));
                             }
                             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         }
