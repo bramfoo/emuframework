@@ -51,24 +51,30 @@ INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, r
 INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1004', 'Beaver', null, 'Beaver is an Early AdVanced (text) EditoR. ', 'Marc Bevand, Damien Terrier and Emmanuel Turquin, 2008 Tobias Heinzen, Double 12', null, 'GNU General Public License', 'en', 'http://beaver-editor.sourceforge.net/', FILE_READ('./database/UserInstructions/Beaver_manual.txt', NULL));
 INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1005', 'Firefox', null, 'Mozilla Firefox is a free and open source web browser descended from the Mozilla Application Suite and managed by Mozilla Corporation.', 'Mozilla Corporation', null, 'GNU GPL, GNU LGPL, or Mozilla Public License', 'en', 'http://www.mozilla.com/en-US/firefox', FILE_READ('./database/UserInstructions/Firefox_manual.txt', NULL));
 INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1006', 'MS Office Viewer', null, null, null, null, 'GNU General Public License (GPL)', 'en', 'http://www.damnsmalllinux.org/applications.html', FILE_READ('./database/UserInstructions/MS_Office_Viewer_manual.txt', NULL));
+INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1007', 'gnumeric', null, null, null, null, 'GNU General Public License (GPL)', 'en', 'http://projects.gnome.org/gnumeric/', '');
+INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1008', 'Movie Player', null, null, null, null, 'GNU General Public License (GPL)', 'en', 'http://www.mplayerhq.hu', '');
+INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1009', 'Gimp', null, '', null, null, 'GNU General Public License (GPL)', 'en', 'http://www.gimp.org', '');
 
 -- OpSys table
 -- Contains the name, version and description of each Operating System in the Software Archive
 -- Example: OPS-1000 (ID), FreeDOS (name), 0.9 (version), Open source DOS for x86 (description)
 INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('OPS-1000', 'FreeDOS','0.9','Open source DOS for x86', 'Jim Hall & The FreeDOS team', '3 September 2006', 'GNU GPL with some freeware and shareware licensed utils', 'en', 'http://en.wikipedia.org/wiki/FreeDOS http://www.freedos.org/', FILE_READ('./database/UserInstructions/Freedos_manual.txt', NULL));
 INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('OPS-1001', 'Damn Small Linux','4.4.10','Versatile mini desktop oriented Linux distribution', 'John Andrews, et al.', 'November 18, 2008', 'GNU General Public License (GPL)', 'en', 'http://www.damnsmalllinux.org', FILE_READ('./database/UserInstructions/Damn_Small_Linux_manual.txt', NULL));
+INSERT INTO softwarearchive.opsys (opsys_id, name,version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('OPS-1002', 'Xubuntu','7','Linux distribution based on Ubuntu', 'Canonical Ltd. Ubuntu', '2006', 'Mainly the GNU GPL and various other free software licenses', 'en', 'http://www.ubuntu.com', FILE_READ('./database/UserInstructions/Ubuntu_manual.txt', NULL));
 
 -- (Disk) Images table
 -- Contains the ID, description, image format and platform of the disk images in the database 
 -- Example: IMG-1000 (ID), FreeDOS version 0.9 (description), 1 (image format), 5 (platform)
 INSERT INTO softwarearchive.images (image_id,description, imageformat_id, platform_id) VALUES('IMG-1000','FreeDOS version 0.9', 'IFT-1000', 'HPF-1004');
 INSERT INTO softwarearchive.images (image_id,description, imageformat_id, platform_id) VALUES('IMG-1001','Damn Small Linux version 4.4.10', 'IFT-1003', 'HPF-1004');
+INSERT INTO softwarearchive.images (image_id,description, imageformat_id, platform_id) VALUES('IMG-1002','Xubuntu 7', 'IFT-1003', 'HPF-1004');
 
 -- (Disk) Images BLOBs table
 -- Contains file location (for upload into database) of the disk images in the database 
 -- Example: IMG-1000 (ID), ./packages/FreeDOS09_arj_blocek_lhz.img.zip (location)
 INSERT INTO softwarearchive.imageblobs (image_id, image) VALUES('IMG-1000', FILE_READ('./packages/FreeDOS09_blocek.img.zip'));
 INSERT INTO softwarearchive.imageblobs (image_id, image) VALUES('IMG-1001', FILE_READ('./packages/DamnSmallLinux250MB.img.zip'));
+INSERT INTO softwarearchive.imageblobs (image_id, image) VALUES('IMG-1002', FILE_READ('./packages/xubuntu7.img.zip'));
 
 -- Junction tables
 -- These tables form the relational links between the above tables
@@ -93,6 +99,9 @@ INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1013','APP-1002');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1014','APP-1005');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1016','APP-1006');
+INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1022','APP-1007');
+INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1023','APP-1008');
+INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1024','APP-1009');
 
 -- File format to operating system table (fileformats_opsys)
 -- One to many link of a file format requiring an operating system (but no rendering application)
@@ -106,6 +115,7 @@ INSERT INTO softwarearchive.fileformats_opsys (fileformat_id,opsys_id) VALUES('F
 -- Example: OPS-1000 (opsys_id), HPF-1000 (platform_id): FreeDOS runs on x86 
 INSERT INTO softwarearchive.opsys_platform (opsys_id, platform_id) VALUES('OPS-1000','HPF-1004');
 INSERT INTO softwarearchive.opsys_platform (opsys_id, platform_id) VALUES('OPS-1001','HPF-1004');
+INSERT INTO softwarearchive.opsys_platform (opsys_id, platform_id) VALUES('OPS-1002','HPF-1004');
 
 -- Application to Operating System (apps_opsys) table
 -- Defines which application (defined in the apps table) runs on what OS (defined in the opsys table)
@@ -117,6 +127,9 @@ INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1003','OPS
 INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1004','OPS-1001');
 INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1005','OPS-1001');
 INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1006','OPS-1001');
+INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1007','OPS-1002');
+INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1008','OPS-1002');
+INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1009','OPS-1002');
 
 -- Application to Image (apps_images) table
 -- Defines which application (defined in the apps table) is contained in which image (defined in the images table)
@@ -128,9 +141,13 @@ INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1003','IM
 INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1004','IMG-1001');
 INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1005','IMG-1001');
 INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1006','IMG-1001');
+INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1007','IMG-1002');
+INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1008','IMG-1002');
+INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1009','IMG-1002');
 
 -- Operating System to Image (opsys_images) table
 -- Defines which operating system (defined in the opsys table) is contained in which image (defined in the images table)
 -- Example: OPS-1000 (opsys_id), IMG-1000 (image_id): The FreeDOS OS is contained in the FreeDOS image 
 INSERT INTO softwarearchive.opsys_images (opsys_id, image_id) VALUES('OPS-1000','IMG-1000');
 INSERT INTO softwarearchive.opsys_images (opsys_id, image_id) VALUES('OPS-1001','IMG-1001');
+INSERT INTO softwarearchive.opsys_images (opsys_id, image_id) VALUES('OPS-1002','IMG-1002');

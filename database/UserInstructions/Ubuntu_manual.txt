@@ -1,0 +1,74 @@
+Ubuntu is a computer operating system based on the Debian Linux distribution and 
+distributed as free and open source software. It is named after the Southern 
+African philosophy of Ubuntu ("humanity towards others"). Ubuntu is designed 
+primarily for use on personal computers, although a server edition also exists.
+
+To get access the a shell, press CTRL+ALT+T. Once a shell has started, you can 
+use one of the following basic Linux command:
+
+a
+  awk      Find and Replace text, database sort/validate/index
+c
+  cat      Concatenate and print (display) the content of files
+  clear    Clear terminal screen
+d
+  dd       Convert and copy a file, write disk headers, boot records
+  dir      Briefly list directory contents
+  dirname  Convert a full pathname to just a path
+  dirs     Display list of remembered directories
+e
+  egrep    Search file(s) for lines that match an extended expression
+  eject    Eject removable media
+  exit     Exit the shell
+f
+  fdisk    Partition table manipulator for Linux
+  format   Format disks or tapes
+g
+  gawk     Find and Replace text within file(s)
+  grep     Search file(s) for lines that match a given pattern
+h
+  help     Display help for a built-in command
+  hostname Print or set system name
+k
+  kill     Stop a process from running
+  killall  Kill processes by name
+l
+  logout   Exit a login shell
+  ls       List information about file(s)
+m
+  man      Help manual
+  mkdir    Create new folder(s)
+  mv       Move or rename files or directories
+p
+  ps       Process status
+  pwd      Print Working Directory
+q
+  quota    Display disk usage and limits
+  quotacheck Scan a file system for disk usage
+  quotactl Set disk quotas
+r
+  reboot   Reboot the system
+  rename   Rename files
+  rm       Remove files
+s
+  sed      Stream Editor
+  shutdown Shutdown or restart linux
+  ssh      Secure Shell client (remote login program)
+  su       Substitute user identity
+  sudo     Execute a command as another user
+t
+  tail     Output the last part of files
+  time     Measure Program running time
+  touch    Change file timestamps
+u
+  useradd  Create new user account
+  usermod  Modify user account
+  users    List users currently logged in
+v
+  vi       Text Editor
+w
+  whereis  Search the user's $path, man pages and source files for a program
+  which    Search the user's $path for a program file
+  write    Send a message to another user
+
+For more extensive help on a command, type: man COMMAND (for example, to find out more on the 'ls' command, type: man ls).
