@@ -86,14 +86,14 @@ public class GUI extends JFrame {
      * @throws IOException if the gui.properties file can not be found.
      */
     private GUI(CoreEngineModel model, boolean eaAdmin, boolean swaAdmin) throws IOException {
-        super("KEEP ~ Emulation Framework");
-
-        this.model = model;
+        super("KEEP ~ Emulation Framework ~ Admin interface");
+		super.setIconImage(Toolkit.getDefaultToolkit().getImage("images/icon.gif"));
         super.setSize(WIDTH, HEIGHT);
         super.setResizable(false);
 
-        String fileName = "eu/keep/" + PROP_FILE_NAME;
+        this.model = model;
 
+        String fileName = "eu/keep/" + PROP_FILE_NAME;
         if (!new File(fileName).exists()) {
             throw new FileNotFoundException("file not found: " + fileName);
         }
