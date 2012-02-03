@@ -42,6 +42,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
@@ -79,7 +80,6 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     private void initGUI() {
 
         super.setLayout(new BorderLayout(5, 5));
-
 
         // button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
@@ -129,7 +129,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         });
 
 		// button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 5));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 1));
         autoStart = new JButton();
         RBLanguages.set(autoStart, "autoStart");
 
@@ -149,8 +149,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         // Add everything together
         JPanel explorerPanel = new JPanel(new BorderLayout(5, 5));    
         explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-200));
-        FileExplorerBorder border = new FileExplorerBorder("");
-
+        Border border = new TitledBorder("");
+        
         JPanel north = new JPanel(new BorderLayout(5, 5));
 
         JLabel explanation = new JLabel();
@@ -182,23 +182,21 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         startWithoutObject.setEnabled(true);
         startWithoutObject.addActionListener(this);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 5));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 3, 1));
         buttonPanel.add(startWithoutObject);
 
         // Add everything together
         JPanel noObjectPanel = new JPanel();
         noObjectPanel.setLayout(new BorderLayout(5, 5));
-        TitledBorder noObjectBorder = new TitledBorder("");
+        Border noObjectBorder = new TitledBorder("");
+        noObjectPanel.setBorder(noObjectBorder);
 
         JLabel explanation = new JLabel();
         explanation.setFont(new Font(null, Font.BOLD, 12));
         RBLanguages.set(explanation, "start_environment_without");
-        noObjectPanel.add(explanation, BorderLayout.WEST);
 
-        noObjectBorder.setTitlePosition(TitledBorder.BELOW_TOP);
-        noObjectPanel.setBorder(noObjectBorder);    
-        
-        noObjectPanel.add(buttonPanel, BorderLayout.EAST);
+        noObjectPanel.add(explanation, BorderLayout.NORTH);
+        noObjectPanel.add(buttonPanel, BorderLayout.SOUTH);
 
 		return noObjectPanel;
 	}
@@ -482,25 +480,5 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
     private void enableNoObjectPanel(boolean enabled) {
     	this.startWithoutObject.setEnabled(enabled);
     }
-    
-    /**
-     * Custom border class, extending TitledBorder but with some extra padding at the top 
-     * 
-     * @author nooe
-     *
-     */
-    private class FileExplorerBorder extends TitledBorder {
-
-    	public FileExplorerBorder(String title) {
-    		super(title);
-    	    this.setTitlePosition(TitledBorder.BELOW_TOP);
-    	}
-    	
-    	@Override
-        public Insets getBorderInsets
-        (Component c) {
-           return new Insets(40,14,14,14);
-       }
-    }
-    
+        
 }

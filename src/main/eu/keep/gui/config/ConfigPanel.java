@@ -472,7 +472,12 @@ public class ConfigPanel extends JPanel {
     private void setupGUI() {
         super.setLayout(new BorderLayout(2, 2));
 
-        explorerPanel = new FileExplorerPanel(parent);         
+        // Empty panel to create small gap between tabs of JTabbedPane and top components in this GUI
+        JPanel emptyPanel = new JPanel();
+        emptyPanel.setPreferredSize(new Dimension(GUI.WIDTH,2));
+        super.add(emptyPanel, BorderLayout.NORTH);
+        
+        explorerPanel = new FileExplorerPanel(parent);
         super.add(explorerPanel, BorderLayout.WEST);
 
         JPanel topRightPanel = new JPanel(new GridLayout(4, 1, 1, 1));
