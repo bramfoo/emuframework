@@ -135,6 +135,28 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      * {@inheritDoc}
      */
     @Override
+    public boolean ping() throws ConnectException, SocketTimeoutException, WebServiceException {
+        logger.debug("Trying to contact the SoftwareArchive...");
+
+        boolean success = false;
+    	long startTime = System.nanoTime();
+        
+        try {
+        	success = port.ping(0);
+        }
+        catch (WebServiceException e) {
+            processWebServiceException(e, "Error Pinging Software Archive: ");       	
+        }
+
+        double elapsedTime = ((System.nanoTime() - startTime))/1e9; //in seconds
+        logger.debug("SoftwareArchive response to Ping request: " + success + "; elapsed time: " + elapsedTime + "s");
+        return success;   	
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<Pathway> getPathwayByFileFormat(String fileFormat) throws ConnectException, SocketTimeoutException, WebServiceException {
         logger.info("Invoking getPathwayByFF with format: " + fileFormat + "...");
 
@@ -478,17 +500,17 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
 	private void processWebServiceException(WebServiceException e, String message)
 			throws SocketTimeoutException, ConnectException, WebServiceException {
 		if (e.getCause() instanceof SocketTimeoutException) {
-		    logger.warn(message + e.toString());
+		    logger.debug(message + e.toString());
 		    SocketTimeoutException se = (SocketTimeoutException) e.getCause();
 		    throw se;
 		}
 		else if (e.getCause() instanceof ConnectException) {
-		    logger.warn(message + e.toString());
+		    logger.debug(message + e.toString());
 		    ConnectException ce = (ConnectException) e.getCause();
 		    throw ce;
 		}
 		else {
-		    logger.warn(message + e.toString());
+		    logger.debug(message + e.toString());
 		    throw e;
 		}
 	}

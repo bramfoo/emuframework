@@ -82,7 +82,6 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
 
     public EmulatorArchivePrototype(Properties props) {
 
-
         // Using a local copy of the WSDL (only used to read the soap:address) but makes deployment difficult
         // as the WSDL then needs to be stored in the classpath which creates trouble with it refers to other files
     	// Instead, the soap:address will be overwritten using the method below.
@@ -124,29 +123,40 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
     /**
      * {@inheritDoc}
      */
+    @Override
+    public boolean ping() throws ConnectException, SocketTimeoutException, WebServiceException {
+        logger.debug("Trying to contact the EmulatorArchive...");
+
+        boolean success = false;
+    	long startTime = System.nanoTime();
+        
+        try {
+        	success = port.ping(0);
+        }
+        catch (WebServiceException e) {
+            processWebServiceException(e, "Error Pinging Emulator Archive: ");       	
+        }
+
+        long elapsedTime = (System.nanoTime() - startTime)/1000000000; //in seconds
+        logger.debug("EmulatorArchive response to Ping request: " + success + "; elapsed time: " + elapsedTime + "s");
+        return success; 	
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
     public EmulatorPackage getEmulatorPackage(Integer emuID) throws ConnectException, SocketTimeoutException, WebServiceException {
         logger.debug("Retrieving emulator package for ID " + emuID);
         
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
 
-        EmulatorPackage emuPack;
+        EmulatorPackage emuPack = null;
         try {
              emuPack = port.getEmulatorPackage(emuID);
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+            processWebServiceException(e, "Error Retrieving emulator package from EA: ");       	
         }
         finally
         {
@@ -171,25 +181,14 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
 
-        EmulatorPackageList _getEmulatorPackageList__return;
+        EmulatorPackageList _getEmulatorPackageList__return = null;
         try {
              _getEmulatorPackageList__return = port
                     .getEmulatorPackageList(_getEmulatorPackageList_parameters);
             logger.debug("getEmulatorPackages.result=" + _getEmulatorPackageList__return.toString());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+            processWebServiceException(e, "Error retrieving list of emulator packages from EA: ");       	
         }
         finally
         {
@@ -206,7 +205,7 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
     public InputStream downloadEmulatorPackage(Integer emuID) throws ConnectException,
     IOException, SocketTimeoutException, WebServiceException {
         logger.debug("Downloading emulator binary for ID " + emuID);
-        DataHandler emuBinary;
+        DataHandler emuBinary = null;
 
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, ":::");
@@ -214,18 +213,7 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
             emuBinary = port.downloadEmulator(emuID);
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+            processWebServiceException(e, "Error downloading emulator package from EA: ");       	
         }
         finally
         {
@@ -256,18 +244,7 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
             hw.addAll(hwIDs.getId());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+            processWebServiceException(e, "Error retrieving list of supported hardware from EA: ");       	
         }
         finally
         {
@@ -292,18 +269,7 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
             emuPacks.addAll(emuList.getEmulatorPackage());
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+            processWebServiceException(e, "Error retrieving list of emulators from EA: ");       	
         }
         finally
         {
@@ -331,18 +297,7 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
             logger.debug("Downloaded " + languageList.getLanguageIds().size() + " languages referenced in Emulator Archive.");
         }
         catch (WebServiceException e) {
-            if (e.getCause() instanceof SocketTimeoutException)
-            {
-                SocketTimeoutException se = (SocketTimeoutException) e.getCause();
-                throw se;
-            }
-            else if (e.getCause() instanceof ConnectException)
-            {
-                ConnectException ce = (ConnectException) e.getCause();
-                throw ce;
-            }
-            else
-                throw e;
+            processWebServiceException(e, "Error retrieving list of emulator languages from EA: ");       	
         }
         finally
         {
@@ -352,4 +307,25 @@ public class EmulatorArchivePrototype implements EmulatorArchive {
 
         return languageList;
 	}
+	
+	private void processWebServiceException(WebServiceException e, String message)
+			throws SocketTimeoutException, ConnectException, WebServiceException {
+		if (e.getCause() instanceof SocketTimeoutException) {
+		    logger.debug(message + e.toString());
+		    SocketTimeoutException se = (SocketTimeoutException) e.getCause();
+		    throw se;
+		}
+		else if (e.getCause() instanceof ConnectException) {
+		    logger.debug(message + e.toString());
+		    ConnectException ce = (ConnectException) e.getCause();
+		    throw ce;
+		}
+		else {
+		    logger.debug(message + e.toString());
+		    throw e;
+		}
+	}
+
+
+	
 }

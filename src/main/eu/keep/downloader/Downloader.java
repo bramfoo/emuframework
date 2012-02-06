@@ -115,6 +115,25 @@ public class Downloader {
     ////////////////////////
 
     /**
+     * Ping the Emulator Archive
+     * @throws IOException if the Emulator Archive could not be reached or if it returned false
+     */
+    public void pingEA() throws IOException {
+    	try {
+    		if (!emulatorArchive.ping()) {
+    			throw new IOException("Ping operation to emulator archive returned false");
+    		}
+    	}
+    	catch (IOException e) {
+    		processIOException(e, "emulator archive");
+    	}
+    	catch (WebServiceException wse) {
+    		processWebServiceException(wse, "Emulator archive");
+    	}
+    }
+    
+    
+    /**
      * Returns the list of emulator packages in the archive database
      * @return List<EmulatorPackage> List of emulator packages 
      * @throws IOException If a connection error occurs when contacting the Emulator Archive
@@ -364,6 +383,24 @@ public class Downloader {
     // Software Archive
     ///////////////////////
 
+    /**
+     * Ping the Software Archive
+     * @throws IOException if the Software Archive could not be reached or if it returned false
+     */
+    public void pingSWA() throws IOException {
+    	try {
+    		if (!softwareArchive.ping()) {
+    			throw new IOException("Ping operation to software archive returned false");
+    		}
+    	}
+    	catch (IOException e) {
+    		processIOException(e, "software archive");
+    	}
+    	catch (WebServiceException wse) {
+    		processWebServiceException(wse, "Software archive");
+    	}
+    }
+    
     /**
      * Returns a list of pathways based on a file format
      * @param fileFormat String representing the file format of a digital object

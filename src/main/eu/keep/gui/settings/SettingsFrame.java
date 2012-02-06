@@ -181,7 +181,7 @@ public class SettingsFrame extends JFrame {
                     JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
                     parent.unlock(" ");
                 }
-                SettingsFrame.this.close();
+                SettingsFrame.this.dispose();
             }
         });
 

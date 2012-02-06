@@ -59,6 +59,7 @@ import eu.keep.downloader.db.DBUtil;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
+import eu.keep.util.ArchiveException;
 import eu.keep.util.FileUtilities;
 import eu.keep.util.Language;
 
@@ -103,6 +104,20 @@ public class Kernel implements CoreEngineModel {
         characteriser = createCharacteriser(props);
         controller = new Controller();
         downloader = createDownloader(props, localDBConnection);
+        
+        // Check that the Software and Emulator Archives are up and running and reachable
+        try {
+        	downloader.pingSWA();
+        	downloader.pingEA();
+        } 
+        catch (IOException ioe) {
+        	// Hack: wrap an ArchiveException inside an IOException. This is so that the 
+        	// method signature can remain the same (only throw IOExceptions), but 
+        	// the calling method can still distinguish the source of the exception through
+        	// the getCause() method.
+        	throw new IOException("Software and/or Emulator Archive could not be reached", 
+        			new ArchiveException(ioe));
+        }
         
         // Now that downloader is set up, can initialise the accepted Languages
         initAcceptedLanguages();

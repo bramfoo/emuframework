@@ -48,6 +48,16 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
  */
 public interface EmulatorArchive {
 
+	/**
+	 * Test whether the EmulatorArchive is up and running and reachable
+	 * @return true if the EmulatorArchive could be contacted and gave a positive response
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
+	 */
+	public abstract boolean ping()
+            throws ConnectException, SocketTimeoutException, WebServiceException;	
+	
     /**
      * Returns an InputStream of the emulator executable
      * @param emuID Unique ID of an emulator package
