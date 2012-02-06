@@ -35,6 +35,7 @@ import eu.keep.gui.GUI;
 import javax.swing.*;
 
 import eu.keep.gui.util.RBLanguages;
+
 import org.apache.log4j.Logger;
 
 import java.awt.*;
@@ -45,6 +46,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -160,29 +162,56 @@ public class SettingsFrame extends JFrame {
         RBLanguages.set(cancel, "cancel");
 
         save.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                	// Save the new Properties
-                    for(String key : valueMap.keySet()) {
-                        properties.setProperty(key, valueMap.get(key).getValue());
-                    }
-                    properties.store(new FileOutputStream(fileName), null);
-                    
-                    // Restart the Kernel
-                    parent.lock(RBLanguages.get("restarting_ef") + " " + RBLanguages.get("log_please_wait") + "...");
-                    (new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            parent.reloadModel();
-                        }
-                    })).start();
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-                    parent.unlock(" ");
-                }
-                SettingsFrame.this.dispose();
-            }
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		List<String> allValidationErrors = new ArrayList<String>();
+
+        		// Save the new Properties
+        		for(String key : valueMap.keySet()) {
+        			EFPropertyEditor editor = valueMap.get(key);
+        			List<String> validationErrors = editor.validateInput();
+        			if (validationErrors.isEmpty()) {
+        				properties.setProperty(key, editor.getValue());
+        			}
+        			else {
+        				allValidationErrors.addAll(validationErrors);
+        			}
+        		}
+
+        		if (allValidationErrors.isEmpty()) {
+        			try {
+        				properties.store(new FileOutputStream(fileName), null);
+
+        				// Restart the Kernel
+        				parent.lock(RBLanguages.get("restarting_ef") + " " + RBLanguages.get("log_please_wait") + "...");
+        				(new Thread(new Runnable() {
+        					@Override
+        					public void run() {
+        						parent.reloadModel();
+        					}
+        				})).start();
+        			} 
+        			catch (IOException ex) {
+        				JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
+        				parent.unlock(" ");
+        			}
+        			SettingsFrame.this.dispose();                    	
+        		}
+        		else {
+        			// Display a popup-window with the errors
+        			StringBuilder message = new StringBuilder();
+        			message.append(RBLanguages.get("invalid_URL_header"));
+        			for (String validationError : allValidationErrors) {
+        				logger.info("validation Error: " + validationError);
+        				message.append(validationError);
+        			}
+        			message.append(RBLanguages.get("invalid_URL_footer"));
+        			
+        			logger.info("total validation message = " + message.toString());
+        			
+        			JOptionPane.showMessageDialog(SettingsFrame.this, message.toString(), "", JOptionPane.ERROR_MESSAGE);                	
+        		}
+        	}
         });
 
         cancel.addActionListener(new ActionListener() {
