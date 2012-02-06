@@ -70,6 +70,16 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
     }
 
     /**
+     * Ping service: returns true when invoked
+     * @param dummy input (not used)
+     * @return always true
+     */
+	@Override
+	public boolean ping(int dummy) {
+		return true;
+	}
+
+    /**
      * Generate an emulator package for a specific emulator
      * @param id Emulator ID
      * @return EmulatorPackage Emulator packages 

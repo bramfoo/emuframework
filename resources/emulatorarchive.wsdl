@@ -52,7 +52,6 @@ $
                   xmlns:ea="http://emulatorarchive.keep.eu/EmulatorPackage"
 		  xmlns:xmime="http://www.w3.org/2005/05/xmlmime">  
        
-            <!-- http://www.ibm.com/developerworks/xml/library/ws-tip-imports.html -->
             <xs:import namespace="http://emulatorarchive.keep.eu/EmulatorPackage" 
                       schemaLocation="EmulatorPackageSchema.xsd"/>            
 
@@ -101,6 +100,13 @@ $
     
 
     <!-- message definition -->
+    <wsdl:message name="PingInput">
+        <wsdl:part name="dummy" type="xs:int"/>
+    </wsdl:message>   
+    <wsdl:message name="PingOutput">
+        <wsdl:part name="response" type="xs:boolean"/>
+    </wsdl:message>   
+    
     <wsdl:message name="GetEmulatorPackageInput">
         <wsdl:part name="parameters" element="tns:emulatorID_1"/>
     </wsdl:message>     
@@ -146,6 +152,11 @@ $
     
     <!-- portType definition -->
     <wsdl:portType name="EmulatorArchivePortType">
+        <wsdl:operation name="Ping">
+           <wsdl:input message="tns:PingInput"/>
+           <wsdl:output message="tns:PingOutput"/>
+        </wsdl:operation>
+        
         <wsdl:operation name="DownloadEmulator">
            <wsdl:input message="tns:DownloadEmulatorInput"/>
            <wsdl:output message="tns:DownloadEmulatorOutput"/>
@@ -180,6 +191,16 @@ $
     <!-- binding definition -->    
     <wsdl:binding name="EmulatorArchiveBinding" type="tns:EmulatorArchivePortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <wsdl:operation name="Ping">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/Ping" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         
         <wsdl:operation name="DownloadEmulator">
             <soap:operation soapAction="http://emulatorarchive.keep.eu/DownloadEmulator" style="document"/>
