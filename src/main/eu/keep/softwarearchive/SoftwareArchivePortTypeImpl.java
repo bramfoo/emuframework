@@ -79,6 +79,16 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     }
 
     /**
+     * Ping service: returns true when invoked
+     * @param dummy input (not used)
+     * @return always true
+     */
+	@Override
+	public boolean ping(int dummy) {
+		return true;
+	}
+
+    /**
      * Generate an software package for a specific software image
      * @param id Software ID
      * @return SoftwarePackage Software packages 

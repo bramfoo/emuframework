@@ -119,6 +119,13 @@ $
     
 
     <!-- message definitions -->
+    <wsdl:message name="PingInput">
+        <wsdl:part name="dummy" type="xs:int"/>
+    </wsdl:message>   
+    <wsdl:message name="PingOutput">
+        <wsdl:part name="response" type="xs:boolean"/>
+    </wsdl:message>   
+    
     <wsdl:message name="GetSoftwarePackageInfoInput">
         <wsdl:part name="parameters" element="tns:softwareID_1"/>
     </wsdl:message>     
@@ -199,6 +206,11 @@ $
         
     <!-- portType definition -->
     <wsdl:portType name="SoftwareArchivePortType">
+        <wsdl:operation name="Ping">
+           <wsdl:input message="tns:PingInput"/>
+           <wsdl:output message="tns:PingOutput"/>
+        </wsdl:operation>
+        
         <wsdl:operation name="GetSoftwarePackageInfo">
            <wsdl:input message="tns:GetSoftwarePackageInfoInput"/>
            <wsdl:output message="tns:GetSoftwarePackageInfoOutput"/>
@@ -259,6 +271,16 @@ $
     <!-- binding definition -->    
     <wsdl:binding name="SoftwareArchiveBinding" type="tns:SoftwareArchivePortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <wsdl:operation name="Ping">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/Ping" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         
         <wsdl:operation name="GetSoftwarePackageInfo">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetSoftwarePackageInfo" style="document"/>
