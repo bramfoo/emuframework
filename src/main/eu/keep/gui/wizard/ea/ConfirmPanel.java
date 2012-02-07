@@ -142,7 +142,7 @@ public class ConfirmPanel extends JPanel {
                                 createZipFile(filesToZip, emu._package);
 
                                 execute(
-                                        DBUtil.DB.EA, // database
+                                        DBUtil.DB.EA, // EA database
                                         "successfully inserted " + emu.name, // success
                                         "could not insert " + emu.name, // error
                                         "INSERT INTO emulatorarchive.emulators " +
@@ -153,7 +153,7 @@ public class ConfirmPanel extends JPanel {
                                 );
 
                                 execute(
-                                        DBUtil.DB.EA, // database
+                                        DBUtil.DB.EA, // EA database
                                         "successfully associated the emulator with the hardware", // success
                                         "could not associate the emulator with the hardware", // error
                                         "INSERT INTO emulatorarchive.emus_hardware (emulator_id, hardware_id) VALUES(?, ?)", // sql
@@ -161,13 +161,21 @@ public class ConfirmPanel extends JPanel {
                                 );
 
                                 execute(
-                                        DBUtil.DB.EA, // database
+                                        DBUtil.DB.EA, // EA database
                                         "successfully associated the emulator with the disk image format", // success
                                         "could not associate the emulator with the disk image format", // error
                                         "INSERT INTO emulatorarchive.emus_imageformats (emulator_id, imageformat_id) VALUES(?, ?)", // sql
                                         emu.emulator_id, format.imageformat_id // params
                                 );
 
+                                execute(
+                                		DBUtil.DB.CEF, // Core EF database
+                                		"successfully added the emulator to the whitelist", // success
+                                		"could not add the emulator to the whitelist", // error
+                                		"INSERT INTO engine.emulator_whitelist (emulator_id, emulator_descr) VALUES(?, ?)", // sql
+                                		emu.emulator_id, emu.description // params
+                                		);
+                                
                                 // Yay, all went okay!
                                 parent.log(RBLanguages.get("committed_changes") + "!");
 
