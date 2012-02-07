@@ -35,20 +35,19 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.util.DBUtil;
 import eu.keep.gui.util.RBLanguages;
+
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -61,7 +60,17 @@ public class WhitelistFrame extends JFrame {
     private final Properties properties;
     private final String fileName;
     private Object[][] data;
+    
+    private EmuTableModel model;
+    
+    private Set<Integer> originalEmuIDs = new HashSet<Integer>();
 
+    
+    /**
+     * Constructor
+     * @param p parent GUI
+     * @param fn name of Properties file
+     */
     public WhitelistFrame(GUI p, String fn) {
         super(RBLanguages.get("emulator_whitelist"));
 
@@ -81,17 +90,16 @@ public class WhitelistFrame extends JFrame {
 
         Vector<Vector<String>> enabledEmus = DBUtil.query(DBUtil.DB.CEF,
                 "SELECT emulator_id FROM engine.emulator_whitelist ORDER BY emulator_id");
-        Set<Integer> enabledEmuIDs = new HashSet<Integer>();
         for(Vector<String> row : enabledEmus) {
-            enabledEmuIDs.add(Integer.valueOf(row.get(0)));
+            originalEmuIDs.add(Integer.valueOf(row.get(0)));
         }
 
         try {
             Downloader downloader = new Downloader(properties, DBUtil.DB.EA.conn);
             List<EmulatorPackage> emus = downloader.getEmulatorPackages();
             data = new Object[emus.size()][3];
-            int index = 0;
 
+            int index = 0;
             for(EmulatorPackage ep : emus) {
                 Integer id = ep.getPackage().getId();
                 String exeType = ep.getEmulator().getExecutable().getType().toLowerCase();
@@ -100,10 +108,11 @@ public class WhitelistFrame extends JFrame {
 
                 data[index][0] = id;
                 data[index][1] = name;
-                data[index][2] = enabledEmuIDs.contains(id);
+                data[index][2] = originalEmuIDs.contains(id);
 
                 index++;
             }
+            
         } catch(Exception e) {
             JOptionPane.showMessageDialog(parent, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             this.close();
@@ -141,57 +150,159 @@ public class WhitelistFrame extends JFrame {
 
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
 
-        final EmuTableModel model = new EmuTableModel(data);
+        model = new EmuTableModel(data);
         JTable table = new JTable(model);
         table.setFillsViewportHeight(true);
         table.getColumnModel().getColumn(1).setPreferredWidth(500);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mainPanel.add(new JScrollPane(table), BorderLayout.CENTER);
 
-        model.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                int row = e.getFirstRow();
-
-                Integer id = (Integer)model.getValueAt(row, 0);
-                String name = (String)model.getValueAt(row, 1);
-                Boolean enabled = (Boolean)model.getValueAt(row, 2);
-
-                if(enabled) {
-                    int affected = DBUtil.update(DBUtil.DB.CEF,
-                            "INSERT INTO engine.emulator_whitelist (emulator_id, emulator_descr) VALUES (?, ?)",
-                            id, name
-                    );
-
-                    if(affected != 1) {
-                        logger.warn("Expected 1 row in the database to be affected, but the numbers is: " + affected);
-                    }
-                }
-                else {
-                    int affected = DBUtil.update(DBUtil.DB.CEF,
-                            "DELETE FROM engine.emulator_whitelist WHERE emulator_id=?",
-                            id
-                    );
-
-                    if(affected != 1) {
-                        logger.warn("Expected 1 row in the database to be affected, but the numbers is: " + affected);
-                    }
-                }
-            }
-        });
-
+        JPanel buttons = initButtonPanel();
+        mainPanel.add(buttons, BorderLayout.SOUTH);
+        
         super.add(mainPanel, BorderLayout.CENTER);
     }
 
+	/**
+	 * Initialise the Button Panel with a Save and a Cancel button
+	 * @param mainPanel the GUI's mainPanel object
+	 */
+	private JPanel initButtonPanel() {
+        // Save button
+        JButton save = new JButton(RBLanguages.get("save"));
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	
+            	// Save the changes
+            	WhitelistFrame.this.saveChanges();
+            	
+                String parentMessage = RBLanguages.get("saved_whitelist");
+                parent.unlock(parentMessage);
+                WhitelistFrame.this.close();
+            }
+        });
+
+        // Cancel button
+        JButton cancel = new JButton(RBLanguages.get("cancel"));
+        cancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                WhitelistFrame.this.close();
+            }
+        });
+
+        // Add everything together
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        buttonPanel.add(save);
+        buttonPanel.add(cancel);
+        
+        return buttonPanel;
+	}
+
+	/**
+	 * Save the changes to the database
+	 */
+	private void saveChanges() {
+
+		for (Map.Entry<Integer, String> addedEmulator : model.addedEmulators.entrySet()) {
+			
+			logger.info("Adding emulator with ID " + addedEmulator.getKey() + " to whitelist");
+			
+			int affected = DBUtil.update(DBUtil.DB.CEF,
+					"INSERT INTO engine.emulator_whitelist (emulator_id, emulator_descr) VALUES (?, ?)",
+					addedEmulator.getKey(), addedEmulator.getValue()
+					);
+
+			if(affected != 1) {
+				logger.warn("Expected 1 row in the database to be affected, but the numbers is: " + affected);
+			}
+		}
+
+		for (Integer removedEmulator : model.removedEmulators) {
+			
+			logger.info("Removing emulator with ID " + removedEmulator + " from whitelist");
+			
+			int affected = DBUtil.update(DBUtil.DB.CEF,
+					"DELETE FROM engine.emulator_whitelist WHERE emulator_id=?",
+					removedEmulator
+					);
+
+			if(affected != 1) {
+				logger.warn("Expected 1 row in the database to be affected, but the numbers is: " + affected);
+			}
+		}
+
+	}
+
+	
     class EmuTableModel extends AbstractTableModel {
 
         private String[] columnNames = {"id", "emulator", "enabled"};
         private Object[][] data;
 
+		private Map<Integer, String> addedEmulators = new HashMap<Integer, String>();
+        private Set<Integer> removedEmulators = new HashSet<Integer>();
+        
         public EmuTableModel(Object[][] d) {
-            data = d;
+        	data = d;
+        	addTableListener();
         }
 
+		private void addTableListener() {
+			this.addTableModelListener(new TableModelListener() {
+        		@Override
+        		public void tableChanged(TableModelEvent e) {
+
+        			// Find the entry that was edited
+        			int row = e.getFirstRow();
+        			Integer id = (Integer)EmuTableModel.this.getValueAt(row, 0);
+        			String name = (String)EmuTableModel.this.getValueAt(row, 1);
+        			Boolean enabled = (Boolean)EmuTableModel.this.getValueAt(row, 2);
+
+        			if (WhitelistFrame.this.originalEmuIDs.contains(id)) {
+        				// This emulator was originally whitelisted
+        				
+        				if (enabled) {
+        					// This emulator must not be removed 
+        					// (it could previously have been added to the 'removedEmulators' Set)
+        					logger.info("Removing emulator with ID " + id + " from remove list");
+        					removedEmulators.remove(id);
+        				} else {
+            				// This emulator must now be removed
+        					logger.info("Adding emulator with ID " + id + " to remove list");
+            				removedEmulators.add(id);        				
+        				}	
+        			}
+        			else {
+        				// This emulator was originally not whitelisted
+        				
+        				if (enabled) {
+        					// This emulator must now be added
+        					logger.info("Adding emulator with ID " + id + " to add list");
+        					addedEmulators.put(id, name);
+        				}
+        				else {
+        					// This emulator must not be added
+        					// (it could previously have been added to the 'addedEmulators' Map)
+        					logger.info("Removing emulator with ID " + id + " from add list");
+        					addedEmulators.remove(id);
+        				}
+        			}
+        			
+        		}
+        	});
+		}
+
+		
+        public Map<Integer, String> getAddedEmulators() {
+			return addedEmulators;
+		}
+
+		public Set<Integer> getRemovedEmulators() {
+			return removedEmulators;
+		}
+        
         public int getColumnCount() {
             return columnNames.length;
         }
