@@ -38,6 +38,7 @@ import eu.keep.util.Language;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -120,7 +121,7 @@ public class Step1_Emulator extends JPanel {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File file = fc.getSelectedFile();
                     btnExe.setText(file.getAbsolutePath());
-                    setEmulator(emulator_id, txtName, txtVersion, exeCombo, btnExe, txtDescription, langIdCombo, btnFolder, txtUserInstructions, next);
+                    validate(txtName, btnExe, btnFolder, next);
                 }
             }
         });
@@ -135,7 +136,7 @@ public class Step1_Emulator extends JPanel {
                 if (returnValue == JFileChooser.APPROVE_OPTION) {
                     File folder = fc.getSelectedFile();
                     btnFolder.setText(folder.getAbsolutePath());
-                    setEmulator(emulator_id, txtName, txtVersion, exeCombo, btnExe, txtDescription, langIdCombo, btnFolder, txtUserInstructions, next);
+                    validate(txtName, btnExe, btnFolder, next);
                 }
             }
         });
@@ -143,7 +144,7 @@ public class Step1_Emulator extends JPanel {
         txtName.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(KeyEvent e) {
-                setEmulator(emulator_id, txtName, txtVersion, exeCombo, btnExe, txtDescription, langIdCombo, btnFolder, txtUserInstructions, next);
+                validate(txtName, btnExe, btnFolder, next);
             }
         });
 
@@ -161,6 +162,10 @@ public class Step1_Emulator extends JPanel {
         next.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	
+                createEmulator(emulator_id, txtName, txtVersion, exeCombo, btnExe, txtDescription, 
+                		langIdCombo, btnFolder, txtUserInstructions, next);
+
                 parent.remove(parent.step1);
                 parent.add(parent.step2, BorderLayout.CENTER);
                 parent.log("2/2, " + RBLanguages.get("select_hardware"));
@@ -170,14 +175,35 @@ public class Step1_Emulator extends JPanel {
         });
     }
 
-    private void setEmulator(String emulator_id, JTextField txtName, JTextField txtVersion, JComboBox exeCombo,
-                             JButton btnExe, JTextField txtDescription, JComboBox langIdCombo,
-                             JButton btnFolder, JTextField txtUserInstructions, JButton next) {
+    private void validate(JTextField txtName, JButton btnExe, JButton btnFolder, JButton next) {
 
         next.setEnabled(false);
         parent.log("");
 
+        String name = txtName.getText();
         File exe = new File(btnExe.getText());
+        File folder = new File(btnFolder.getText());
+
+        // Validation
+        if(name.equals(EAWizardAdd.MANDATORY_MESSAGE) || name.isEmpty()) return;
+
+        if(!exe.exists() || !folder.exists()) return;
+
+        if(!(new File(folder, "templateCLI.ftl").exists() ||
+                new File(folder, "templateXML.ftl").exists() ||
+                new File(folder, "templateProps.ftl").exists())) {
+            parent.log(RBLanguages.get("no_valid_template") + ": " + folder);
+            return;
+        }
+
+        next.setEnabled(true);
+    }
+    
+    private void createEmulator(String emulator_id, JTextField txtName, JTextField txtVersion, JComboBox exeCombo,
+                             JButton btnExe, JTextField txtDescription, JComboBox langIdCombo,
+                             JButton btnFolder, JTextField txtUserInstructions, JButton next) {
+
+    	File exe = new File(btnExe.getText());
         File folder = new File(btnFolder.getText());
 
         String name = txtName.getText();
@@ -191,21 +217,8 @@ public class Step1_Emulator extends JPanel {
         String package_version = "1";
         String _package = new File(folder, package_name).getAbsolutePath();
         String user_instructions = txtUserInstructions.getText();
-
-        if(name.equals(EAWizardAdd.MANDATORY_MESSAGE) || name.isEmpty()) return;
-
-        if(!exe.exists() || !folder.exists()) return;
-
-        if(!(new File(folder, "templateCLI.ftl").exists() ||
-                new File(folder, "templateXML.ftl").exists() ||
-                new File(folder, "templateProps.ftl").exists())) {
-            parent.log(RBLanguages.get("no_valid_template") + ": " + folder);
-            return;
-        }
-
+    	
         emu = new Emulator(folder, emulator_id, name, version, exec_type, exec_name, description, language_id,
                 package_name, package_type, package_version, _package, user_instructions);
-
-        next.setEnabled(true);
     }
 }
