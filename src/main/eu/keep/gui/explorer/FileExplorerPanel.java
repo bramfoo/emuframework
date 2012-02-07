@@ -274,13 +274,15 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                     try {
                         java.util.List<Format> formats = parent.model.characterise(selectedFile);
                         if (formats.isEmpty()) {
-                            parent.unlock(RBLanguages.get("could_not_determine_format") + ": " + selectedFile);
+                        	String warning = RBLanguages.get("could_not_determine_format") + ": " + selectedFile;
+                            parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                         } else {
                             parent.unlock(RBLanguages.get("number_of_formats") + ": " + formats.size());
                             parent.loadFormats(formats);
                         }
                     } catch (IOException ex) {
-                        parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
+                    	String error = RBLanguages.get("error") + ": " + ex.getMessage();
+                        parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
                     }
                 }
             })).start();
@@ -330,7 +332,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                         new InfoTableDialog(parent, clickedFile, data);
                         parent.unlock(RBLanguages.get("done"));
                     } catch (IOException ex) {
-                        parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
+                    	String error = RBLanguages.get("error") + ": " + ex.getMessage();
+                        parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
                     }
                 }
             })).start();
@@ -348,11 +351,13 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		(new Thread(new Runnable() {
 		    @Override
 		    public void run() {
+		    	String warning = "";
 		        try {
 		            java.util.List<Format> formats = parent.model.characterise(selectedFile);
 
 		            if (formats.isEmpty()) {
-		                parent.unlock(RBLanguages.get("could_not_determine_format") + ": " + selectedFile);
+		            	warning = RBLanguages.get("could_not_determine_format") + ": " + selectedFile;
+		                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		            }
 		            else {
 		                parent.loadFormats(formats);
@@ -364,7 +369,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                parent.getConfigPanel().enableOptions(false);
 
 		                if (paths.isEmpty()) {
-		                    parent.unlock(RBLanguages.get("didnt_find_dependency") + ": " + frmt + ".");
+		                	warning = RBLanguages.get("didnt_find_dependency") + ": " + frmt + ".";
+		                    parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		                }
 		                else {
 		                    parent.getConfigPanel().loadPathways(paths);
@@ -374,12 +380,14 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                    Pathway path = paths.get(0);
 
 		                    if (!parent.model.isPathwaySatisfiable(path)) {
-		                        parent.unlock(RBLanguages.get("not_satisfiable_path") + ": " + path);
+		                    	warning = RBLanguages.get("not_satisfiable_path") + ": " + path;
+			                    parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		                    }
 		                    else {
 		                        Map<EmulatorPackage, List<SoftwarePackage>> emuMap = parent.model.matchEmulatorWithSoftware(path);
 		                        if (emuMap.isEmpty()) {
-		                            parent.unlock(RBLanguages.get("didnt_find_emulator") + ": " + paths);
+		                        	warning = RBLanguages.get("didnt_find_emulator") + ": " + paths;
+				                    parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		                        }
 		                        else {
 		                            parent.getConfigPanel().loadEmus(emuMap);
@@ -398,7 +406,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                            }
 
 		                            if (swList == null || swList.isEmpty()) {
-		                                parent.unlock(RBLanguages.get("no_software_package") + ": " + path);
+		                            	warning = RBLanguages.get("no_software_package") + ": " + path;
+		    		                    parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		                            }
 		                            else {
 		                                parent.getConfigPanel().loadSoftware(swList);
@@ -411,7 +420,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                                Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
 
 		                                if (configMap.isEmpty()) {
-		                                    parent.unlock(RBLanguages.get("no_configuration") + ": " + swPack.getDescription());
+		                                	warning = RBLanguages.get("no_configuration") + ": " + swPack.getDescription();
+		        		                    parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		                                } else {
 		                                    parent.getConfigPanel().loadConfiguration(configMap);
 		                                    parent.getConfigPanel().enableOptions(false);
@@ -429,7 +439,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		                }
 		            }
 		        } catch (IOException ex) {
-		            parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
+		        	String error = RBLanguages.get("error") + ": " + ex.getMessage();
+                    parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
 		        }
 		        parent.getConfigPanel().enableOptions(true);
 		    }

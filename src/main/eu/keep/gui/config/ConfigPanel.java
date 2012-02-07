@@ -118,13 +118,15 @@ public class ConfigPanel extends JPanel {
                         try {
                             List<Pathway> paths = parent.model.getPathways(frmt);
                             if (paths.isEmpty()) {
-                                parent.unlock(RBLanguages.get("error_no_suitable_dependency") + ": " + frmt);
+                            	String warning = RBLanguages.get("error_no_suitable_dependency") + ": " + frmt;
+                                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                             } else {
                                 parent.unlock(RBLanguages.get("num_dependencies") + ": " + paths.size());
                                 ConfigPanel.this.loadPathways(paths);
                             }
                         } catch (IOException e1) {
-                            parent.unlock(RBLanguages.get("error") + ": " + e1.getMessage());
+                        	String error = RBLanguages.get("error") + ": " + e1.getMessage();
+                            parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
                             e1.printStackTrace();
                         }
 
@@ -161,7 +163,8 @@ public class ConfigPanel extends JPanel {
         					}
         					parent.unlock(message);
         				} catch (IOException e1) {
-        					parent.unlock(RBLanguages.get("error") + ": " + e1.getMessage());
+        					String error = RBLanguages.get("error") + ": " + e1.getMessage();
+        					parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
         				}
         			}
         		})).start();
@@ -187,7 +190,8 @@ public class ConfigPanel extends JPanel {
                         List<SoftwarePackage> swList = swObj.softwareList;
 
                         if (swList.isEmpty()) {
-                            parent.unlock(RBLanguages.get("no_software_for") + ": " + selectedPathway.toString());
+                        	String warning = RBLanguages.get("no_software_for") + ": " + selectedPathway.toString();
+                            parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                         }
                         else {
                             parent.unlock(RBLanguages.get("num_software_found") + ": " + selectedPathway.toString());
@@ -219,14 +223,16 @@ public class ConfigPanel extends JPanel {
                             Map<String, List<Map<String, String>>> configMap = parent.model.getEmuConfig(lastConfiguredID);
 
                             if (configMap.isEmpty()) {
-                                parent.unlock(RBLanguages.get("no_configuration_for") + ": " + swPack.getDescription());
+                            	String warning = RBLanguages.get("no_configuration_for") + ": " + swPack.getDescription();
+                                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                             } else {
                                 parent.unlock(RBLanguages.get("num_configurations") + ": " + configMap.size());
                                 ConfigPanel.this.loadConfiguration(configMap);
                             }
 
                         } catch (IOException e1) {
-                            parent.unlock(RBLanguages.get("error") + ": " + e1.getMessage());
+                        	String error = RBLanguages.get("error") + ": " + e1.getMessage();
+                            parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 })).start();
@@ -283,7 +289,8 @@ public class ConfigPanel extends JPanel {
                             );
 
                         } catch (Exception ex) {
-                            parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
+                        	String error = RBLanguages.get("error") + ": " + ex.getMessage();
+                            parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 })).start();
@@ -359,13 +366,14 @@ public class ConfigPanel extends JPanel {
 		try {
 		    List<Pathway> paths = parent.model.getPathways(frmt);
 		    if (paths.isEmpty()) {
-		        parent.unlock("Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.");
+		    	String warning = "Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.";
+		        parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		    } else {
 		        parent.unlock("Found " + paths.size() + " suitable dependencies");
 		        loadPathways(paths);
 		    }
 		} catch (IOException e1) {
-		    parent.unlock("ERROR: " + e1.getMessage());
+		    parent.displayMessage(parent, "ERROR: " + e1.getMessage(), "ERROR: " + e1.getMessage(), JOptionPane.ERROR_MESSAGE);
 		    e1.printStackTrace();
 		}
 	}

@@ -123,7 +123,8 @@ public class InsertDialog extends JDialog {
                     parent.unlock(RBLanguages.get("success_insert_record"));
                     InsertDialog.this.close();
                 } catch (Exception ex) {
-                    parent.unlock(RBLanguages.get("error") + ": " + ex.getMessage());
+                    parent.displayMessage(parent, RBLanguages.get("error") + ": \n" + ex.getMessage(), 
+                    		RBLanguages.get("error") + ": \n" + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
                     ex.printStackTrace();
                 }
             }

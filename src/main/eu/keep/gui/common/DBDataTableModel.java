@@ -34,6 +34,7 @@ import eu.keep.gui.*;
 import eu.keep.gui.util.RBLanguages;
 import org.apache.log4j.Logger;
 
+import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -339,7 +340,8 @@ public class DBDataTableModel extends DefaultTableModel implements TableModelLis
                     saveRecord(new Vector<String>(selectedRowBackup), col, newValue, columnNames, columnTypes);
                     parent.unlock(RBLanguages.get("log_saved_row") + ": " + (row+1));
                 } catch (Exception ex) {
-                    parent.unlock(RBLanguages.get("error") + ex.getMessage());
+                    parent.displayMessage(parent, RBLanguages.get("error") + "\n" + ex.getMessage(), 
+                    		RBLanguages.get("error") + "\n" + ex.getMessage(), JOptionPane.ERROR_MESSAGE);
                     DBDataTableModel.this.setValueAt(oldValue, row, col);
                 }
             }

@@ -474,10 +474,10 @@ public class GUI extends JFrame implements CoreObserver {
                                 "WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either\n" +
                                 "express or implied.\n" +
                                 "See the License for the specific language governing permissions and\n" +
-                                "limitations under the License.\n" +
                                 "\n" +
                                 "For more information about this project, visit:\n" +
                                 "  http://www.keep-project.eu\n" +
+                                "limitations under the License.\n" +
                                 "  http://emuframework.sourceforge.net\n" +
                                 "\n" +
                                 "Credits:\n" +
@@ -505,13 +505,19 @@ public class GUI extends JFrame implements CoreObserver {
     }
 
     /**
-     * Display an error message in a Message Dialog
-     * @param parent the parent Frame  in which the dialog is displayed; if null, or if the parentComponent has no Frame, a default Frame is used
-     * @param message the error message
+     * Display an error or warning message. The message will be displayed both in the status bar 
+     * (at the bottom of the window) and in a popup window.
+     * @param parent the parent Frame  in which the dialog is displayed; if null, or if the 
+     * 		parentComponent has no Frame, a default Frame is used
+     * @param message an error message to be shown in a popup-window
+     * @param statusBarMessage an error message to be shown in the status bar at the bottom of the window
+     * @param messageTypethe type of message to be displayed: JOptionPanel.ERROR_MESSAGE, .INFORMATION_MESSAGE, 
+     * 		.WARNING_MESSAGE, .QUESTION_MESSAGE, or .PLAIN_MESSAGE
      * @throws HeadlessException
      */
-	public static void displayError(Component parent, String message) throws HeadlessException {
-		JOptionPane.showMessageDialog(parent, message, "", JOptionPane.ERROR_MESSAGE);
+	public void displayMessage(Component parent, String message, String statusBarMessage, int messageType) throws HeadlessException {
+		unlock(statusBarMessage);
+		JOptionPane.showMessageDialog(parent, message, "", messageType);
 	}
 
     /**
@@ -571,13 +577,12 @@ public class GUI extends JFrame implements CoreObserver {
             model = null;
             logger.fatal(RBLanguages.get("log_error_restart_kernel") + " " + ExceptionUtils.getStackTrace(e));
             enableComponentWithChildren(this.tabPanel, false);
-            unlock(RBLanguages.get("log_error_reload_kernel"));
 
             String message = RBLanguages.get("log_error_restart_kernel") + " " + e.getMessage();
             if (e.getCause() instanceof ArchiveException) {
             	message = RBLanguages.get("failure_EF_restart") + " " + RBLanguages.get("failure_archive_connect");
             }
-            displayError(this, message);            
+            displayMessage(this, message, RBLanguages.get("log_error_reload_kernel"), JOptionPane.ERROR_MESSAGE);            
 
         }
     }
@@ -622,7 +627,7 @@ public class GUI extends JFrame implements CoreObserver {
             	message = RBLanguages.get("failure_EF_start") + " " + RBLanguages.get("failure_archive_connect");
             }
             
-            displayError(null, message);
+    		JOptionPane.showMessageDialog(null, message, "", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
 
