@@ -241,6 +241,9 @@ public class ConfirmPanel extends JPanel {
 
                                 // Yay, all went okay!
                                 parent.log(RBLanguages.get("committed_changes") + "!");
+                                
+                                // Close the wizard
+                                parent.dispose(); 
 
                             }
                             catch (Exception ex) {
