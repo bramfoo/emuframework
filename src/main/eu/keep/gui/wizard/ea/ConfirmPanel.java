@@ -137,10 +137,10 @@ public class ConfirmPanel extends JPanel {
                                 final ImageFormat format = parent.step2.format;
 
                                 java.util.List<File> filesToZip = new ArrayList<File>();
-                                File emuRoot = new File(emu._package).getParentFile();
-                                readRecursive(emuRoot, filesToZip);
-                                createZipFile(filesToZip, emu._package);
+                                readRecursive(emu.folder, filesToZip);
+                                createZipFile(filesToZip, emu._package, emu.folder.getAbsolutePath());
 
+                                // Add emulator to EMULATORARCHIVE.EMULATORS table
                                 execute(
                                         DBUtil.DB.EA, // EA database
                                         "successfully inserted " + emu.name, // success
@@ -152,6 +152,7 @@ public class ConfirmPanel extends JPanel {
                                                 emu.package_name, emu.package_type, emu.package_version, emu._package, emu.user_instructions // params
                                 );
 
+                                // Link emulator to selected hardware in EMULATORARCHIVE.EMUS_HARDWARE table
                                 execute(
                                         DBUtil.DB.EA, // EA database
                                         "successfully associated the emulator with the hardware", // success
@@ -160,6 +161,7 @@ public class ConfirmPanel extends JPanel {
                                         emu.emulator_id, hardware.hardware_id // params
                                 );
 
+                                // Link emulator to selected imageFormat in EMULATORARCHIVE.EMUS_IMAGEFORMATS table
                                 execute(
                                         DBUtil.DB.EA, // EA database
                                         "successfully associated the emulator with the disk image format", // success
@@ -168,6 +170,7 @@ public class ConfirmPanel extends JPanel {
                                         emu.emulator_id, format.imageformat_id // params
                                 );
 
+                                // Add emulator to whitelist in ENGINE.EMULATOR_WHITELIST table
                                 execute(
                                 		DBUtil.DB.CEF, // Core EF database
                                 		"successfully added the emulator to the whitelist", // success
@@ -178,7 +181,15 @@ public class ConfirmPanel extends JPanel {
                                 
                                 // Yay, all went okay!
                                 parent.log(RBLanguages.get("committed_changes") + "!");
-
+                                
+                                // Remove zip-file from temporary folder
+                                if (!(new File(emu._package)).delete()) {
+                                	logger.warn("Could not delete emulator zip-file from Java temp folder: " + emu._package);
+                                }
+                                
+                                // Close the wizard
+                                parent.dispose(); 
+                                
                             } catch (Exception ex) {
                                 parent.log(RBLanguages.get("error") + ": " + ex.getMessage());
                                 confirm.setEnabled(false);
@@ -196,17 +207,22 @@ public class ConfirmPanel extends JPanel {
         });
     }
 
-    private void createZipFile(List<File> filesToZip, String zipFileName) throws IOException {
-
-        String root = new File(zipFileName).getParentFile().getAbsolutePath();
-
+    /**
+     * Create a zip file
+     * @param filesToZip a list of all files to be added to the zip file
+     * @param zipFilePath the full path for the destination zip file
+     * @param rootFolder the root folder where the files in <b>filesToZip</b> are located
+     * @throws IOException
+     */
+    private void createZipFile(List<File> filesToZip, String zipFilePath, String rootFolder) throws IOException {
+    	
         byte[] buf = new byte[1024];
+       
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFilePath));
 
-        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipFileName));
-
-        String regex = "^" +            // the start of the input
-                Pattern.quote(root) +   // escape any possible meta characters in the root-path
-                "[\\\\/]?";             // an optional trailing back- or forward-slash
+        String regex = "^" +            		// the start of the input
+                Pattern.quote(rootFolder) +   	// escape any possible meta characters in the root-path
+                "[\\\\/]?";             		// an optional trailing back- or forward-slash
 
         for (File file : filesToZip) {
 
@@ -228,6 +244,11 @@ public class ConfirmPanel extends JPanel {
 
     }
 
+    /**
+     * Recursively find all files in a directory and add them to a list of files to be zipped
+     * @param folder the directory that will be scanned
+     * @param files a list which will be populated with all files in <b>folder</b> and its subdirectories
+     */
     private void readRecursive(File folder, java.util.List<File> files) {
         File[] contents = folder.listFiles();
         if (contents != null) {

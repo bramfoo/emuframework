@@ -215,7 +215,7 @@ public class Step1_Emulator extends JPanel {
         String package_name = folder.getName() + "Package.zip";
         String package_type = "zip";
         String package_version = "1";
-        String _package = new File(folder, package_name).getAbsolutePath();
+        String _package = new File(System.getProperty("java.io.tmpdir"), package_name).getAbsolutePath();
         String user_instructions = txtUserInstructions.getText();
     	
         emu = new Emulator(folder, emulator_id, name, version, exec_type, exec_name, description, language_id,
