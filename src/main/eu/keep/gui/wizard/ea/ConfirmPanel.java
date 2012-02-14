@@ -133,8 +133,8 @@ public class ConfirmPanel extends JPanel {
                         public void run() {
                             try {
                                 final Emulator emu = parent.step1.emu;
-                                final Hardware hardware = parent.step2.hardware;
-                                final ImageFormat format = parent.step2.format;
+                                final Hardware[] hardwares = parent.step2.hardwares;
+                                final ImageFormat[] formats = parent.step2.formats;
 
                                 java.util.List<File> filesToZip = new ArrayList<File>();
                                 readRecursive(emu.folder, filesToZip);
@@ -152,23 +152,27 @@ public class ConfirmPanel extends JPanel {
                                                 emu.package_name, emu.package_type, emu.package_version, emu._package, emu.user_instructions // params
                                 );
 
-                                // Link emulator to selected hardware in EMULATORARCHIVE.EMUS_HARDWARE table
-                                execute(
-                                        DBUtil.DB.EA, // EA database
-                                        "successfully associated the emulator with the hardware", // success
-                                        "could not associate the emulator with the hardware", // error
-                                        "INSERT INTO emulatorarchive.emus_hardware (emulator_id, hardware_id) VALUES(?, ?)", // sql
-                                        emu.emulator_id, hardware.hardware_id // params
-                                );
+                                // Link emulator to selected hardware(s) in EMULATORARCHIVE.EMUS_HARDWARE table
+                                for (Hardware hardware : hardwares) {
+                                    execute(
+                                            DBUtil.DB.EA, // EA database
+                                            "successfully associated the emulator with the hardware", // success
+                                            "could not associate the emulator with the hardware", // error
+                                            "INSERT INTO emulatorarchive.emus_hardware (emulator_id, hardware_id) VALUES(?, ?)", // sql
+                                            emu.emulator_id, hardware.hardware_id // params
+                                    );                                	
+                                }
 
-                                // Link emulator to selected imageFormat in EMULATORARCHIVE.EMUS_IMAGEFORMATS table
-                                execute(
-                                        DBUtil.DB.EA, // EA database
-                                        "successfully associated the emulator with the disk image format", // success
-                                        "could not associate the emulator with the disk image format", // error
-                                        "INSERT INTO emulatorarchive.emus_imageformats (emulator_id, imageformat_id) VALUES(?, ?)", // sql
-                                        emu.emulator_id, format.imageformat_id // params
-                                );
+                                // Link emulator to selected imageFormat(s) in EMULATORARCHIVE.EMUS_IMAGEFORMATS table
+                                for (ImageFormat format : formats) {
+                                    execute(
+                                            DBUtil.DB.EA, // EA database
+                                            "successfully associated the emulator with the disk image format", // success
+                                            "could not associate the emulator with the disk image format", // error
+                                            "INSERT INTO emulatorarchive.emus_imageformats (emulator_id, imageformat_id) VALUES(?, ?)", // sql
+                                            emu.emulator_id, format.imageformat_id // params
+                                    );                                	
+                                }
 
                                 // Add emulator to whitelist in ENGINE.EMULATOR_WHITELIST table
                                 execute(
@@ -265,18 +269,39 @@ public class ConfirmPanel extends JPanel {
     public void init() {
 
         final Emulator emu = parent.step1.emu;
-        final String hardware = parent.step2.hardware.name;
-        final String format = parent.step2.format.name;
+        final Hardware[] hardwares = parent.step2.hardwares;
+        final ImageFormat[] formats = parent.step2.formats;
 
-        String text = String.format(
-                RBLanguages.get("confirm_commit"),
-                emu.name,               // <li> 1
-                emu.name, emu.folder,   // <li> 2
-                hardware,               // <li> 3
-                format                  // <li> 4
+        // Build explanation String
+        StringBuilder explanationText = new StringBuilder(
+    		String.format(
+    			RBLanguages.get("confirm_commit_part1"),
+    			emu.name,               // <li> 1
+    			emu.name, emu.folder,   // <li> 2
+    			emu.name				// <li> 3
+    		)
+        );        
+        
+        // Add Hardware names
+        for (Hardware hardware : hardwares) {        	
+        	explanationText.append("<li>" + hardware.name + "</li>"); // hardware sub-<li>'s
+        }        
+        
+        explanationText.append(
+        	String.format(
+    			RBLanguages.get("confirm_commit_part2"),
+    			emu.name                // <li> 4
+        	)
         );
+        
+        // Add ImageFormat names
+        for (ImageFormat format : formats) {
+        	explanationText.append("<li>" + format.name + "</li>");  // imageFormat sub-<li>'s
+        }        
+        
+        explanationText.append(RBLanguages.get("confirm_commit_part3"));
 
-        explanation.setText(text);
+        explanation.setText(explanationText.toString());
     }
 
     private void execute(DBUtil.DB db, String onSuccess, String onError, String sql, Object... params) {

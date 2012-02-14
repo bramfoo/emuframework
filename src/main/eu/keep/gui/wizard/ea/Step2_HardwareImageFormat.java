@@ -37,24 +37,33 @@ import eu.keep.gui.wizard.ea.model.ImageFormat;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Vector;
 
 public class Step2_HardwareImageFormat extends JPanel {
 
-    private EAWizardAdd parent;
-    protected Hardware hardware = null;
-    protected ImageFormat format = null;
+    protected Hardware[] hardwares = null;
+    protected ImageFormat[] formats = null;
+    
+    private JList hardwareList;
+    private JList imageFormatList;
+    
+    private JButton next;
+    private JButton previous;
 
     public Step2_HardwareImageFormat(final EAWizardAdd parent) {
 
         super.setLayout(new BorderLayout(5, 5));
 
-        final Dimension d = new Dimension(320, 25);
-
-        this.parent = parent;
+        final Dimension d = new Dimension(320, 150);
 
         final JPanel center = new JPanel(new MigLayout());
         final JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -65,34 +74,36 @@ public class Step2_HardwareImageFormat extends JPanel {
         Vector<Vector<String>> imageFormatData = DBUtil.query(DBUtil.DB.EA, "select imageformat_id, name from emulatorarchive.imageformats");
 
         Vector<Hardware> hardwareVector = new Vector<Hardware>();
-        hardwareVector.add(new Hardware());
         for(Vector<String> row : hardwareData) {
             hardwareVector.add(new Hardware(row.get(0), row.get(1)));
         }
 
         Vector<ImageFormat> imageFormatVector = new Vector<ImageFormat>();
-        imageFormatVector.add(new ImageFormat());
         for(Vector<String> row : imageFormatData) {
             imageFormatVector.add(new ImageFormat(row.get(0), row.get(1)));
         }
 
-        final JComboBox hardwareCombo = new JComboBox(hardwareVector);
-        hardwareCombo.setPreferredSize(d);
-
-        final JComboBox imageFormatCombo = new JComboBox(imageFormatVector);
-        imageFormatCombo.setPreferredSize(d);
-
+        hardwareList = new JList(hardwareVector);
+        hardwareList.setVisibleRowCount(5);        
+        JScrollPane hardwareListScroller = new JScrollPane(hardwareList);
+        hardwareListScroller.setPreferredSize(d);
+                
+        imageFormatList = new JList(imageFormatVector);
+        imageFormatList.setVisibleRowCount(5);
+        JScrollPane imageFormatListScroller = new JScrollPane(imageFormatList);
+        imageFormatListScroller.setPreferredSize(d);
+        
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel("<html>" + explanation + "</html>"),      "span 2 1 wrap" );
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(" "),                                     "wrap"          ); // empty line
         center.add(new JLabel(RBLanguages.get("hardware_platform") + ": ")              );
-        center.add(hardwareCombo,                                       "wrap"          );
-        center.add(new JLabel(RBLanguages.get("image_format") + ": ")                                         );
-        center.add(imageFormatCombo,                                    "wrap"          );
+        center.add(hardwareListScroller,                                "wrap"          );
+        center.add(new JLabel(RBLanguages.get("image_format") + ": ")                   );
+        center.add(imageFormatListScroller,                             "wrap"          );
 
-        final JButton previous = new JButton("<html>&larr;</html>");
-        final JButton next = new JButton("<html>&rarr;</html>");
+        previous = new JButton("<html>&larr;</html>");
+        next = new JButton("<html>&rarr;</html>");
         next.setEnabled(false);
 
         buttons.add(previous);
@@ -124,40 +135,40 @@ public class Step2_HardwareImageFormat extends JPanel {
             }
         });
 
-        hardwareCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Hardware hw = (Hardware)hardwareCombo.getSelectedItem();
-                ImageFormat frmt = (ImageFormat)imageFormatCombo.getSelectedItem();
-                if(!hw.isDummy() && !frmt.isDummy()) {
-                    hardware = hw;
-                    format = frmt;
-                    next.setEnabled(true);
-                }
-                else {
-                    hardware = null;
-                    format = null;
-                    next.setEnabled(false);
-                }
-            }
+        hardwareList.addListSelectionListener(new ListSelectionListener() {
+        	@Override
+        	public void valueChanged(ListSelectionEvent e) {
+        		validateInput();
+        	}
         });
 
-        imageFormatCombo.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Hardware hw = (Hardware)hardwareCombo.getSelectedItem();
-                ImageFormat frmt = (ImageFormat)imageFormatCombo.getSelectedItem();
-                if(!hw.isDummy() && !frmt.isDummy()) {
-                    hardware = hw;
-                    format = frmt;
-                    next.setEnabled(true);
-                }
-                else {
-                    hardware = null;
-                    format = null;
-                    next.setEnabled(false);
-                }
-            }
+        imageFormatList.addListSelectionListener(new ListSelectionListener() {
+        	@Override
+        	public void valueChanged(ListSelectionEvent e) {
+        		validateInput();
+        	}
         });
+
     }
+
+	private void validateInput() {
+		// Selected hardwares
+		Object[] selectedHardwares = hardwareList.getSelectedValues();
+
+		// Selected imageformats
+		Object[] selectedImageFormats = imageFormatList.getSelectedValues();
+
+		// Only enable 'next' button if at least one hardware and one imageFormat is selected
+		if ((selectedHardwares.length > 0 && !((Hardware)selectedHardwares[0]).isDummy()) &&
+			(selectedImageFormats.length > 0 && !((ImageFormat)selectedImageFormats[0]).isDummy())) {
+			hardwares = Arrays.copyOf(selectedHardwares, selectedHardwares.length, Hardware[].class);
+			formats = Arrays.copyOf(selectedImageFormats, selectedImageFormats.length, ImageFormat[].class);
+			next.setEnabled(true);
+		}
+		else {
+			hardwares = null;
+			formats = null;
+			next.setEnabled(false);
+		}
+	}
 }
