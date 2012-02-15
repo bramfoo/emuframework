@@ -34,6 +34,7 @@ import eu.keep.characteriser.Format;
 import eu.keep.downloader.db.DBRegistry;
 import eu.keep.softwarearchive.SwLanguageList;
 import eu.keep.softwarearchive.pathway.EfFormat;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -73,6 +74,17 @@ public interface SoftwareArchive {
     public abstract List<Pathway> getPathwayByFileFormat(String fileFormat)
             throws ConnectException, SocketTimeoutException, WebServiceException;
 
+    /**
+     * Returns a list of all available file formats
+     * @return List of file formats
+     * @throws ConnectException when setting up a connection to the server fails (e.g. not within allocated time)  
+     * @throws SocketTimeoutException when a response takes longer than the allocated time 
+     * @throws WebServiceException for any other webservice error
+     */
+	public abstract List<ObjectFormatType> getAllFileFormats()
+			throws ConnectException, SocketTimeoutException, WebServiceException;
+
+	
     /**
      * Returns a list of all available pathways
      * @return List of pathways

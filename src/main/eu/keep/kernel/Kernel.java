@@ -57,6 +57,7 @@ import eu.keep.downloader.Downloader;
 import eu.keep.downloader.db.DBRegistry;
 import eu.keep.downloader.db.DBUtil;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.ArchiveException;
@@ -1099,6 +1100,14 @@ public class Kernel implements CoreEngineModel {
     /**
      * @inheritDoc
      */
+	@Override
+	public List<ObjectFormatType> getAllFileFormatsFromArchive() throws IOException {
+		return downloader.getAllFileFormats();
+	}
+	
+    /**
+     * @inheritDoc
+     */
     @Override
     public List<DBRegistry> setRegistries(List<DBRegistry> listReg) throws IOException {
 
@@ -1236,4 +1245,5 @@ public class Kernel implements CoreEngineModel {
 	public Set<Language> getAcceptedLanguages() {
 		return acceptedLanguages;
 	}
+
 }

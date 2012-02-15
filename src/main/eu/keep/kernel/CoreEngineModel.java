@@ -41,6 +41,7 @@ import java.util.Set;
 import eu.keep.characteriser.Format;
 import eu.keep.downloader.db.DBRegistry;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.Language;
@@ -470,7 +471,15 @@ public interface CoreEngineModel {
     * @throws IOException If a database connection error occurs 
     */
    public List<Language> getSoftwareLanguages() throws IOException;
-
+   
+   /**
+    * Gets all supported file formats from the software archive
+     * @return List<ObjectFormatType> list of ObjectFormatType objects representing 
+     * 		all file formats currently supported by the Software Archive
+     * @throws IOException If an Software Archive connection error occurs 
+    */
+   public List<ObjectFormatType> getAllFileFormatsFromArchive() throws IOException;
+   
    ////////////////////////
     // Technical registries
     ///////////////////////

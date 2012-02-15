@@ -60,6 +60,7 @@ import eu.keep.downloader.db.SoftwareArchivePrototype;
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.softwarearchive.SwLanguageList;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.FileUtilities;
@@ -428,6 +429,24 @@ public class Downloader {
     public List<Pathway> getAllPathways() throws IOException {
         try {
             return softwareArchive.getAllPathways();
+        }
+    	catch (IOException e) {
+    		processIOException(e, "software archive");
+    	}
+    	catch (WebServiceException wse) {
+    		processWebServiceException(wse, "Software archive");
+    	}
+		return null;
+    }
+
+    /**
+     * Returns a list of all available file formats
+     * @return List of fileFormats
+     * @throws IOException If a connection error occurs when contacting the Software Archive
+     */
+    public List<ObjectFormatType> getAllFileFormats() throws IOException {
+        try {
+            return softwareArchive.getAllFileFormats();
         }
     	catch (IOException e) {
     		processIOException(e, "software archive");

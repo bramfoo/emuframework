@@ -30,14 +30,13 @@
  */
 package eu.keep.gui.config;
 
-import antlr.RuleBlock;
 import eu.keep.characteriser.Format;
 import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.gui.explorer.FileExplorerPanel;
 import eu.keep.gui.util.RBLanguages;
-import eu.keep.softwarearchive.pathway.OperatingSystemType;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -47,6 +46,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+
+import org.apache.log4j.Logger;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -114,23 +115,7 @@ public class ConfigPanel extends JPanel {
                 (new Thread(new Runnable() {
                     @Override
                     public void run() {
-
-                        try {
-                            List<Pathway> paths = parent.model.getPathways(frmt);
-                            if (paths.isEmpty()) {
-                            	String warning = RBLanguages.get("error_no_suitable_dependency") + ": " + frmt;
-                                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
-                            } else {
-                                parent.unlock(RBLanguages.get("num_dependencies") + ": " + paths.size());
-                                ConfigPanel.this.loadPathways(paths);
-                            }
-                        } catch (IOException e1) {
-                        	String error = RBLanguages.get("error") + ": " + e1.getMessage();
-                            parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
-                            e1.printStackTrace();
-                        }
-
-                    	ConfigPanel.this.findPathwaysForFormat(frmt);
+                    	ConfigPanel.this.findPathwaysForFormat(frmt);                    
                     }
                 })).start();
             }
@@ -311,13 +296,25 @@ public class ConfigPanel extends JPanel {
         }
     }
 
-    public void loadFormats(List<Format> formatList) {
+    public void loadFormats(List<Format> fitsFormats, List<ObjectFormatType> allFormats) {
         clear();
-//        explorerPanel.setEnabled(false);
         setEnableFormats(true);
-        for (Format f : formatList) {
-            formatsDropDown.addItem(new FormatWrapper(f));
+        
+        // Add the formats from FITS
+        if (!fitsFormats.isEmpty()) {
+            formatsDropDown.addItem("-------------- Suggested file formats ------------------------");
+            for (Format f : fitsFormats) {
+                formatsDropDown.addItem(new FormatWrapper(f));
+            }        	
         }
+        // Add the list of all available file formats
+        if (!allFormats.isEmpty()) {
+            formatsDropDown.addItem("-------------- Other supported file formats --------------");
+            for (ObjectFormatType oft : allFormats) {
+            	formatsDropDown.addItem(new FormatWrapper(oft));
+            }        	
+        }
+        formatsDropDown.setSelectedIndex(1);
     }
 
     /**
@@ -332,7 +329,7 @@ public class ConfigPanel extends JPanel {
     	List<Format> formats = new ArrayList<Format>();
     	Format noObjectFmt = new Format("no object", "-");
     	formats.add(noObjectFmt);
-    	this.loadFormats(formats);
+    	this.loadFormats(formats, new ArrayList<ObjectFormatType>());
     	
         // Load all possible pathways in the Pathways dropdown
         findPathwaysForFormat(noObjectFmt);
@@ -366,17 +363,18 @@ public class ConfigPanel extends JPanel {
 		try {
 		    List<Pathway> paths = parent.model.getPathways(frmt);
 		    if (paths.isEmpty()) {
-		    	String warning = "Didn't find any suitable dependency for format: " + frmt + " with the current set of acceptable Languages.";
+            	String warning = RBLanguages.get("error_no_suitable_dependency") + ": " + frmt;
 		        parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
 		    } else {
-		        parent.unlock("Found " + paths.size() + " suitable dependencies");
+                parent.unlock(RBLanguages.get("num_dependencies") + ": " + paths.size());
 		        loadPathways(paths);
 		    }
 		} catch (IOException e1) {
-		    parent.displayMessage(parent, "ERROR: " + e1.getMessage(), "ERROR: " + e1.getMessage(), JOptionPane.ERROR_MESSAGE);
+        	String error = RBLanguages.get("error") + ": " + e1.getMessage();
+            parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
 		    e1.printStackTrace();
 		}
-	}
+    }
 
     // drop down #1
     private void setEnableFormats(boolean enable) {
@@ -497,7 +495,7 @@ public class ConfigPanel extends JPanel {
         JLabel formatsLabel = new JLabel();
         RBLanguages.set(formatsLabel, "found_formats");
 
-        formatsDropDown = new JComboBox();
+        formatsDropDown = new FormatDropDownBox();        
         findDependencies = new JButton();
         RBLanguages.set(findDependencies, "find_dependencies");
 
@@ -686,17 +684,33 @@ public class ConfigPanel extends JPanel {
     /**
      * Wrapper used to display Format in GUI
      */
-    class FormatWrapper {
+    protected class FormatWrapper {
 
         final Format format;
+        final boolean isFitsOutput; 
 
+        /**
+         * Constructor. Create from a Format object
+         * @param f
+         */
         FormatWrapper(Format f) {
             format = f;
+            isFitsOutput = true;
         }
 
+        FormatWrapper(ObjectFormatType oft) {
+        	format = new Format(oft.getName(), "N/A");
+        	isFitsOutput = false;
+        }
+        
         @Override
         public String toString() {
-            return format.getName() + " " + format.getReportingTools().toString();
+        	if (isFitsOutput) {
+                return format.getName() + " " + format.getReportingTools().toString();        		
+        	} 
+        	else {
+        		return format.getName();
+        	}
         }
     }
 

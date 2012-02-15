@@ -55,6 +55,7 @@ import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.apache.log4j.Logger;
 
 import eu.keep.softwarearchive.EFFormatData;
+import eu.keep.softwarearchive.FileFormatList;
 import eu.keep.softwarearchive.PathwayList;
 import eu.keep.softwarearchive.RegistryList;
 import eu.keep.softwarearchive.SoftwareArchivePortType;
@@ -185,6 +186,33 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      * {@inheritDoc}
      */
 	@Override
+	public List<ObjectFormatType> getAllFileFormats() throws ConnectException, SocketTimeoutException, WebServiceException {
+        logger.info("Invoking getAllFileFormats...");
+
+        FileFormatList formats = new FileFormatList();
+        
+        // Request a timer to display progress
+        Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
+
+        try {
+             formats = port.getAllFileFormats();
+        }
+        catch (WebServiceException e) {
+            processWebServiceException(e, "Error retrieving pathway by file format: ");       	
+        }
+        finally {
+            // Stop the timer
+            t.cancel();
+        }
+
+        logger.info("Retrieved " + formats.getFileFormat().size() + " File Formats");
+        return formats.getFileFormat();
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
 	public List<Pathway> getAllPathways() throws ConnectException, SocketTimeoutException, WebServiceException {
         logger.info("Invoking getAllPathways...");
 
@@ -195,7 +223,6 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
 
         try {
              pwl = port.getAllPathways();
-             logger.debug("Retrieved list of size: " + pwl.getPathway().size());
         }
         catch (WebServiceException e) {
             processWebServiceException(e, "Error retrieving pathway by file format: ");       	

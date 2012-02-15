@@ -44,6 +44,7 @@ import eu.keep.gui.wizard.swa.SWAWizardRemove;
 import eu.keep.kernel.CoreEngineModel;
 import eu.keep.kernel.CoreObserver;
 import eu.keep.kernel.Kernel;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.util.ArchiveException;
 import eu.keep.util.FileUtilities;
 import eu.keep.gui.settings.EFProperty;
@@ -500,10 +501,13 @@ public class GUI extends JFrame implements CoreObserver {
         return helpMenu;
     }
 
-    public void loadFormats(List<Format> formats) {
-        tabPanel.loadFormats(formats);
+    public void loadFormats(List<Format> fitsFormats) {
+        tabPanel.loadFormats(fitsFormats, new ArrayList<ObjectFormatType>());
     }
-
+    public void loadFormats(List<Format> fitsFormats, List<ObjectFormatType> allFormats) {
+        tabPanel.loadFormats(fitsFormats, allFormats);
+    }
+    
     /**
      * Display an error or warning message. The message will be displayed both in the status bar 
      * (at the bottom of the window) and in a popup window.

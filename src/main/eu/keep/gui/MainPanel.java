@@ -33,6 +33,7 @@ package eu.keep.gui;
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.DBPanel;
 import eu.keep.gui.config.ConfigPanel;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 
 import javax.swing.*;
 
@@ -94,7 +95,7 @@ public class MainPanel extends JPanel {
         super.add(tabbedPane, BorderLayout.CENTER);
     }
 
-    void loadFormats(List<Format> formats) {
-        configPanel.loadFormats(formats);
+    void loadFormats(List<Format> fitsFormats, List<ObjectFormatType> allFormats) {
+        configPanel.loadFormats(fitsFormats, allFormats);
     }
 }

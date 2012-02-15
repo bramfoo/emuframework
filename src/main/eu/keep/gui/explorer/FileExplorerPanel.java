@@ -35,6 +35,7 @@ import eu.keep.emulatorarchive.emulatorpackage.EmulatorPackage;
 import eu.keep.gui.GUI;
 import eu.keep.gui.common.InfoTableDialog;
 import eu.keep.gui.util.RBLanguages;
+import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 
@@ -272,14 +273,49 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                 @Override
                 public void run() {
                     try {
-                        java.util.List<Format> formats = parent.model.characterise(selectedFile);
-                        if (formats.isEmpty()) {
-                        	String warning = RBLanguages.get("could_not_determine_format") + ": " + selectedFile;
-                            parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
-                        } else {
-                            parent.unlock(RBLanguages.get("number_of_formats") + ": " + formats.size());
-                            parent.loadFormats(formats);
+                        java.util.List<Format> characteriserFormats = parent.model.characterise(selectedFile);
+                        java.util.List<ObjectFormatType> allFormats = parent.model.getAllFileFormatsFromArchive();
+
+                        // Display warning if either list is empty
+                        if (characteriserFormats.isEmpty()) {
+                            String warning = RBLanguages.get("could_not_determine_format") + ": " + selectedFile;                        		
+                        	if (allFormats.isEmpty()) {
+                        		// Both lists empty!
+                        		warning = warning + RBLanguages.get("error_and_not_download_all_formats");
+                            	logger.error(warning);
+                                parent.displayMessage(parent, warning, warning, JOptionPane.ERROR_MESSAGE);
+                        	}
+                        	else {
+                        		// Only the characteriserFormats empty!
+                        		warning = warning + RBLanguages.get("manually_select_file_fomat");
+                            	logger.warn(warning);
+                                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
+                                parent.loadFormats(characteriserFormats, allFormats);
+                        	}
+                        } 
+                        
+                        else {
+                        	if (allFormats.isEmpty()) {
+                        		// Only list of all supported file formats empty!
+                        		
+                            	// FITS output is available, so no need to display error in GUI (?). 
+                            	// However, do log a warning
+                            	logger.warn("Managed to characterise file " + selectedFile.getAbsolutePath() + 
+                            			", but could not download the list of all supported file formats from the software archive. " +
+                            			"This probably indicates a problem with the (connection to) the software archive.");
+                                parent.unlock(RBLanguages.get("number_of_formats") + ": " + characteriserFormats.size() + 
+                                		". A list of all supported file formats could not be downloaded from the software archive.");                        		
+                        	}
+                        	else {
+                        		// Neither list empty! 
+                        		logger.debug("Successfully characterised file " + selectedFile.getAbsolutePath() + 
+                        				" and downloaded list of all supported file formats.");
+                                parent.unlock(RBLanguages.get("number_of_formats") + ": " + characteriserFormats.size() + 
+                                		". If FITS did not return the correct format, please select a format manually from the list of supported formats.");                        		
+                        	}
+                        	parent.loadFormats(characteriserFormats, allFormats);
                         }
+                        
                     } catch (IOException ex) {
                     	String error = RBLanguages.get("error") + ": " + ex.getMessage();
                         parent.displayMessage(parent, error, error, JOptionPane.ERROR_MESSAGE);
