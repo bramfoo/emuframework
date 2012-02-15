@@ -70,7 +70,7 @@ public class GUI extends JFrame implements CoreObserver {
     public static final int WIDTH_UNIT = 10;
     public static final int TOTAL_WIDTH_UNITS = 105;
     public static final int WIDTH = WIDTH_UNIT * TOTAL_WIDTH_UNITS;
-    public static final int HEIGHT = 900;
+    public static final int HEIGHT = 700;
     public static final String PROP_FILE_NAME = "gui.properties";
     public static final String PROP_FILE_NAME_KERNEL = "user.properties";
     private static final Logger logger = Logger.getLogger(GUI.class.getName());
