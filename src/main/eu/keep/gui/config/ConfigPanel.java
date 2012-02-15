@@ -47,8 +47,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import org.apache.log4j.Logger;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
@@ -302,14 +300,14 @@ public class ConfigPanel extends JPanel {
         
         // Add the formats from FITS
         if (!fitsFormats.isEmpty()) {
-            formatsDropDown.addItem("-------------- Suggested file formats ------------------------");
+            formatsDropDown.addItem(RBLanguages.get("suggested_file_formats_header"));
             for (Format f : fitsFormats) {
                 formatsDropDown.addItem(new FormatWrapper(f));
             }        	
         }
         // Add the list of all available file formats
         if (!allFormats.isEmpty()) {
-            formatsDropDown.addItem("-------------- Other supported file formats --------------");
+            formatsDropDown.addItem(RBLanguages.get("other_file_formats_header"));
             for (ObjectFormatType oft : allFormats) {
             	formatsDropDown.addItem(new FormatWrapper(oft));
             }        	

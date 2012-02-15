@@ -281,16 +281,16 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                             String warning = RBLanguages.get("could_not_determine_format") + ": " + selectedFile;                        		
                         	if (allFormats.isEmpty()) {
                         		// Both lists empty!
-                        		warning = warning + RBLanguages.get("error_and_not_download_all_formats");
+                        		warning = warning + " " + RBLanguages.get("error_and_not_download_all_formats");
                             	logger.error(warning);
                                 parent.displayMessage(parent, warning, warning, JOptionPane.ERROR_MESSAGE);
                         	}
                         	else {
                         		// Only the characteriserFormats empty!
-                        		warning = warning + RBLanguages.get("manually_select_file_fomat");
+                        		warning = warning + ". " + RBLanguages.get("manually_select_file_fomat");
                             	logger.warn(warning);
-                                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                                 parent.loadFormats(characteriserFormats, allFormats);
+                                parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                         	}
                         } 
                         
@@ -304,14 +304,14 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
                             			", but could not download the list of all supported file formats from the software archive. " +
                             			"This probably indicates a problem with the (connection to) the software archive.");
                                 parent.unlock(RBLanguages.get("number_of_formats") + ": " + characteriserFormats.size() + 
-                                		". A list of all supported file formats could not be downloaded from the software archive.");                        		
+                                		". " + RBLanguages.get("error_donwload_all_formats"));                        		
                         	}
                         	else {
                         		// Neither list empty! 
                         		logger.debug("Successfully characterised file " + selectedFile.getAbsolutePath() + 
                         				" and downloaded list of all supported file formats.");
                                 parent.unlock(RBLanguages.get("number_of_formats") + ": " + characteriserFormats.size() + 
-                                		". If FITS did not return the correct format, please select a format manually from the list of supported formats.");                        		
+                                		". " + RBLanguages.get("suggest_manually_select_file_fomat"));                      		
                         	}
                         	parent.loadFormats(characteriserFormats, allFormats);
                         }

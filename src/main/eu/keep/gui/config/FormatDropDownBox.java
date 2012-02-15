@@ -45,21 +45,18 @@ import javax.swing.JList;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 
-import org.apache.log4j.Logger;
-
 import eu.keep.gui.config.ConfigPanel.FormatWrapper;
 
 public class FormatDropDownBox extends JComboBox {
 
-	//private final ListCellRenderer defaultRenderer;
 	private Object currentItem;	
-	
-	private final Logger logger = Logger.getLogger(this.getClass().getName());
-	
+		
 	public FormatDropDownBox() {
 		
 		// Add a custom Renderer that displays the section headers properly
 		final ListCellRenderer defaultRenderer = this.getRenderer();
+		
+		
 		this.setRenderer(new ListCellRenderer() {			
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
