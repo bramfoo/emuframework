@@ -86,18 +86,18 @@ public interface SoftwarePackageDAO {
 
     /**
      * Returns the values the 'pathways' view
-     * @param fileFormat File Format name. If null, <b>all</b> pathways will be returned
+     * @param fileFormat File Format name. If null, <b>all</b> pathways will be returned.
      * @param columnNames Columns names to be returned. The column data must all be of type VARCHAR2! 
-     * @return Map of lists, with the column name as key and a list for the values
+     * @return List of lists of values, with the secondary lists having one entry for every column name in <b>columnNames</b>
      */
     public List<List<String>> getPathwaysView(String fileFormat, List<String> columnNames);
     
     /**
-     * Returns the values of the FileFormat table
-     * @param fileFormatID File Format ID
-     * @return List of values from the table
+     * Returns the values of the fileformats table
+     * @param fileFormatID File Format ID. If null, <b>all</b> fileFormats will be returned.
+     * @return List of lists of values, with the secondary lists having one entry for every column in the fileformats table
      */
-    public List<String> getFileFormatInfo(String fileFormatID);
+    public List<List<String>> getFileFormatInfo(String fileFormatID);
     
     /**
      * Returns the values of the Platforms table

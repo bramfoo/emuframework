@@ -75,6 +75,14 @@ $
                 </xs:complexType>
             </xs:element>  
        
+            <xs:element name="fileFormatList">             
+                <xs:complexType>
+	                <xs:sequence>
+	                    <xs:element name="fileFormat" type="pw:objectFormatType" minOccurs="0" maxOccurs="unbounded"/>
+	                </xs:sequence>
+                </xs:complexType>
+            </xs:element>  
+       
             <xs:element name="swLanguageList">             
 		        <xs:complexType>
 		      		<xs:sequence>
@@ -153,6 +161,12 @@ $
         <wsdl:part name="parameters" element="tns:pathwayList"/>
     </wsdl:message>
 
+    <wsdl:message name="GetAllFileFormatsInput">
+    </wsdl:message>
+    <wsdl:message name="GetAllFileFormatsOutput">
+        <wsdl:part name="parameters" element="tns:fileFormatList"/>
+    </wsdl:message>
+
     <wsdl:message name="GetSoftwarePackagesByPathwayInput">
         <wsdl:part name="parameters1" element="pw:pathway"/>
     </wsdl:message>
@@ -229,6 +243,11 @@ $
         <wsdl:operation name="GetAllPathways">
            <wsdl:input message="tns:GetAllPathwaysInput"/>
            <wsdl:output message="tns:GetAllPathwaysOutput"/>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetAllFileFormats">
+           <wsdl:input message="tns:GetAllFileFormatsInput"/>
+           <wsdl:output message="tns:GetAllFileFormatsOutput"/>
         </wsdl:operation>
         
         <wsdl:operation name="GetSoftwarePackagesByPathway">
@@ -314,6 +333,16 @@ $
         
         <wsdl:operation name="GetAllPathways">
             <soap:operation soapAction="http://softwarearchive.keep.eu/GetAllPathways" style="document"/>
+            <wsdl:input>
+               <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+               <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        
+        <wsdl:operation name="GetAllFileFormats">
+            <soap:operation soapAction="http://softwarearchive.keep.eu/GetAllFileFormats" style="document"/>
             <wsdl:input>
                <soap:body use="literal"/>
             </wsdl:input>

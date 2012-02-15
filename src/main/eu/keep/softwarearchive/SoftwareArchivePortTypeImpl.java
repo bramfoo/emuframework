@@ -248,6 +248,37 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 	}
 	
 
+	@Override
+	public FileFormatList getAllFileFormats() {
+    	LOG.info("Retrieving all available file formats...");
+
+    	FileFormatList formatList = new FileFormatList();
+    	
+    	// Get list of all FileFormats from the database
+		List<List<String>> results = spDAO.getFileFormatInfo(null);
+
+		// Convert each returned row into a ObjectFormatType object
+        for (List<String> row : results) {
+    		Iterator<String> it = row.iterator();
+
+    		ObjectFormatType oft = new ObjectFormatType();    		
+    		oft.setId(it.next());
+    		oft.setName(it.next());
+    		
+    		// Any of the following items can be null
+    		String item = it.next();
+    		oft.setVersion(item == null ? "N/A" : item);
+     		item = it.next();
+    		oft.setDescription(item == null ? "N/A" : item);
+    		item = it.next();
+    		oft.setReference(item == null ? "N/A" : item);
+    		formatList.getFileFormat().add(oft);
+        }
+
+        LOG.debug("Returning " + results.size() + " fileformat(s)");
+        return formatList;
+	}
+
 	/**
      * Return a list of Software Packages based on a pathway
      * @param pathway The pathway containing application, operating system and hardware information
@@ -626,7 +657,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
 		ObjectFormatType obj = new ObjectFormatType();
 		List<String> results = new ArrayList<String>();
-		results = spDAO.getFileFormatInfo(id);
+		results = spDAO.getFileFormatInfo(id).get(0); // The query should return exactly one entry
 		Iterator<String> it = results.iterator();
 		obj.setId(it.next());
 		obj.setName(it.next());

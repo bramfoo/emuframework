@@ -72,7 +72,8 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 
 
 	// Simple selection
-	private static final String SELECT_ALL_FILEFORMATS_ON_FF   = "SELECT * FROM " + FILEFORMAT_NAME + " WHERE fileformat_id=?";
+	private static final String SELECT_ALL_FILEFORMATS	       = "SELECT * FROM " + FILEFORMAT_NAME;
+	private static final String ON_FF 						   = " WHERE fileformat_id=?";
 	private static final String SELECT_ALL_PLATFORMS_ON_PF     = "SELECT * FROM " + PLATFORM_NAME + " WHERE platform_id=?";
 	private static final String SELECT_APP_PACK_VIEW_ON_IMG    = "SELECT * FROM " + APP_PACK_VIEW + " WHERE image_id=?";
 	private static final String SELECT_APP_PACK_VIEW_ON_APP    = "SELECT * FROM " + APP_PACK_VIEW + " WHERE app_id=?";
@@ -369,34 +370,52 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	}
 
 	@Override
-	public List<String> getFileFormatInfo(String fileFormatID) {
-		List<String> fileFormatInfo = new ArrayList<String>();
+	public List<List<String>> getFileFormatInfo(String fileFormatID) {
+		List<List<String>> fileFormats = new ArrayList<List<String>>();
+		String query = "";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 
-		LOGGER.debug("Quering file format table for " + fileFormatID);
-		try {
-			pstmt = conn.prepareStatement(SELECT_ALL_FILEFORMATS_ON_FF);
-			pstmt.setString(1, fileFormatID);
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-				// record has been found
-				fileFormatInfo.add(rs.getString(1));
-				fileFormatInfo.add(rs.getString(2));
-				fileFormatInfo.add(rs.getString(3));
-				fileFormatInfo.add(rs.getString(4));
-				fileFormatInfo.add(rs.getString(5));                
+		String errorMessage = "Database: Error while retrieving row in 'fileformats' table"; 
+		try {			
+			if (fileFormatID == null || fileFormatID.length() == 0) {
+				LOGGER.debug("Retrieving all available fileFormats.");
+				query = SELECT_ALL_FILEFORMATS;
+				pstmt = conn.prepareStatement(query);			
+			} 
+			else {
+				LOGGER.debug("Retrieving file formats with ID '" + fileFormatID + "'");
+				query = SELECT_ALL_FILEFORMATS + ON_FF;
+				pstmt = conn.prepareStatement(query);
+				pstmt.setString(1, fileFormatID);
+				errorMessage = errorMessage + " for file format " + fileFormatID; 
+			}			
+			try {
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					List<String> fileFormatInfo = new ArrayList<String>();
+					// record has been found
+					fileFormatInfo.add(rs.getString(1));
+					fileFormatInfo.add(rs.getString(2));
+					fileFormatInfo.add(rs.getString(3));
+					fileFormatInfo.add(rs.getString(4));
+					fileFormatInfo.add(rs.getString(5));
+					fileFormats.add(fileFormatInfo);
+					LOGGER.debug("Added fileFormat: " + fileFormatInfo);
+				}
 			}
-			rs.close();
-			pstmt.close();
+			finally {
+				rs.close();
+				pstmt.close();
+			}
 		}
 		catch (SQLException e) {
-			LOGGER.info("Database: Error while retrieving data from file format table" + fileFormatInfo + ": " + e);
-			e.printStackTrace();
+			LOGGER.error(errorMessage + ": " + ExceptionUtils.getStackTrace(e));
 			throw new RuntimeException(e);
 		}
-		LOGGER.debug("Found information on fileformat [" + fileFormatID + "]: " + fileFormatInfo);
-		return fileFormatInfo;
+
+		LOGGER.debug("Found " + fileFormats.size() + " fileFormats.");
+		return fileFormats;	
 	}
 
 	@Override
