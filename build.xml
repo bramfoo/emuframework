@@ -99,7 +99,9 @@ $
     <!-- clean -->
     <target name="clean">
         <delete dir="${build.dir}"/>
-    	<delete dir="${gen-src.dir}"/>
+        <delete includeemptydirs="true">
+            <fileset dir="${gen-src.dir}" includes="**/*"/>
+        </delete>
         <delete file="${server.script}.sh"/> 
         <delete file="${server.script}.bat"/>         
         <delete file="${jar.dir}/${server.name}-${server.version}.jar"/>
@@ -107,7 +109,9 @@ $
 
 	<!-- Generate automatic source -->
     <target name="generated.src" description="Generates the CXF classes" depends="check.user.properties" if="user.properties.present">
-    	<delete dir="${gen-src.dir}"/>
+        <delete includeemptydirs="true">
+            <fileset dir="${gen-src.dir}" includes="**/*"/>
+        </delete>
     	<echo level="info" message="Generating Java classes using Apache CXF wsdl2java..."/>
         <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
           <arg value="-d"/>
@@ -153,7 +157,7 @@ $
     </target>
 
     <!-- release -->
-    <target name="release" description="Create a release package" depends="jar, db.drop, db.create, db.populate, runServer.scripts" >	   	    
+    <target name="release" description="Create a release package" depends="jar, db.drop, db.create, db.populate, db.populate.proprietary, runServer.scripts" >	   	    
 	    <property name="release.name"  value="swa.zip"/>
         <mkdir dir="${release.dir}"/>
         <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" 
