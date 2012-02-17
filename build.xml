@@ -153,7 +153,7 @@ $
     </target>
 
     <!-- release -->
-    <target name="release" description="Create a release package" depends="jar, db.drop, db.create, db.populate, db.populate.proprietary, runServer.scripts" >	   	    
+    <target name="release" description="Create a release package" depends="jar, db.drop, db.create, db.populate, runServer.scripts" >	   	    
 	    <property name="release.name"  value="swa.zip"/>
         <mkdir dir="${release.dir}"/>
         <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" 
