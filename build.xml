@@ -322,7 +322,7 @@ $Revision$ $Date$ $Author$
  ============ Releasing targets ===================
 -->
 
-    <target name="release" description="Creates a release package" depends="jar, cli.scripts, db.drop, db.create" >	   	    
+    <target name="release" description="Creates a release package" depends="jar, cli.scripts, db.reset" >	   	    
         <mkdir dir="${release.dir}"/>
         <zip destfile="${release.dir}/${release.name}.zip">
         	<fileset dir="${basedir}" includes="${runCLI}.*"/>
@@ -442,7 +442,7 @@ $Revision$ $Date$ $Author$
 		<H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}"
 			     user="${test.h2.db.admin}"
 				 password="${test.h2.db.adminpassw}"
-				 script="$${testData.dir}/database/sql/Test_CEF_DropUserSchema.sql"
+				 script="${testData.dir}/database/sql/Test_CEF_DropUserSchema.sql"
 				 failonerror="true">
 		</H2RunScript>
 		<delete dir="${test.h2.db.url}.lobs.db"/>
@@ -546,17 +546,4 @@ $Revision$ $Date$ $Author$
         <ivy:publish resolver="local" pubrevision="${version}" overwrite="true" artifactspattern="${jar.dir}/[artifact].[ext]"/>
     </target>
 
-<!-- 
-============ Edo's targets ===================
--->	
-
-	<target name="deploy" depends="jar">
-		<copy file="${jar.dir}/EFCore.jar" todir="C:\Users\nooe\Documents\KEEP\EF_installation"/>
-		
-		<exec dir="C:\Users\nooe\Documents\KEEP\EF_installation" executable="cmd" os="Windows 7">
-		  <arg line="/c runEF.bat -admin"/>
-		</exec>
-		
-	</target>
-		
 </project>
