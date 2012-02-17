@@ -177,7 +177,9 @@ $Revision$ $Date$ $Author$
 	<!-- Delete output files and directories -->
    	<target name="clean" description="Clean the directory: build, ${gen-src.dir}/*, ${test.report.dir}">
 		<delete dir="${build.dir}"/>
-		<delete dir="${gen-src.dir}/eu"/>
+        <delete includeemptydirs="true">
+            <fileset dir="${gen-src.dir}" includes="**/*"/>
+        </delete>
         <delete dir="${test.report.dir}"/>
 	</target>
 
