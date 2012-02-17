@@ -71,6 +71,9 @@ INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, descripti
 INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1024', 'Scalable Vector Graphics', null, 'Scalable Vector Graphics (SVG) is a family of specifications of an XML-based file format for describing two-dimensional vector graphics, both static and dynamic (i.e. interactive or animated).', 'http://en.wikipedia.org/wiki/Scalable_Vector_Graphics');
 INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1025', 'ZIP Format', null, 'Zip is a file format used for data compression and archiving. A zip file contains one or more files that have been compressed, to reduce file size, or stored as is.', 'http://en.wikipedia.org/wiki/Zip_%28file_format%29');
 INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1026', 'Audio/Video Interleaved Format', null, 'Audio Video Interleaved, known by its initials AVI, is a multimedia container format introduced by Microsoft in November 1992 as part of its Video for Windows technology. AVI files can contain both audio and video data in a file container that allows synchronous audio-with-video playback', 'http://en.wikipedia.org/wiki/Audio_Video_Interleave');
+INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1027', 'Thomson Tape Image', null, 'Thomson Tape Image (k7)', 'http://fr.wikipedia.org/wiki/SIMIV');
+INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1028', 'Thomson Cartridge Image', null, 'Thomson Cartridge Image (m7)', 'http://fr.wikipedia.org/wiki/SIMIV');
+INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1029', 'Thomson Floppy Image', null, 'Thomson Floppy Image (d7; dd7)', 'http://fr.wikipedia.org/wiki/SIMIV');
 
 -- Platform table
 -- Contains the name and description of each known platform
@@ -80,6 +83,8 @@ INSERT INTO softwarearchive.platforms (platform_id, name, description, creator, 
 INSERT INTO softwarearchive.platforms (platform_id, name, description, creator, production_start, production_end, reference) VALUES('HPF-1002', 'BBCMICRO','Acorn BBC Microcomputer System', 'Acorn Computers', '1981', '1994', 'http://en.wikipedia.org/wiki/BBC_Micro');
 INSERT INTO softwarearchive.platforms (platform_id, name, description, creator, production_start, production_end, reference) VALUES('HPF-1003', 'C64','Commodore 64', 'Commodore International', '1982', '1994', 'http://en.wikipedia.org/wiki/Commodore_64');
 INSERT INTO softwarearchive.platforms (platform_id, name, description, creator, production_start, production_end, reference) VALUES('HPF-1004', 'x86','Intel 8086 family', 'Intel, AMD', '1978', 'present', 'http://en.wikipedia.org/wiki/X86');
+INSERT INTO softwarearchive.platforms (platform_id, name, description, creator, production_start, production_end, reference) VALUES('HPF-1005', 'Thomson','Thomson', 'Thomson', '1984', '1987', 'http://fr.wikipedia.org/wiki/Thomson_SA');
+
 
 -- (Disk) image formats table
 -- Contains the ID and name of the file system architecture a (disk) image may be in 
@@ -97,6 +102,9 @@ INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VA
 INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1003','HPF-1002');
 INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1004','HPF-1003');
 INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1005','HPF-1003');
+INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1027','HPF-1005');
+INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1028','HPF-1005');
+INSERT INTO softwarearchive.fileformats_platform (fileformat_id, platform_id) VALUES('FFT-1029','HPF-1005');
 
 -- Languages table
 -- Contains the language id (locale code) and language name of known languages
