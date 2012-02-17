@@ -47,14 +47,20 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.apache.log4j.Logger;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class ConfigPanel extends JPanel {
+
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     protected GUI parent;
     protected FileExplorerPanel explorerPanel;
@@ -141,7 +147,6 @@ public class ConfigPanel extends JPanel {
 
         						if (!emuMap.isEmpty()) {
         							message = RBLanguages.get("num_emulators") + ": " + emuMap.size();
-        							ConfigPanel.this.loadEmus(emuMap);
         						}
         					}
         					parent.unlock(message);
@@ -289,9 +294,35 @@ public class ConfigPanel extends JPanel {
 
     public void loadEmus(Map<EmulatorPackage, List<SoftwarePackage>> emuMap) {
         setEnableEmus(true);
+        
+        // Order the map alphabetically, with respect to the label that will be shown in the dropdown list
+        // (see EmulatorPackageWrapper.toString());        
+        boolean isSorted = true;
+        SortedMap<String, Map.Entry<EmulatorPackage, List<SoftwarePackage>>> sortedMap = new TreeMap<String, Map.Entry<EmulatorPackage, List<SoftwarePackage>>>();
         for (Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
-            emulatorsDropDown.addItem(new EmulatorPackageWrapper(entry));
+        	if (sortedMap.containsKey(new EmulatorPackageWrapper(entry).toString())) {
+        		logger.warn("Found two entries in the list of emulators with equal name. Cannot sort dropdown list.");
+        		isSorted = false;
+        		break;
+        	} else {
+        		logger.debug("Adding emulatorPackageWrapper as key to sortedMap: " + new EmulatorPackageWrapper(entry).toString());
+            	sortedMap.put(new EmulatorPackageWrapper(entry).toString(), entry);        		
+        	}
         }
+        
+        if (isSorted) {
+        	// Display entries in alphabetical order
+        	for (Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : sortedMap.values()) {
+                emulatorsDropDown.addItem(new EmulatorPackageWrapper(entry));
+        	}
+        }
+        else {
+        	// Display entries in original order. Because the standard Map interface does not 
+        	// guarantee the order of its keys, the order may be different on every subsequent call.
+            for (Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuMap.entrySet()) {
+                emulatorsDropDown.addItem(new EmulatorPackageWrapper(entry));
+            }        	
+        }        
     }
 
     public void loadFormats(List<Format> fitsFormats, List<ObjectFormatType> allFormats) {
@@ -336,13 +367,18 @@ public class ConfigPanel extends JPanel {
         formatsDropDown.setEnabled(false);
         findDependencies.setEnabled(false);	
     }
-    
+
     public void loadPathways(List<Pathway> paths) {
-        setEnablePathways(true);
-        pathwaysDropDown.removeAllItems();
-        for (Pathway p : paths) {
-            pathwaysDropDown.addItem(new PathwayWrapper(p));
-        }
+    	setEnablePathways(true);
+    	pathwaysDropDown.removeAllItems();
+
+    	if (!paths.isEmpty()) {
+    		pathwaysDropDown.addItem(RBLanguages.get("pathways_header"));
+    		for (Pathway p : paths) {
+    			pathwaysDropDown.addItem(new PathwayWrapper(p));
+    		}
+    	}
+    	pathwaysDropDown.setSelectedIndex(1);
     }
 
     public void loadSoftware(List<SoftwarePackage> swList) {
@@ -493,7 +529,7 @@ public class ConfigPanel extends JPanel {
         JLabel formatsLabel = new JLabel();
         RBLanguages.set(formatsLabel, "found_formats");
 
-        formatsDropDown = new FormatDropDownBox();        
+        formatsDropDown = new HeaderDropDownBox();        
         findDependencies = new JButton();
         RBLanguages.set(findDependencies, "find_dependencies");
 
@@ -512,7 +548,7 @@ public class ConfigPanel extends JPanel {
         JLabel pathwaysLabel = new JLabel();
         RBLanguages.set(pathwaysLabel, "dependencies");
 
-        pathwaysDropDown = new JComboBox();
+        pathwaysDropDown = new HeaderDropDownBox();
         findEmus = new JButton();
         RBLanguages.set(findEmus, "find_emulators");
 

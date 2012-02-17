@@ -47,16 +47,19 @@ import javax.swing.ListCellRenderer;
 
 import eu.keep.gui.config.ConfigPanel.FormatWrapper;
 
-public class FormatDropDownBox extends JComboBox {
+/**
+ * Custom DropDownBox allowing for non-selectable String entries (which can be used as headers)
+ */
+public class HeaderDropDownBox extends JComboBox {
 
 	private Object currentItem;	
-		
-	public FormatDropDownBox() {
-		
+
+	public HeaderDropDownBox() {
+
 		// Add a custom Renderer that displays the section headers properly
 		final ListCellRenderer defaultRenderer = this.getRenderer();
-		
-		
+
+
 		this.setRenderer(new ListCellRenderer() {			
 			@Override
 			public Component getListCellRendererComponent(JList list, Object value,
@@ -68,7 +71,8 @@ public class FormatDropDownBox extends JComboBox {
 					Font defaultFont = list.getFont();          
 					c.setFont(new Font(defaultFont.getFontName(), Font.BOLD, defaultFont.getSize()));
 				}
-				else if (value instanceof ConfigPanel.FormatWrapper){
+				else if (value instanceof ConfigPanel.FormatWrapper || 
+						value instanceof ConfigPanel.PathwayWrapper){
 					// This cell represents a 'normal' row: display with the default rendering
 					c = defaultRenderer.getListCellRendererComponent(list,value,index,isSelected,cellHasFocus);
 					c.setEnabled(true);
@@ -79,8 +83,8 @@ public class FormatDropDownBox extends JComboBox {
 				return c;
 			}
 		});
-		
-		
+
+
 		// Add an ActionListener used to listen to selection events in the 
 		// file formats dropdown. If a user tries to select one of the section 
 		// header rows, the previously selected item will be kept.
@@ -88,49 +92,51 @@ public class FormatDropDownBox extends JComboBox {
 		this.addActionListener(new ActionListener() {			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Object selectedItem = FormatDropDownBox.this.getSelectedItem();
+				Object selectedItem = HeaderDropDownBox.this.getSelectedItem();
 				if (selectedItem instanceof String) {
-					FormatDropDownBox.this.setSelectedItem(currentItem);
+					HeaderDropDownBox.this.setSelectedItem(currentItem);
 				} else {
 					currentItem = selectedItem;
 				}
 			}
-			
+
 		});
-		
+
 		// Add custom Actions, to make sure the up- and down-keys can be used
 		// to navigate through the entire list. Section headers will be skipped.
-        ActionMap actionMap = this.getActionMap();
-        Action up = new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-              int si = getSelectedIndex();
-              for(int i = si-1;i >= 0;i--) {
-                if(FormatDropDownBox.this.getItemAt(i) instanceof FormatWrapper) {
-                  setSelectedIndex(i);
-                  break;
-                }
-              }
-            }
-          };
-          Action down = new AbstractAction() {
-            public void actionPerformed(ActionEvent e) {
-              int si = getSelectedIndex();
-              for(int i = si+1;i < getModel().getSize();i++) {
-                  if(FormatDropDownBox.this.getItemAt(i) instanceof FormatWrapper) {
-                  setSelectedIndex(i);
-                  break;
-                }
-              }
-            }
-          };
-          actionMap.put("UP", up);
-          actionMap.put("DOWN", down);
-          
-          InputMap im = getInputMap();
-          im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),      "UP");
-          im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0),   "UP");
-          im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),    "DOWN");
-          im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), "DOWN");
+		ActionMap actionMap = this.getActionMap();
+		Action up = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				int si = getSelectedIndex();
+				for (int i = si-1;i >= 0;i--) {
+					if (HeaderDropDownBox.this.getItemAt(i) instanceof ConfigPanel.FormatWrapper ||
+						HeaderDropDownBox.this.getItemAt(i) instanceof ConfigPanel.PathwayWrapper) {
+						setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+		};
+		Action down = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				int si = getSelectedIndex();
+				for (int i = si+1;i < getModel().getSize();i++) {
+					if (HeaderDropDownBox.this.getItemAt(i) instanceof ConfigPanel.FormatWrapper ||
+						HeaderDropDownBox.this.getItemAt(i) instanceof ConfigPanel.PathwayWrapper) {
+						setSelectedIndex(i);
+						break;
+					}
+				}
+			}
+		};
+		actionMap.put("UP", up);
+		actionMap.put("DOWN", down);
+
+		InputMap im = getInputMap();
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),      "UP");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_UP, 0),   "UP");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),    "DOWN");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_KP_DOWN, 0), "DOWN");
 	}
-	
+
 }
