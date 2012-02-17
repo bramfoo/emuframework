@@ -385,6 +385,14 @@ $
 
     <!-- Copy database to testData directory -->
 	<target name="copy.testDB" depends="db.drop, db.create, db.populate">
+		<delete>
+			<fileset dir="${test.database.dir}">
+				<include name="EF_ea.trace.db"/>	
+				<include name="EF_ea.lobs.db/*.lob.db"/>
+				<exclude name="EF_ea.lobs.db/.svn"/>
+			</fileset>
+		</delete>
+
 		<copy todir="${test.database.dir}" overwrite="yes">
 	        <fileset dir="${database.dir}/db">
 	            <include name="EF_ea.lobs.db/*.*"/>
