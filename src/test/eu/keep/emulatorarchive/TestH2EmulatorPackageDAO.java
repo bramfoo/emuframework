@@ -164,7 +164,7 @@ public class TestH2EmulatorPackageDAO {
     public void testGetHardwareIDs() {
 
         try {
-            Set<String> list = dao.getHardwareIDs();
+            List<String> list = dao.getHardwareIDs();
             assertTrue("hardware id missing", list.contains("1"));
             assertTrue("hardware id missing", list.contains("2"));
         }

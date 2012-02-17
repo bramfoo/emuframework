@@ -33,7 +33,6 @@ package eu.keep.emulatorarchive;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
 
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 
@@ -66,13 +65,13 @@ public interface EmulatorPackageDAO {
      * Returns a list of hardware supported by the available emulators
      * @return Set of hardware
      */
-    public Set<String> getHardwareIDs();
+    public List<String> getHardwareIDs();
 
     /**
      * Returns a list of hardware names supported by the available emulators
-     * @return Set of hardware names
+     * @return List of hardware names
      */
-    public Set<String> getHardwareNames();
+    public List<String> getHardwareNames();
 
     /**
      * Returns the executable package associated with an emulator

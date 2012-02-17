@@ -163,7 +163,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
     public HardwareIDs getSupportedHardware(int dummy) {
         LOGGER.info("Retrieving list of supported hardware from database...");
         try {
-            Set<String> hwNames = epDAO.getHardwareNames();
+            List<String> hwNames = epDAO.getHardwareNames();
             LOGGER.debug("Supported hardware: " + hwNames.toString());
             
             HardwareIDs hwids = new HardwareIDs();

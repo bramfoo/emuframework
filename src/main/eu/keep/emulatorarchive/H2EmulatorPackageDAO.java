@@ -39,9 +39,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.keep.emulatorarchive.EmulatorPackageDAO;
@@ -73,7 +71,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
     private static final String SELECT_EMULATOR_PACKAGE_WHERE           = "SELECT package_name, package FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_USER_INSTRUCTIONS_WHERE = "SELECT user_instructions FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
-    private static final String SELECT_EMULATOR_IDS                     = "SELECT emulator_id FROM " + EMULATOR_TABLE_NAME;
+    private static final String SELECT_EMULATOR_IDS                     = "SELECT emulator_id FROM " + EMULATOR_TABLE_NAME + " ORDER BY emulator_id";
     private static final String SELECT_EMULATOR_EXEC_TYPE_WHERE         = "SELECT exec_type FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_PACKAGE_TYPE_WHERE      = "SELECT package_type FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_LANGUAGE_ID_WHERE       = "SELECT language_id FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
@@ -85,9 +83,9 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     private static final String SELECT_EMULATOR_EXEC_NAME_WHERE         = "SELECT exec_name FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String SELECT_EMULATOR_EXEC_DIR_WHERE          = "SELECT exec_dir FROM " + EMULATOR_TABLE_NAME + " WHERE emulator_id=?";
     private static final String COUNT_EMULATOR                          = "SELECT COUNT(*) FROM "  + EMULATOR_TABLE_NAME;
-    private static final String SELECT_HARDWARE_IDS                     = "SELECT hardware_id FROM " + HARDWARE_TABLE_NAME;
-    private static final String SELECT_HARDWARE_NAMES                   = "SELECT name FROM " + HARDWARE_TABLE_NAME;
-    private static final String SELECT_LANGUAGES                		= "SELECT DISTINCT language_id FROM " + EMULATOR_TABLE_NAME;
+    private static final String SELECT_HARDWARE_IDS                     = "SELECT hardware_id FROM " + HARDWARE_TABLE_NAME + " ORDER BY hardware_id";
+    private static final String SELECT_HARDWARE_NAMES                   = "SELECT name FROM " + HARDWARE_TABLE_NAME + " ORDER BY name";
+    private static final String SELECT_LANGUAGES                		= "SELECT DISTINCT language_id FROM " + EMULATOR_TABLE_NAME + " ORDER BY language_id";
 
     // Joins
     private static final String EMUID_FROM_HWNAME                       = "SELECT emulator_id FROM " + EMULATOR_HARDWARE_JCT_TABLE_NAME + 
@@ -98,11 +96,11 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     private static final String SELECT_EMULATOR_IMAGEFORMATS            = "SELECT e_if.name FROM " + IMAGEFORMAT_TABLE_NAME + " e_if " + 
                                                                                " INNER JOIN " + EMULATOR_IMAGEFORMAT_JCT_TABLE_NAME + " e_eif " + 
                                                                                " ON e_eif.imageformat_id=e_if.imageformat_id " + 
-                                                                               " WHERE e_eif.emulator_id=?";
+                                                                               " WHERE e_eif.emulator_id=? ORDER BY e_if.name";
     private static final String SELECT_EMULATOR_HARDWARE                = "SELECT e_hw.name FROM " + HARDWARE_TABLE_NAME + " e_hw " + 
                                                                                " INNER JOIN " + EMULATOR_HARDWARE_JCT_TABLE_NAME + " e_ehw " + 
                                                                                " ON e_ehw.hardware_id=e_hw.hardware_id " + 
-                                                                               " WHERE e_ehw.emulator_id=?";
+                                                                               " WHERE e_ehw.emulator_id=? ORDER BY e_hw.name";
 
 
     /**
@@ -272,9 +270,9 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     /**
      * {@inheritDoc}
      */
-    public Set<String> getHardwareIDs() {
+    public List<String> getHardwareIDs() {
 
-        HashSet<String> ids = new HashSet<String>();
+    	List<String> ids = new ArrayList<String>();
 
         Statement stmt = null;
         ResultSet rs = null;
@@ -310,9 +308,9 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
     /**
      * {@inheritDoc}
      */
-    public Set<String> getHardwareNames() {
+    public List<String> getHardwareNames() {
 
-        HashSet<String> hwNames = new HashSet<String>();
+        List<String> hwNames = new ArrayList<String>();
 
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -323,6 +321,7 @@ public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
 
                 while (rs.next()) {
                     hwNames.add(rs.getString("name"));
+                    logger.info("just added entry to set of hardware names: " + rs.getString("name"));
                 }
                 stmt.close();
         }
