@@ -39,6 +39,7 @@ import eu.keep.gui.util.RBLanguages;
 import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.Pathway;
 import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
+import eu.keep.util.PathwayUtil;
 
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
@@ -170,7 +171,7 @@ public class ConfigPanel extends JPanel {
 
                 parent.lock(RBLanguages.get("finding_software_for") + ": " + emu.getEmulator().getName() + " " +
                         emu.getEmulator().getVersion() + ", " + RBLanguages.get("path") +
-                        ": " + path + ", " + RBLanguages.get("log_please_wait") + "...");
+                        ": " + PathwayUtil.pathwayToString(path) + ", " + RBLanguages.get("log_please_wait") + "...");
 
                 (new Thread(new Runnable() {
                     @Override

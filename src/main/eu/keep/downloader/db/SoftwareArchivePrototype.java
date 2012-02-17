@@ -70,6 +70,7 @@ import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.characteriser.Format;
 import eu.keep.downloader.SoftwareArchive;
 import eu.keep.util.FileUtilities;
+import eu.keep.util.PathwayUtil;
 
 /**
  * Implementation of the Software Archive interface.
@@ -159,7 +160,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
     @Override
     public List<Pathway> getPathwayByFileFormat(String fileFormat) throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Invoking getPathwayByFF with format: " + fileFormat + "...");
+        logger.debug("Invoking getPathwayByFF with format: " + fileFormat + "...");
 
         PathwayList pwl = new PathwayList();
         
@@ -187,7 +188,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
 	@Override
 	public List<ObjectFormatType> getAllFileFormats() throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Invoking getAllFileFormats...");
+        logger.debug("Invoking getAllFileFormats...");
 
         FileFormatList formats = new FileFormatList();
         
@@ -214,7 +215,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
 	@Override
 	public List<Pathway> getAllPathways() throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Invoking getAllPathways...");
+        logger.debug("Invoking getAllPathways...");
 
         PathwayList pwl = new PathwayList();
         
@@ -241,7 +242,9 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
     @Override
     public List<SoftwarePackage> getSoftwarePackageByPathway(Pathway pw) throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Invoking getSWpackage with pathway: " + pw + "...");
+    	
+    	String pathwayString = PathwayUtil.pathwayToString(pw); 	
+    	logger.debug("Invoking getSWpackage with pathway: " + pathwayString + "...");
 
         SoftwarePackageList swl = new SoftwarePackageList();
         
@@ -260,7 +263,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
             t.cancel();
         }
 
-        logger.info("Retrieved SWpackage using pathway: " + pw + " (" + swl.getSoftwarePackage().size() + " packages returned)");
+        logger.info("Retrieved SWpackage using pathway: " + pathwayString + " (" + swl.getSoftwarePackage().size() + " packages returned)");
         return swl.getSoftwarePackage();
     }
 
@@ -269,7 +272,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
     @Override
     public InputStream downloadSoftware(String imageID) throws IOException, WebServiceException {
-        logger.info("Downloading software file for ID: " + imageID + "...");
+        logger.debug("Downloading software file for ID: " + imageID + "...");
         DataHandler swHandler = null;
         
         // Request a timer to display progress
@@ -297,7 +300,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
     @Override
     public String getSoftwareFormat(String imageID) throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Retrieving format for sw package " + imageID + "...");
+        logger.debug("Retrieving format for sw package " + imageID + "...");
         String format = null;
         
         // Request a timer to display progress
@@ -325,7 +328,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
     @Override
     public List<SoftwarePackage> getSoftwarePackageList() throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Retrieving sw package list...");
+        logger.debug("Retrieving sw package list...");
         String dummy = "0"; // dummy input argument
         SoftwarePackageList swPackList = null;
 
@@ -353,7 +356,7 @@ public class SoftwareArchivePrototype implements SoftwareArchive {
      */
     @Override
     public SoftwarePackage getSoftwarePackage(String imageID) throws ConnectException, SocketTimeoutException, WebServiceException {
-        logger.info("Retrieving sw package for ID " + imageID + "...");
+        logger.debug("Retrieving sw package for ID " + imageID + "...");
         SoftwarePackage swPack = null;
 
         // Request a timer to display progress

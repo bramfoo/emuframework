@@ -63,6 +63,7 @@ import eu.keep.softwarearchive.softwarepackage.SoftwarePackage;
 import eu.keep.util.ArchiveException;
 import eu.keep.util.FileUtilities;
 import eu.keep.util.Language;
+import eu.keep.util.PathwayUtil;
 
 /**
  * Main class of the Core Emulation Framework. Implements the API.
@@ -216,25 +217,24 @@ public class Kernel implements CoreEngineModel {
 
         InputStream is = null;
     	try {
-    		logger.info("Attempting to read " + PROP_FILE_NAME + " from file...");
+    		logger.debug("Attempting to read " + PROP_FILE_NAME + " from file...");
             is = new FileInputStream(PROP_FILE_NAME);
     	}
     	catch (FileNotFoundException fe)
     	{
-    		logger.debug("user.property not found as file: " + fe);
+    		logger.debug(PROP_FILE_NAME + " not found as file: " + fe.getMessage());
     	}
         // If it's not found, try as resource
         if(is == null) {
             // Read the properties file, location independent
-            logger.info("user.property not found as file, attempting to read as resource...");
+            logger.debug(PROP_FILE_NAME + " not found as file, attempting to read as resource...");
             is = this.getClass().getClassLoader().getResourceAsStream("eu/keep/" + PROP_FILE_NAME);
         }
         if(is == null)
         {
-        	logger.warn("No valid user.properties file found (as resource or file)");
+        	logger.warn("No valid " + PROP_FILE_NAME + " file found (as resource or file)");
         	throw new IOException("No valid user.properties file found (as resource or file)");
-        }
-                
+        }            
         logger.info(PROP_FILE_NAME + " succesfully read");
         props = FileUtilities.getProperties(is);
         result &= props != null;
@@ -261,7 +261,7 @@ public class Kernel implements CoreEngineModel {
             logger.warn("Cannot change Apache CXF logging to log4j; CXF will use default Java logger");
         }
 
-        String message = "Kernel successfully initialised !";
+        String message = "Kernel successfully initialised!";
         notifyObservers(message);
         logger.info(message);
         
@@ -319,11 +319,11 @@ public class Kernel implements CoreEngineModel {
             if (!formats.isEmpty()) {
                 logger.info("Digital object '" + digObj.getPath() + "' successfully identified");
                 for (Format format : formats) {
-                    logger.info("Format found: " + format.toString());
+                    logger.debug("Format found: " + format.toString());
                 }
             }
             else {
-                logger.error("Digital object '" + digObj + "' could not be identified");
+                logger.warn("Digital object '" + digObj + "' could not be identified");
                 return formats;
             }
 
@@ -378,16 +378,16 @@ public class Kernel implements CoreEngineModel {
     		pathways = characteriser.generatePathway(format);
     		pathways.addAll(downloader.getPathwayByFileFormat(format.getName()));
     	}
-    	
+
     	// Filter by application and OS language
     	List<Pathway> filteredPathways = new ArrayList<Pathway>();
     	for (Pathway pathway : pathways) {
     		try {
     			if ((pathway.getOperatingSystem().getId().equals("-1") || 
-    				 acceptedLanguages.contains(Language.valueOf(pathway.getOperatingSystem().getLanguageId()))) &&
+    					acceptedLanguages.contains(Language.valueOf(pathway.getOperatingSystem().getLanguageId()))) &&
     				(pathway.getApplication().getId().equals("-1") ||
-    				 acceptedLanguages.contains(Language.valueOf(pathway.getApplication().getLanguageId())))
-    				) {
+    					acceptedLanguages.contains(Language.valueOf(pathway.getApplication().getLanguageId())))) 
+    			{	
     				filteredPathways.add(pathway);
     			} 
     			else {
@@ -397,12 +397,12 @@ public class Kernel implements CoreEngineModel {
     			}
     		} catch (IllegalArgumentException iae) {
     			logger.error("Pathway has OS or Application with invalid language ID. " + 
-						"OS ID = " + pathway.getOperatingSystem().getId() + "; language ID = " + pathway.getOperatingSystem().getLanguageId() + "; " + 
-						"Application ID = " + pathway.getApplication().getId() + "; language ID = " + pathway.getApplication().getLanguageId());
+    					"OS ID = " + pathway.getOperatingSystem().getId() + "; language ID = " + pathway.getOperatingSystem().getLanguageId() + "; " + 
+    					"Application ID = " + pathway.getApplication().getId() + "; language ID = " + pathway.getApplication().getLanguageId());
     		}
     	}
 
-    	logger.info("Pathways found for the format '" + format + "': " + filteredPathways.toString());
+    	logger.debug(filteredPathways.size() + " pathways found for the format '" + format + "'");
 
     	return filteredPathways;
     }
@@ -420,10 +420,8 @@ public class Kernel implements CoreEngineModel {
         }
 
         for (Pathway pw : pathways) {
-            logger.info("Checking satisfiability of pathway: " + pw.toString());
-
-            boolean res = isPathwaySatisfiable(pw);
-            logger.debug("pathway " + pw.toString() + " is satisfiable: " + res);
+            boolean res = isPathwaySatisfiable(pw);            
+            logger.debug("pathway " + PathwayUtil.pathwayToString(pw) + " is satisfiable: " + res);
 
             if (res) {
                 return pw;
@@ -446,19 +444,19 @@ public class Kernel implements CoreEngineModel {
 		// check if there are emulators in the internal db satisfying the hardware part of the pathway
 		List<EmulatorPackage> emuPacks = getEmulatorsByPathway(pathway);
 		if(emuPacks.isEmpty() || emuPacks == null) {
-			logger.info("No emulators found, matching required hardware");
+			logger.warn("No emulators found, matching required hardware");
 			return false;
 		}
 
 		// check if software image is required
 		if(pathway.getApplication().getId().equalsIgnoreCase("-1") && pathway.getOperatingSystem().getId().equalsIgnoreCase("-1")) {
-			logger.info("App/OS not defined, no software image necessary");
+			logger.debug("App/OS not defined, no software image necessary");
 			return true;
 		}
 		else {
 			// Perform matching between emulators and software images
 			// as some images may not be compatible with certain emulators
-			logger.info("Attempting to match emulators and software images...");
+			logger.debug("Attempting to match emulators and software images...");
 			Map<EmulatorPackage, List<SoftwarePackage>> emuSwPacks = matchEmulatorWithSoftware(pathway);
 			if (emuSwPacks.isEmpty()) {
 				return false;
@@ -514,10 +512,8 @@ public class Kernel implements CoreEngineModel {
     			logger.info("Executable type of emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + 
     					" matches host operating system, so can be used");
 
-    			for (EmulatorPackage whitePack: whiteListedPacks)
-    			{
-    				if (emuPack.getPackage().getId() == whitePack.getPackage().getId())
-    				{
+    			for (EmulatorPackage whitePack: whiteListedPacks) {
+    				if (emuPack.getPackage().getId() == whitePack.getPackage().getId()) {
     					logger.info("Emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion() + " is on whitelist, can be used");
     					finalPacks.add(emuPack);
     					break;
@@ -530,7 +526,7 @@ public class Kernel implements CoreEngineModel {
     		}
     	}
 
-    	logger.info("Final list of " + finalPacks.size() + " emulators matching hardware '" + hw + "' after removing non-whitelised emulators: " + finalPacks);
+    	logger.debug("Final list of " + finalPacks.size() + " emulators matching hardware '" + hw + "' after removing non-whitelised emulators: " + finalPacks);
     	return new ArrayList<EmulatorPackage>(finalPacks);
     }
 
@@ -548,7 +544,7 @@ public class Kernel implements CoreEngineModel {
 
         // If app and os are empty, the pathway does not require any software images
         if(app.equalsIgnoreCase("-1") && os.equalsIgnoreCase("-1")) {
-        	logger.info("App/OS not defined, no software image necessary (returning null package)");
+        	logger.debug("App/OS not defined, no software image necessary (returning null package)");
         	SoftwarePackage sw = new SoftwarePackage();
         	sw.setId("0");
         	sw.setDescription("N/A");
@@ -558,7 +554,7 @@ public class Kernel implements CoreEngineModel {
         }
 
         // Get a list of software images that satisfies the pathway (OS and/or app)
-        logger.debug("Retrieving list of software images for pathway " + pathway);
+        logger.debug("Retrieving list of software images for pathway " + PathwayUtil.pathwayToString(pathway));
         swPacks = downloader.getSoftWarePackageList(pathway);
 
         // If software archive is empty, return empty list
@@ -567,8 +563,7 @@ public class Kernel implements CoreEngineModel {
             return swPacks;
         }
         else {
-            logger.info("Found " + swPacks.size() + " software images matching os='" + os + "' and app='" + app +"': "
-                    + swPacks.toString());
+            logger.info("Found " + swPacks.size() + " software images matching os='" + os + "' and app='" + app);
         }
 
         // return
@@ -597,7 +592,7 @@ public class Kernel implements CoreEngineModel {
     	// Now find compatible Emulator-Software pairs.
     	Map<EmulatorPackage, List<SoftwarePackage>> emuSwMap = 
     			matchEmulatorAndSoftwareLists(emuPacks, swPacks);
-    	logger.info("Found compatible emulator-images pairs: " + emuSwMap);
+    	logger.debug("Found " + emuSwMap.size() + " compatible emulator-images pairs.");
     	
     	return new HashMap<EmulatorPackage, List<SoftwarePackage>>(emuSwMap);
     }
@@ -619,7 +614,7 @@ public class Kernel implements CoreEngineModel {
     	List<String> formats_emu;
 
     	try {
-    		logger.info("Starting emulator hardware/software image matching " +
+    		logger.debug("Starting emulator hardware/software image matching " +
     				"(" + emuPacks.size() +"/" + swPacks.size() +") and language filtering");
 
     		// Get a Map of emulators (as keys) and a list of image IDs (as value)
@@ -693,48 +688,48 @@ public class Kernel implements CoreEngineModel {
     @Override
     public EmulatorPackage autoSelectEmulator(List<EmulatorPackage> emuPacks) throws IOException {
 
-        // Sanity check
-        if (emuPacks == null || emuPacks.isEmpty())
-        {
-            throw new IOException("Cannot autoselect emulator from empty/nonexisting list");
-        }
+    	// Sanity check
+    	if (emuPacks == null || emuPacks.isEmpty())
+    	{
+    		throw new IOException("Cannot autoselect emulator from empty/nonexisting list");
+    	}
 
-        // Simply pick the last (most recent) emulator of 
-        // the list that has a compatible executable 
-        // type with the current host operating system.
-        String osName;
-        try {
-            osName = System.getProperty("os.name");
-            // Set default if null is returned
-            osName = osName == null ? "Windows.default" : osName;
-            logger.info("Host operating system detected as '" + osName +"'. If this is incorrect, successful emulation is not guaranteed!");
-        }
-        catch (Exception e) {
-            logger.error("Could not detect the OS name. Defaulting to 'Windows'. Successful emulation not guaranteed!");
-            osName = "Windows.default";
-        }
+    	// Simply pick the last (most recent) emulator of 
+    	// the list that has a compatible executable 
+    	// type with the current host operating system.
+    	String osName;
+    	try {
+    		osName = System.getProperty("os.name");
+    		// Set default if null is returned
+    		osName = osName == null ? "Windows.default" : osName;
+    		logger.info("Host operating system detected as '" + osName +"'. If this is incorrect, successful emulation is not guaranteed!");
+    	}
+    	catch (Exception e) {
+    		logger.error("Could not detect the OS name. Defaulting to 'Windows'. Successful emulation not guaranteed!");
+    		osName = "Windows.default";
+    	}
 
-        for (EmulatorPackage emuPack : emuPacks) {
-            String emuType;
-            try {
-                    emuType = emuPack.getEmulator().getExecutable().getType();
-                    logger.info("Found emulator executable type: " + emuType);
-            }
-            catch (IllegalArgumentException e) {
-                logger.error("Inappropriate ID requested: " + e.getMessage());
-                continue;
-            }
+    	for (EmulatorPackage emuPack : emuPacks) {
+    		String emuType;
+    		try {
+    			emuType = emuPack.getEmulator().getExecutable().getType();
+    			logger.debug("Found emulator executable type: " + emuType);
+    		}
+    		catch (IllegalArgumentException e) {
+    			logger.error("Inappropriate ID requested: " + e.getMessage());
+    			continue;
+    		}
 
-            if (emuType.equals("exe") && osName.matches("Windows.*") || emuType.equals("ELF")
-                    && osName.matches("Linux") || emuType.equals("jar")) {
-            	logger.info("Auto-selected emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion());
-                return emuPack;
-            }
-        }
+    		if (emuType.equals("exe") && osName.matches("Windows.*") || emuType.equals("ELF")
+    				&& osName.matches("Linux") || emuType.equals("jar")) {
+    			logger.info("Auto-selected emulator " + emuPack.getEmulator().getName() + emuPack.getEmulator().getVersion());
+    			return emuPack;
+    		}
+    	}
 
-        // No result
-        logger.error("No emulator autoselected");
-        throw new IOException("No emulator autoselected");
+    	// No result
+    	logger.error("No emulator autoselected");
+    	throw new IOException("No emulator autoselected");
     }
 
     /**
@@ -818,7 +813,7 @@ public class Kernel implements CoreEngineModel {
 
         InputStream is = null;
     	try {
-    		logger.info("Attempting to read Pathway schema validation from file...");
+    		logger.debug("Attempting to read Pathway schema validation from file...");
             is = new FileInputStream(PATHWAY_SCHEMA);
     	}
     	catch (FileNotFoundException fe)
@@ -828,7 +823,7 @@ public class Kernel implements CoreEngineModel {
         // If it's not found, try as resource
         if(is == null) {
             // Read the properties file, location independent
-            logger.info("Pathway schema validation not found as file, attempting to read as resource...");
+            logger.debug("Pathway schema validation not found as file, attempting to read as resource...");
             is = this.getClass().getClassLoader().getResourceAsStream("eu/keep/resources/external/" + PATHWAY_SCHEMA);
         }
         if(is == null)
@@ -836,6 +831,7 @@ public class Kernel implements CoreEngineModel {
         	logger.warn("No valid Pathway schema validation file found (as resource or file)");
         	throw new IOException("No valid Pathway schema validation file found (as resource or file)");
         }
+        logger.info("Pathway schema validation successfully read.");
         // get pathways from metadata file
         StreamSource validationSchema = new StreamSource(is);
         Pathway pathway = characteriser.getPathwayFromFile(pathwayFile, validationSchema);
@@ -867,7 +863,7 @@ public class Kernel implements CoreEngineModel {
             return start(file);
         }
 
-        logger.info("Found pathway: " + pathway.toString());
+        logger.info("Found pathway: " + PathwayUtil.pathwayToString(pathway));
         return start(file, pathway);
     }
 
@@ -884,7 +880,7 @@ public class Kernel implements CoreEngineModel {
         }
 
         // Characterise object, i.e. identify the file format
-        logger.info("Characterising the digital object...");
+        logger.info("Characterising the digital object: " + file.getAbsolutePath());
         List<Format> formats = characterise(file);
         if (formats.isEmpty()) {
             return false;
@@ -896,7 +892,7 @@ public class Kernel implements CoreEngineModel {
             logger.error("no format could be selected");
             return false;
         }
-        logger.info("Format selected: " + format.toString());
+        logger.debug("Format selected: " + format.toString());
 
         // Retrieve emulation pathways from the file format
         logger.info("Retrieving emulation pathways...");
@@ -916,7 +912,7 @@ public class Kernel implements CoreEngineModel {
     public boolean start(File file, List<Pathway> pathways) throws IOException {
 
         Pathway pathway;
-        logger.info("Automatic selection of a pathway from " + pathways);
+        logger.info("Automatic selection of a pathway from list of " + pathways.size());
         try {
             pathway = autoSelectPathway(pathways);
         }
@@ -924,7 +920,7 @@ public class Kernel implements CoreEngineModel {
             logger.error("No satisfiable pathway could be autoselected from " + pathways.toString());
             throw new IOException("No satisfiable pathway could be autoselected from " + pathways.toString());
         }
-        logger.info("Pathway selected: " + pathway.toString());
+        logger.info("Pathway selected: " + PathwayUtil.pathwayToString(pathway));
 
         return start(file, pathway);
     }
@@ -941,7 +937,7 @@ public class Kernel implements CoreEngineModel {
 
         // sanity check
         if (!file.exists()) {
-            logger.error("Error: File '" + file.getAbsolutePath() + "' doesn't exists");
+            logger.error("Error: File '" + file.getAbsolutePath() + "' doesn't exist");
             return false;
         }
         if (pathway == null) {
@@ -974,8 +970,7 @@ public class Kernel implements CoreEngineModel {
 		    // (i.e. only those with a list of sw packages
 		    emuPacks = new ArrayList<EmulatorPackage>();
 		    for (Map.Entry<EmulatorPackage, List<SoftwarePackage>> entry : emuSwPacks.entrySet()) {
-		    	if (!entry.getValue().isEmpty())
-		    	{
+		    	if (!entry.getValue().isEmpty()) {
 		    		logger.debug("Possible emulator for pathway: " + entry.getKey());
 		    		emuPacks.add(entry.getKey());
 		    	}
@@ -1003,7 +998,7 @@ public class Kernel implements CoreEngineModel {
 		            logger.error("No compatible software image could be selected");
 		            return false;
 		        }
-		        logger.info("software image id=" + swPack + " has been selected");
+		        logger.info("software image id=" + swPack.getId() + " has been selected");
 		    }
 		    else {
 		        logger.warn("No compatible software image could be found for the selected emulator");
