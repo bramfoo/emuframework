@@ -112,11 +112,11 @@ public class ConfirmPanel extends JPanel {
         confirm.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Object[] options = {"Yes", "Cancel"};
+                Object[] options = {RBLanguages.get("yes"), RBLanguages.get("cancel")};
                 int returnValue = JOptionPane.showOptionDialog(parent,
                         RBLanguages.get("sure_commit"),
                         RBLanguages.get("commit_changes") + "?",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
 
                 if (returnValue == JOptionPane.YES_OPTION) {
                     previous.setEnabled(false);
