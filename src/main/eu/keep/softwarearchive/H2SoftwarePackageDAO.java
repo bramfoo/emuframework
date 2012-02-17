@@ -42,7 +42,6 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 
 import eu.keep.softwarearchive.SwLanguageList;
-import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
@@ -72,33 +71,33 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 
 
 	// Simple selection
-	private static final String SELECT_ALL_FILEFORMATS	       = "SELECT * FROM " + FILEFORMAT_NAME;
-	private static final String ON_FF 						   = " WHERE fileformat_id=?";
+	private static final String SELECT_FILEFORMATS	           = "SELECT * FROM " + FILEFORMAT_NAME + " ORDER BY fileformat_id";
+	private static final String SELECT_FILEFORMATS_ON_FF 	   = "SELECT * FROM " + FILEFORMAT_NAME + " WHERE fileformat_id=?";
 	private static final String SELECT_ALL_PLATFORMS_ON_PF     = "SELECT * FROM " + PLATFORM_NAME + " WHERE platform_id=?";
-	private static final String SELECT_APP_PACK_VIEW_ON_IMG    = "SELECT * FROM " + APP_PACK_VIEW + " WHERE image_id=?";
-	private static final String SELECT_APP_PACK_VIEW_ON_APP    = "SELECT * FROM " + APP_PACK_VIEW + " WHERE app_id=?";
-	private static final String SELECT_OS_PACK_VIEW_ON_IMG     = "SELECT * FROM " + OS_PACK_VIEW + " WHERE image_id=?";
-	private static final String SELECT_OS_PACK_VIEW_ON_OS      = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_id=?";
+	private static final String SELECT_APP_PACK_VIEW_ON_IMG    = "SELECT * FROM " + APP_PACK_VIEW + " WHERE image_id=? ORDER BY app_id";
+	private static final String SELECT_APP_PACK_VIEW_ON_APP    = "SELECT * FROM " + APP_PACK_VIEW + " WHERE app_id=? ORDER BY image_id";
+	private static final String SELECT_OS_PACK_VIEW_ON_IMG     = "SELECT * FROM " + OS_PACK_VIEW + " WHERE image_id=? ORDER BY os_id";
+	private static final String SELECT_OS_PACK_VIEW_ON_OS      = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_id=? ORDER BY image_id";
 	private static final String SELECT_IMG_PACK_VIEW_ON_IMG    = "SELECT * FROM " + IMG_PACK_VIEW + " WHERE image_id=?";
-	private static final String SELECT_PATHWAY_VIEW_ON_FF      = "SELECT * FROM " + PATHWAY_VIEW + " WHERE fileformat_name=?";
-	private static final String SELECT_ALL_PATHWAY_VIEW        = "SELECT * FROM " + PATHWAY_VIEW;
-	private static final String SELECT_OS_VIEW_ON_OS           = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_name=?";
+	private static final String SELECT_PATHWAY_VIEW_ON_FF      = "SELECT * FROM " + PATHWAY_VIEW + " WHERE fileformat_name=? ORDER BY fileformat_id,app_id,os_id,platform_id";
+	private static final String SELECT_ALL_PATHWAY_VIEW        = "SELECT * FROM " + PATHWAY_VIEW + " ORDER BY fileformat_id,app_id,os_id,platform_id";
+	private static final String SELECT_OS_VIEW_ON_OS           = "SELECT * FROM " + OS_PACK_VIEW + " WHERE os_name=? ORDER BY os_id";
 
 	// Joins
 	private static final String SELECT_IMG_ON_APP_OS           = "SELECT " + APP_PACK_VIEW + ".IMAGE_ID FROM " + 
 																  OS_PACK_VIEW + " INNER JOIN " + APP_PACK_VIEW + 
 																 " ON " + OS_PACK_VIEW + ".image_id = " + APP_PACK_VIEW + ".image_id" +
-																 " WHERE app_name=? AND os_name=?";
+																 " WHERE app_name=? AND os_name=? ORDER BY app_id,os_id";
 
-	private static final String SELECT_IMAGE_IDS                = "SELECT image_id FROM " + IMAGE_TABLE_NAME;
+	private static final String SELECT_IMAGE_IDS                = "SELECT image_id FROM " + IMAGE_TABLE_NAME + " ORDER BY image_id";
 
 	private static final String SELECT_IMAGEBLOB_WHERE          = "SELECT image FROM " + BLOB_TABLE_NAME + " WHERE image_id=?";
 
 	private static final String SELECT_LANGUAGES                = "SELECT DISTINCT language_id FROM " + APP_TABLE_NAME + 
 			" UNION" + 
-			" SELECT DISTINCT language_id FROM " + OPSYS_TABLE_NAME;
+			" SELECT DISTINCT language_id FROM " + OPSYS_TABLE_NAME + " ORDER BY language_id";
 
-	private static final String GET_REGISTRY_ENTRIES  			= "SELECT * FROM " + REGISTRY_TABLE_NAME;
+	private static final String GET_REGISTRY_ENTRIES  			= "SELECT * FROM " + REGISTRY_TABLE_NAME + " ORDER BY registry_id";
 
 	private static final String NEW_REGISTRY_ENTRY    			= "INSERT INTO " + REGISTRY_TABLE_NAME + 
 			" (registry_id, name, url, class_name, translation_view, enabled, description, comment) " + 
@@ -111,7 +110,7 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 	private static final String DELETE_REGISTRY_ENTRIES  		= "DELETE FROM " + REGISTRY_TABLE_NAME;
 
 	private static final String SELECT_FF_ON_PCRID  			= "SELECT ef_format_id, ef_format_name FROM " + EF_PCR_FF_VIEW + 
-			" WHERE pcr_format_id=?";
+			" WHERE pcr_format_id=? ORDER BY ef_format_id";
 
 
 	/**
@@ -380,12 +379,12 @@ public class H2SoftwarePackageDAO implements SoftwarePackageDAO {
 		try {			
 			if (fileFormatID == null || fileFormatID.length() == 0) {
 				LOGGER.debug("Retrieving all available fileFormats.");
-				query = SELECT_ALL_FILEFORMATS;
+				query = SELECT_FILEFORMATS;
 				pstmt = conn.prepareStatement(query);			
 			} 
 			else {
 				LOGGER.debug("Retrieving file formats with ID '" + fileFormatID + "'");
-				query = SELECT_ALL_FILEFORMATS + ON_FF;
+				query = SELECT_FILEFORMATS_ON_FF;
 				pstmt = conn.prepareStatement(query);
 				pstmt.setString(1, fileFormatID);
 				errorMessage = errorMessage + " for file format " + fileFormatID; 

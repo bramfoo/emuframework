@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import eu.keep.softwarearchive.SwLanguageList;
-import eu.keep.softwarearchive.pathway.ObjectFormatType;
 import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
