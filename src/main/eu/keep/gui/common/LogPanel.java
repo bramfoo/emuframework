@@ -39,6 +39,10 @@ public class LogPanel extends JTextArea {
 
     private static final String NEW_LINE = System.getProperty("line.separator");
     
+    private static final int MAXIMUM_TEXT_LENGTH = 512 * 1024;  // maximum length before truncating starts: 512 Kb.
+    private static final int TRUNCATE_UNIT = 1024; 				// when the maximum length is reached, text will be truncated by units this large 
+    
+    
 	/**
 	 * Constructor
 	 * @param initialMessage initial log message to be displayed
@@ -63,6 +67,13 @@ public class LogPanel extends JTextArea {
 	 */
 	public void logMessage(String message) {
 		this.append(NEW_LINE + message);
+		
+		// Truncate (from the beginning of the Document) if the document exceeds the maximum length
+		while (this.getDocument().getLength() > MAXIMUM_TEXT_LENGTH) {
+			this.replaceRange(null, 0, TRUNCATE_UNIT);
+		}
+		
+		// Automatically scroll to the end of the document
 		this.setCaretPosition(this.getDocument().getLength());
 	}
 	

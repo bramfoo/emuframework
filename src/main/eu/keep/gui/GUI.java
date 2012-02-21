@@ -32,7 +32,6 @@ package eu.keep.gui;
 
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
-import eu.keep.gui.common.Log4jAppender;
 import eu.keep.gui.common.LogPanel;
 import eu.keep.gui.config.ConfigPanel;
 import eu.keep.gui.settings.LanguageSettingsFrame;
@@ -62,7 +61,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
-import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 
 /**
