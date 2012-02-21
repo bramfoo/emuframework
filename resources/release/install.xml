@@ -72,6 +72,7 @@
         <pack name="Core Emulation Framework" required="yes">
             <description>Core Emulation Framework (including admin GUI).</description>
             <fileset dir="build/release/EF" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
+            <executable targetfile="$INSTALL_PATH/runEF_adminGUI.sh"/>
         </pack>
 
         <pack name="Client GUI" required="no" preselected="yes">
@@ -82,11 +83,13 @@
         <pack name="Emulator Archive" required="no" preselected="yes">
             <description>Emulator archive used by the Emulation Framework to retrieve supported emulator packages via web services.</description>
             <fileset dir="build/release/ea" targetdir="$INSTALL_PATH/ea" excludes="**/.svn/**"/>
+            <executable targetfile="$INSTALL_PATH/ea/runServer.sh"/>
         </pack>
 
         <pack name="Software Archive" required="no" preselected="yes">
             <description>Software archive used by the Emulation Framework to retrieve software images via web services.</description>
             <fileset dir="build/release/swa" targetdir="$INSTALL_PATH/swa" excludes="**/.svn/**"/>
+            <executable targetfile="$INSTALL_PATH/swa/runServer.sh"/>
         </pack>
     </packs>
 </installation>
