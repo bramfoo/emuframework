@@ -40,13 +40,13 @@ public class PathwayUtil {
 	public static String pathwayToString(Pathway pw) {
 		
     	StringBuilder stringBuilder = new StringBuilder();    			
-    	stringBuilder.append(pw.getObjectFormat() == null ? "N/A" : pw.getObjectFormat().getId());
+    	stringBuilder.append(pw.getObjectFormat() == null ? "N/A" : pw.getObjectFormat().getName());
     	stringBuilder.append(" --> ");
-    	stringBuilder.append(pw.getApplication() == null ? "N/A" : pw.getApplication().getId());
+    	stringBuilder.append(pw.getApplication() == null ? "N/A" : pw.getApplication().getName());
     	stringBuilder.append(" --> ");    	
-    	stringBuilder.append(pw.getOperatingSystem() == null ? "N/A" : pw.getOperatingSystem().getId());
+    	stringBuilder.append(pw.getOperatingSystem() == null ? "N/A" : pw.getOperatingSystem().getName());
     	stringBuilder.append(" --> ");
-    	stringBuilder.append(pw.getHardwarePlatform() == null ? "N/A" : pw.getHardwarePlatform().getId());
+    	stringBuilder.append(pw.getHardwarePlatform() == null ? "N/A" : pw.getHardwarePlatform().getName());
 
     	return stringBuilder.toString();
 	}

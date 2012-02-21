@@ -156,7 +156,7 @@ public class FloppyDiskImage extends DiskImage {
             throw new IOException("Digital object is larger than disk size allows");
         }
 
-        logger.warn("Wrapping selected digital object in disk, please be patient...");
+        logger.info("Wrapping selected digital object in disk, please be patient...");
         // Request a timer to display progress
         Timer t = FileUtilities.getFixedRateTimer(500, 500, "...");
 
@@ -247,7 +247,7 @@ public class FloppyDiskImage extends DiskImage {
 
         // Stop the timer
         t.cancel();
-        logger.warn("Wrapping complete!");
+        logger.info("Wrapping complete!");
 
         digObjDisk.close();
         return digObjDisk;

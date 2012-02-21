@@ -133,7 +133,7 @@ public class ConfigPanel extends JPanel {
 
                 PathwayWrapper selectedPathway = (PathwayWrapper) pathwaysDropDown.getSelectedItem();
         		final Pathway path = selectedPathway.pathway;
-        		parent.lock(RBLanguages.get("load_dependencies") + ": " + path + ", " + RBLanguages.get("log_please_wait") + "...");
+        		parent.lock(RBLanguages.get("load_dependencies") + ": " + PathwayUtil.pathwayToString(path) + ", " + RBLanguages.get("log_please_wait") + "...");
 
         		(new Thread(new Runnable() {
         			@Override
@@ -170,7 +170,7 @@ public class ConfigPanel extends JPanel {
                 final Pathway path = selectedPathway.pathway;
 
                 parent.lock(RBLanguages.get("finding_software_for") + ": " + emu.getEmulator().getName() + " " +
-                        emu.getEmulator().getVersion() + ", " + RBLanguages.get("path") +
+                        emu.getEmulator().getVersion() + "; " + RBLanguages.get("path") +
                         ": " + PathwayUtil.pathwayToString(path) + ", " + RBLanguages.get("log_please_wait") + "...");
 
                 (new Thread(new Runnable() {
@@ -183,7 +183,7 @@ public class ConfigPanel extends JPanel {
                             parent.displayMessage(parent, warning, warning, JOptionPane.WARNING_MESSAGE);
                         }
                         else {
-                            parent.unlock(RBLanguages.get("num_software_found") + ": " + selectedPathway.toString());
+                            parent.unlock(RBLanguages.get("num_software_found") + ": " + swList.size());
                             ConfigPanel.this.loadSoftware(swList);
                         }
                     }
