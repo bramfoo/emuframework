@@ -343,7 +343,7 @@ $Revision$ $Date$ $Author$
 	<taskdef name="izpack" classpath="${izpack.home}/lib/standalone-compiler.jar"
 	    classname="com.izforge.izpack.ant.IzPackTask"/>
 	
-	<target name="release.installer" description="Create a complete release package" depends="db.drop, db.create, release, javadoc" if="user.properties.present">
+	<target name="release.installer" description="Create a complete release package" depends="release, javadoc" if="user.properties.present">
     	<unzip src="${release.dir}/${release.name}.zip" dest="${release.dir}/EF"/>
     	<copy todir="${release.dir}/EF/javadoc">
     	    <fileset dir="${javadoc.dir}"/>
