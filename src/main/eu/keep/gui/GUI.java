@@ -32,6 +32,8 @@ package eu.keep.gui;
 
 import eu.keep.characteriser.Format;
 import eu.keep.gui.common.GlassPane;
+import eu.keep.gui.common.Log4jAppender;
+import eu.keep.gui.common.LogPanel;
 import eu.keep.gui.config.ConfigPanel;
 import eu.keep.gui.settings.LanguageSettingsFrame;
 import eu.keep.gui.settings.SettingsFrame;
@@ -60,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.log4j.Appender;
 import org.apache.log4j.Logger;
 
 /**
@@ -79,7 +82,7 @@ public class GUI extends JFrame implements CoreObserver {
     public final Properties guiProps;
 
     private MainPanel tabPanel;
-    private JTextArea logLabel;
+    private LogPanel logPanel;
 
     private static boolean eaAdmin = false;
     private static boolean swaAdmin = false;
@@ -154,7 +157,7 @@ public class GUI extends JFrame implements CoreObserver {
 
 	@Override
 	public void update(String updateNews) {
-		logLabel.setText(updateNews);
+		logPanel.logMessage(updateNews);
 	}
 
 	/*
@@ -205,21 +208,14 @@ public class GUI extends JFrame implements CoreObserver {
         super.add(tabPanel, BorderLayout.CENTER);
 
         // log/message label
-        logLabel = new JTextArea("", 1, 2);
-        RBLanguages.set(logLabel, "gui_started");
-
-        logLabel.setEditable(false);
-        logLabel.setOpaque(false);
-        logLabel.setLineWrap(true);
-        logLabel.setWrapStyleWord(true);
-        logLabel.setBackground(new Color(UIManager.getColor("background").getRGB()));
-        logLabel.setBorder(null);
-        logLabel.setPreferredSize(new Dimension(WIDTH, 32));
-        super.add(logLabel, BorderLayout.SOUTH);
+        logPanel = new LogPanel(RBLanguages.get("gui_started"));        
+        JScrollPane logLabelScroller = new JScrollPane(logPanel);
+        logLabelScroller.setPreferredSize(new Dimension(WIDTH, 87));
+        super.add(logLabelScroller, BorderLayout.SOUTH);
 
         // init menu bar
         JMenuBar menuBar = initMenuBar(eaAdmin, swaAdmin);
-        this.setJMenuBar(menuBar);
+        this.setJMenuBar(menuBar);        
     }
 
     /**
@@ -530,7 +526,7 @@ public class GUI extends JFrame implements CoreObserver {
      * @param message the message to be displayed on the "log-label".
      */
     public void lock(String message) {
-        logLabel.setText(message);
+    	logPanel.logMessage(message);    	
         showGlassPane();
         super.setCursor(new Cursor(Cursor.WAIT_CURSOR));
     }
@@ -549,7 +545,7 @@ public class GUI extends JFrame implements CoreObserver {
      * @param message the message to be displayed on the "log-label".
      */
     public void unlock(String message) {
-        logLabel.setText(message);
+    	logPanel.logMessage(message);    	
         hideGlassPane();
         super.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }

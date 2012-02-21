@@ -149,7 +149,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         // Add everything together
         JPanel explorerPanel = new JPanel(new BorderLayout(5, 5));    
-        explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-200));
+        explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-255));
         Border border = new TitledBorder("");
         
         JPanel north = new JPanel(new BorderLayout(5, 5));

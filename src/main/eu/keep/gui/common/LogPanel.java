@@ -30,18 +30,40 @@
  */
 package eu.keep.gui.common;
 
-import javax.swing.*;
+import javax.swing.JTextArea;
 
-import java.awt.*;
+/**
+ * Custom JTextArea displaying logging messages
+ */
+public class LogPanel extends JTextArea {
 
-public class GlassPane extends JComponent {
+    private static final String NEW_LINE = System.getProperty("line.separator");
+    
+	/**
+	 * Constructor
+	 * @param initialMessage initial log message to be displayed
+	 */
+	public LogPanel(String initialMessage) {
+		super(initialMessage);
+		
+        this.setEditable(false);
+        this.setOpaque(false);
+        this.setLineWrap(true);
+        this.setWrapStyleWord(true);
+        this.setBorder(null);
+        //this.setBackground(new Color(UIManager.getColor("background").getRGB()));
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        Color bg = super.getBackground();
-        Color alpha = new Color(bg.getRed(), bg.getGreen(), bg.getBlue(), 150);
-        g.setColor(alpha);
-        // bottom at (parent bottom - 87), to make sure log panel is always fully visible.
-        g.fillRect(0, 0, super.getParent().getWidth(), super.getParent().getHeight() - 87);
-    }
+        // register this panel with the log4j appender
+        Log4jAppender.addTextArea(this);
+	}
+	
+	/**
+	 * Append a message to this Panel and put the caret position at the end of the document
+	 * @param message the message
+	 */
+	public void logMessage(String message) {
+		this.append(NEW_LINE + message);
+		this.setCaretPosition(this.getDocument().getLength());
+	}
+	
 }
