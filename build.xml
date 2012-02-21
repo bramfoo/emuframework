@@ -157,7 +157,7 @@ $
     </target>
 
     <!-- release -->
-    <target name="release" description="Create a release package" depends="jar, db.drop, db.create, db.populate, runServer.scripts" >	   	    
+    <target name="release" description="Create a release package" depends="jar, db.reset, runServer.scripts" >	   	    
 	    <property name="release.name"  value="swa.zip"/>
         <mkdir dir="${release.dir}"/>
         <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" 
@@ -274,6 +274,14 @@ $
 	
     <!-- Copy database to testData directory -->
 	<target name="copy.testDB" depends="db.drop, db.create, db.populate">
+		<delete>
+			<fileset dir="${test.database.dir}">
+				<include name="EF_swa.trace.db"/>	
+				<include name="EF_swa.lobs.db/*.lob.db"/>
+				<exclude name="EF_swa.lobs.db/.svn"/>
+			</fileset>
+		</delete>
+
 		<copy todir="${test.database.dir}" overwrite="yes">
 	        <fileset dir="${database.dir}/db">
 	            <include name="EF_swa.lobs.db/*.*"/>
