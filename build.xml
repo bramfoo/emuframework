@@ -62,6 +62,7 @@ $Revision$ $Date$ $Author$
 	<property name="izpack.home"			value="${release.config.dir}/IzPack"/>
 	<property name="tools.dir"			    value="${resource.dir}/tools"/>
 	<property name="doc.dir"			    value="${build.dir}/doc"/>
+	<property name="documentation.dir"		value="${basedir}/documentation"/>
 	<property name="javadoc.dir"			value="${doc.dir}/javadoc"/>
 	<property name="svnstat.dir.in"			value="${tools.dir}/svnstat"/>
 	<property name="svnstat.dir.out"		value="${doc.dir}/svnstat"/>
@@ -335,6 +336,7 @@ $Revision$ $Date$ $Author$
         	<zipfileset dir="${src.dir}" prefix="eu/keep" includes="log4j.properties"/>
         	<zipfileset dir="${fits.dir}" prefix="eu/keep/resources/fits"/>
             <zipfileset dir="${icons.dir}" prefix="eu/keep/resources/icons"/>
+            <zipfileset dir="${documentation.dir}" prefix="documentation" includes="*.pdf"/>
         </zip>
         <echo message="${jar.name}.zip has been created in ${release.dir}" />  
     </target>
@@ -343,12 +345,8 @@ $Revision$ $Date$ $Author$
 	<taskdef name="izpack" classpath="${izpack.home}/lib/standalone-compiler.jar"
 	    classname="com.izforge.izpack.ant.IzPackTask"/>
 	
-	<target name="release.installer" description="Create a complete release package" depends="release, javadoc" if="user.properties.present">
+	<target name="release.installer" description="Create a complete release package" depends="release" if="user.properties.present">
     	<unzip src="${release.dir}/${release.name}.zip" dest="${release.dir}/EF"/>
-    	<copy todir="${release.dir}/EF/javadoc">
-    	    <fileset dir="${javadoc.dir}"/>
-    	</copy>
-
 		<unzip src="${swa.release.dir}/swa.zip" dest="${release.dir}/swa"/>	
 		<unzip src="${ea.release.dir}/ea.zip" dest="${release.dir}/ea"/>
         <unzip src="${clientGUI.release.dir}/clientGUI.zip" dest="${release.dir}/clientGUI"/>
