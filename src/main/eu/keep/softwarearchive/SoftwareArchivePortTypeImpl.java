@@ -151,9 +151,9 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
     }
 
     /**
-     * Return a list of Software Packages based on a pathway
-     * @param pathway The pathway containing application, operating system and hardware information
-     * @return SoftwarePackageList List of software packages that matches both OS and application
+     * Return a list of pathways for a given file format
+     * @param fileFormat the name of the file format
+     * @return PathwayList List of pathways that can render the given fileformat
      */
     @Override
     public PathwayList getPathwaysByFileFormat(String fileFormat) {
@@ -326,7 +326,7 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
     /**
      * Provide a DataHandler for a software binary in the database
-     * @param Software ID
+     * @param id Software ID
      * @return DataHandler for binary software file
      */
     @Override
@@ -438,8 +438,8 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
 
     /**
      * Retrieves the EF fileformat ID and fileformat name from the database given a PCR ID
-     * @param id Unique PCR Identifier
-     * @param view View in database containing translations
+     * @param pcrFormatId Unique PCR Identifier
+     * @param viewName View in database containing translations
      * @return List of Strings (ID, name) of the corresponding EF fileformat ID and name
      */
 	@Override

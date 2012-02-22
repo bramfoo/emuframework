@@ -46,7 +46,7 @@ import eu.keep.softwarearchive.pathway.RegistryType;
 
 /**
  * H2 database implementation of the EmuPackageDAO interface.
- * @note see H2 website: http://www.h2database.com
+ * @see see H2 website: http://www.h2database.com
  * @author Bram Lohman
  * @author David Michel
  */

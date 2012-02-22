@@ -52,6 +52,8 @@ $
     <property name="build.dir" location ="${basedir}/build"/>
     <property name="classes.dir" location ="${build.dir}/classes"/>
     <property name="release.dir" location ="${build.dir}/release"/>
+	<property name="doc.dir"	location="${build.dir}/doc"/>
+	<property name="javadoc.dir" location="${doc.dir}/javadoc"/>
     <property name="src.dir" location ="${basedir}/src/main"/>
 	<property name="gen-src.dir"	 location="${basedir}/src/generated"/>	
 	<property name="test.dir" location ="${basedir}/src/test"/>
@@ -172,6 +174,27 @@ $
 		<echo message="Creating Linux/Windows startup scripts" />
         <echo file="${server.script}.sh" append="false" message='java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>
         <echo file="${server.script}.bat" append="false" message='@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>        
+    </target>
+
+    <!-- Javadoc -->
+    <target name="javadoc" description="Generates the javadoc" depends="compile">
+		<mkdir dir="${javadoc.dir}"/>
+        <javadoc destdir="${javadoc.dir}"
+        	     author="true"
+        	     version="true"
+        	     use="true"
+        	     verbose="no"
+        	     classpathref="dev.classpath"
+        	     noqualifier="java.*:eu.keep.*"
+        	     useexternalfile="yes">
+        	<sourcepath path="${src.dir}"/>
+        	<sourcepath path="${gen-src.dir}"/>
+        	<classpath>
+                <dirset dir="."/>
+                <path refid="dev.classpath"/>
+            </classpath>
+        </javadoc>
+    	<echo message="View the JavaDoc in your browser: file://${javadoc.dir}/index.html"/>
     </target>
 
     <!-- unit test -->
