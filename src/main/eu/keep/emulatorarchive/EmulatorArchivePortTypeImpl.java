@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
@@ -132,7 +131,7 @@ public class EmulatorArchivePortTypeImpl implements EmulatorArchivePortType {
 
     /**
      * Provide a DataHandler for a emulator binary in the database
-     * @param Emulator ID
+     * @param id Emulator ID
      * @return DataHandler for binary emulator executable
      */
     public DataHandler downloadEmulator(int id) {

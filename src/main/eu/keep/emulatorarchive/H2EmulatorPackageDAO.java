@@ -47,7 +47,7 @@ import eu.keep.emulatorarchive.emulatorpackage.EmuLanguageList;
 
 /**
  * H2 database implementation of the EmuPackageDAO interface.
- * @note see H2 website: http://www.h2database.com
+ * @see H2 website: http://www.h2database.com
  * @author David Michel
  */
 public class H2EmulatorPackageDAO implements EmulatorPackageDAO {
