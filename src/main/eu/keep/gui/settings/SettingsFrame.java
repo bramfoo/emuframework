@@ -193,7 +193,7 @@ public class SettingsFrame extends JFrame {
         			} 
         			catch (IOException ex) {
         				JOptionPane.showMessageDialog(parent, ex.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-        				parent.unlock(" ");
+        				parent.unlock(ex.getMessage());
         			}
         			SettingsFrame.this.dispose();                    	
         		}

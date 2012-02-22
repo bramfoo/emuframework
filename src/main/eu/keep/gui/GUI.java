@@ -509,7 +509,7 @@ public class GUI extends JFrame implements CoreObserver {
      * 		parentComponent has no Frame, a default Frame is used
      * @param message an error message to be shown in a popup-window
      * @param statusBarMessage an error message to be shown in the status bar at the bottom of the window
-     * @param messageTypethe type of message to be displayed: JOptionPanel.ERROR_MESSAGE, .INFORMATION_MESSAGE, 
+     * @param messageType the type of message to be displayed: JOptionPanel.ERROR_MESSAGE, .INFORMATION_MESSAGE, 
      * 		.WARNING_MESSAGE, .QUESTION_MESSAGE, or .PLAIN_MESSAGE
      * @throws HeadlessException
      */
@@ -581,7 +581,6 @@ public class GUI extends JFrame implements CoreObserver {
             	message = RBLanguages.get("failure_EF_restart") + " " + RBLanguages.get("failure_archive_connect");
             }
             displayMessage(this, message, RBLanguages.get("log_error_reload_kernel"), JOptionPane.ERROR_MESSAGE);            
-
         }
     }
 

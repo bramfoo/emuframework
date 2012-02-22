@@ -357,7 +357,7 @@ public class LanguageSettingsFrame extends JFrame {
                     LanguageSettingsFrame.this.close();
                 } catch (IllegalArgumentException iae) {
                     JOptionPane.showMessageDialog(parent, iae.getMessage(), "", JOptionPane.ERROR_MESSAGE);
-                    parentMessage = " ";
+                    parentMessage = iae.getMessage();
                 }
                 parent.unlock(parentMessage);
             }

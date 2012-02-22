@@ -37,7 +37,6 @@ import java.awt.Insets;
 import java.awt.FlowLayout;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +71,8 @@ public class UrlPropertyEditor extends JPanel implements EFPropertyEditor {
 
 	/**
 	 * Constructor
-	 * @param initialValue: the current value of the URL
-	 * @param path: 
+	 * @param initialValue the current value of the URL
+	 * @param path the part of the URL after the hostname and port (e.g. /softwarearchive/)
 	 */
 	public UrlPropertyEditor(String initialValue, String path) {
 

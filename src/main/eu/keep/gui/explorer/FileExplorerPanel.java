@@ -83,9 +83,8 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         super.setLayout(new BorderLayout(5, 5));
 
         // button panel
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 5));
-        explorerPanel = initExplorerPanel();
         noObjectPanel = initNoObjectPanel();
+        explorerPanel = initExplorerPanel();
         
         super.add(explorerPanel, BorderLayout.SOUTH);
         super.add(noObjectPanel, BorderLayout.NORTH);
@@ -145,8 +144,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 
         buttonPanel.add(autoStart);
         buttonPanel.add(checkEnvironment);
-
-
+        
         // Add everything together
         JPanel explorerPanel = new JPanel(new BorderLayout(5, 5));    
         explorerPanel.setPreferredSize(new Dimension((GUI.WIDTH_UNIT * 40) - 30, GUI.HEIGHT-255));
@@ -329,7 +327,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
         	clearExplorerPanel();
         	enableExplorerPanel(false);    	
 
-        	parent.lock("Downloading all supported dependencies. Please wait...");
+        	parent.lock(RBLanguages.get("downloading_all_pathways") + ". " + RBLanguages.get("log_please_wait"));
 
         	(new Thread(new Runnable() {
         		@Override
