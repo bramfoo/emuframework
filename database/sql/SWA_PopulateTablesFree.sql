@@ -59,7 +59,7 @@ INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, r
 INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1012', 'LHarc','1.0','Compression utility for DOS', 'Haruyasu Yoshizaki', '1988', 'FREEWARE', 'en', 'http://en.wikipedia.org/wiki/LHarc', '');
 INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1013', 'Inklite','0.36','A cut down version of Inkscape', 'null', '2011', 'GNU General Public License (GPL)', 'en', 'http://puppylinux.org/wikka/InkLite', '');
 INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1014', 'Info-zip','3.00','Compressor-archiver utilities', 'null', '2008', 'GNU General Public License (GPL)', 'en', 'http://www.info-zip.org/', '');
-
+INSERT INTO softwarearchive.apps (app_id, name, version, description, creator, release_date, license, language_id, reference, user_instructions) VALUES('APP-1015', 'ePDFView', '0.1.7', 'ePDFView is an open source viewer for Portable Document Format (PDF) files. ePDFView is a lightweight PDF viewer.', 'Emmas software', '2009', 'GNU General Public License (GPL), version 2', 'en', 'http://www.emma-soft.com/projects/epdfview', '');
 
 -- OpSys table
 -- Contains the name, version and description of each Operating System in the Software Archive
@@ -92,6 +92,7 @@ INSERT INTO softwarearchive.imageblobs (image_id, image) VALUES('IMG-1003', FILE
 -- One to many link of a file format requiring a rendering application
 -- Example FFT-1008 (fileformat_id), APP-1000 (app_id): The 'Plain text' format needs to be rendered in the 'Edit' application  
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1006','APP-1003');
+INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1006','APP-1015');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1007','APP-1000');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1007','APP-1004');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1008','APP-1000');
@@ -121,6 +122,8 @@ INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1025','APP-1010');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1025','APP-1014');
 INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1026','APP-1008');
+INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1030','APP-1003');
+INSERT INTO softwarearchive.fileformats_apps (fileformat_id,app_id) VALUES('FFT-1030','APP-1015');
 
 -- File format to operating system table (fileformats_opsys)
 -- One to many link of a file format requiring an operating system (but no rendering application)
@@ -160,6 +163,7 @@ INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1012','OPS
 INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1013','OPS-1002');
 INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1014','OPS-1001');
 INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1014','OPS-1002');
+INSERT INTO softwarearchive.apps_opsys (app_id, opsys_id) VALUES('APP-1015','OPS-1002');
 
 -- Application to Image (apps_images) table
 -- Defines which application (defined in the apps table) is contained in which image (defined in the images table)
@@ -181,6 +185,7 @@ INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1011','IM
 INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1012','IMG-1003');
 INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1013','IMG-1002');
 INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1014','IMG-1002');
+INSERT INTO softwarearchive.apps_images (app_id, image_id) VALUES('APP-1015','IMG-1002');
 
 -- Operating System to Image (opsys_images) table
 -- Defines which operating system (defined in the opsys table) is contained in which image (defined in the images table)
