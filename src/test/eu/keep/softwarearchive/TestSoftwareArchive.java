@@ -114,7 +114,7 @@ public class TestSoftwareArchive {
         try {
             String ff = "Plain text";
             PathwayList result = port.getPathwaysByFileFormat(ff);
-            assertEquals("Incorrect number of pathways returned. ", 2, result.getPathway().size());
+            assertEquals("Incorrect number of pathways returned. ", 3, result.getPathway().size());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +129,7 @@ public class TestSoftwareArchive {
         	String ff = "Plain text";
         	PathwayList pwList = port.getPathwaysByFileFormat(ff);
             SoftwarePackageList result = port.getSoftwarePackagesByPathway(pwList.getPathway().get(0));
-            assertEquals("Incorrect number of software packages returned. ", 1, result.getSoftwarePackage().size());
+            assertEquals("Incorrect number of software packages returned. ", 2, result.getSoftwarePackage().size());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -176,7 +176,7 @@ public class TestSoftwareArchive {
         try {
             String dummy = "0";
             SoftwarePackageList result = port.getAllSoftwarePackagesInfo(dummy);
-            assertEquals("Incorrect number of software packages returned. ", 2, result.getSoftwarePackage().size());
+            assertEquals("Incorrect number of software packages returned. ", 4, result.getSoftwarePackage().size());
         }
         catch (Exception e) {
             e.printStackTrace();

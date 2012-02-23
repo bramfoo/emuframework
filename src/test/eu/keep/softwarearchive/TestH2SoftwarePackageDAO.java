@@ -35,7 +35,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
@@ -54,7 +53,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import eu.keep.softwarearchive.pathway.ObjectFormatType;
 
 /**
  * A Junit Test class for {@link eu.keep.softwarearchive.H2SoftwarePackageDAO}
@@ -321,7 +319,7 @@ public class TestH2SoftwarePackageDAO {
             assertEquals("Incorrect platform name image format BBC Micro Image", "BBCMICRO", appName.get(0).get(2));
 
             List<List<String>> appName2 = dao.getPathwaysView("Portable Document Format", col);
-            assertEquals("Incorrect number of pathways", 1, appName2.size());
+            assertEquals("Incorrect number of pathways", 2, appName2.size());
             assertEquals("Incorrect app name image format Portable Document Format", "Xpdf", appName2.get(0).get(0));
             assertEquals("Incorrect app name image format Portable Document Format", "Damn Small Linux", appName2.get(0).get(1));
             assertEquals("Incorrect platform name image format Portable Document Format", "x86", appName2.get(0).get(2));
