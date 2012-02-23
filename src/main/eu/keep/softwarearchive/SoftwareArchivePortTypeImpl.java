@@ -231,13 +231,15 @@ public class SoftwareArchivePortTypeImpl implements SoftwareArchivePortType {
         	}
         	else
         		pw.setApplication(createAppType(item, false).get(0));
+        	
         	item = it.next();
         	if (item == null) {
         		pw.getOperatingSystem().setId("-1");
         		pw.getOperatingSystem().setName("N/A");
         	}
-        	else
+        	else {
         		pw.setOperatingSystem(createOSType(item == null ? "-1" : item, false).get(0));
+			}
         	
         	pw.setHardwarePlatform(createHardwarePlatformType(it.next()));
 
