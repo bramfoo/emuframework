@@ -94,8 +94,8 @@ public class GUI extends JFrame implements CoreObserver {
      * @throws IOException if the gui.properties file can not be found.
      */
     private GUI(CoreEngineModel model, boolean eaAdmin, boolean swaAdmin) throws IOException {
-        super("KEEP ~ Emulation Framework ~ Admin interface");
-		super.setIconImage(Toolkit.getDefaultToolkit().getImage("images/icon.gif"));
+        super("KEEP ~ Emulation Framework ~ comprehensive user interface");
+		super.setIconImage(Toolkit.getDefaultToolkit().getImage("images/EF_icon.png"));
         super.setSize(WIDTH, HEIGHT);
         super.setResizable(false);
 
