@@ -78,7 +78,7 @@ $Revision$ $Date$ $Author$
 	<property name="ea.release.dir" 		value="${basedir}/../EmulatorArchive/build/release"/>
 	<property name="clientGUI.release.dir" 	value="${basedir}/../ClientGUI/build/release"/>
 	
-	<property name="runCLI" value="runEF_adminGUI"/>
+	<property name="runCLI" value="runEF_comprehensive"/>
 
 	<!-- Javac options -->                                          
     <property name="javac.args" value="-Xlint:unchecked" />
