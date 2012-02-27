@@ -177,7 +177,7 @@ public class FileExplorerPanel extends JPanel implements ActionListener {
 		
 		// button panel
         startWithoutObject = new JButton();
-        RBLanguages.set(startWithoutObject, "start");
+        RBLanguages.set(startWithoutObject, "start_wo_object");
         startWithoutObject.setEnabled(true);
         startWithoutObject.addActionListener(this);
 
