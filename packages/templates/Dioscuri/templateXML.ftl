@@ -89,6 +89,11 @@
             <video debug="false">
                 <updateintervalmicrosecs>40000</updateintervalmicrosecs>
             </video>
+            <vnc debug="false">
+                <enabled>false</enabled>
+                <port>20</port>
+                <password>password</password>
+            </vnc>
 <#-- Start of body -->
 <@separator section="body"/>
             <fdc debug="false">

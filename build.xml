@@ -109,6 +109,9 @@ $
         <delete file="${server.script}.sh"/> 
         <delete file="${server.script}.bat"/> 
         <delete file="${jar.dir}/${server.name}-${server.version}.jar"/>
+        <delete>
+            <fileset dir="${packages.dir}" includes="*.zip"/>
+        </delete>
     </target>
 
 	<!-- Generate automatic source -->
@@ -273,7 +276,7 @@ $
 	<target name="db.reset" description="Resets the database" depends="db.drop, db.create, db.populate"/>
 	
     <!-- emulator packages -->
-	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, packages.Dioscuri, package.JavaCPC-Win6.7, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
+	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, package.Dioscuri-0.7.0, package.JavaCPC-Win6.7, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
 	</target>
 
 	<target name="packages.BeebEm" description="Creates the database packages for BeebEm" depends="package.BeebEm-Lin0.0.13, package.BeebEm-Win4.13">
@@ -296,26 +299,11 @@ $
 		<delete file="${packages.dir}/templates/BeebEm/templateCLI.ftl"/>
 	</target>
 
-	<target name="packages.Dioscuri" description="Creates the database packages for Dioscuri" depends="package.dioscuri-0.5.0, package.dioscuri-0.5.0v2, package.dioscuri-0.6.0">
-		<echo message="Created emulator packages for Dioscuri (v. 0.5.0, v. 0.5.0.2, v. 0.6.0)"/> 
-	</target>
-
-	<target name="package.dioscuri-0.5.0">
-		<createEmuPackage packageZipName="dioscuri_050Package.zip"
-	                      emulatorZipName="Dioscuri_050.zip"
+	<target name="package.Dioscuri-0.7.0">
+		<createEmuPackage packageZipName="Dioscuri_070Package.zip"
+	                      emulatorZipName="Dioscuri_070.zip"
 	                      templateDir="Dioscuri" />
-	</target>
-
-	<target name="package.dioscuri-0.5.0v2">
-		<createEmuPackage packageZipName="dioscuri_050Packagev2.zip"
-	                      emulatorZipName="Dioscuri_050.zip"
-	                      templateDir="Dioscuri" />
-	</target>
-
-	<target name="package.dioscuri-0.6.0">
-		<createEmuPackage packageZipName="dioscuri_060Package.zip"
-	                      emulatorZipName="Dioscuri_060.zip"
-	                      templateDir="Dioscuri" />
+		<echo message="Created emulator packages for Dioscuri (v. 0.7.0)"/> 
 	</target>
 
 	<target name="package.JavaCPC-Win6.7">
