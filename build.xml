@@ -70,6 +70,7 @@ $Revision$ $Date$ $Author$
 	<property name="checkstyle.dir.out"    	value="${doc.dir}/checkstyle"/>
 	<property name="database.dir"     		value="${basedir}/database"/>    
 	<property name="testData.dir"     		value="${basedir}/testData"/>
+	<property name="testData.distr.dir" 	value="${testData.dir}/testData_distributable"/>
 	<property name="fits.dir"			    value="${basedir}/resources/fits-0.4.1"/>
     <property name="icons.dir"			    value="${basedir}/resources/icons"/>
 	<property name="fits.classpath.dir"		value="${fits.dir}/xml/nlnz"/>
@@ -86,7 +87,7 @@ $Revision$ $Date$ $Author$
 	<!-- Main variables -->
 	<property name="package.name" 	               value="eu.keep"/>
 	<property name="jar.name" 		               value="EFCore-${version}"/>
-	<property name="release.name" 	               value="EmulationFramework"/>
+	<property name="release.name" 	               value="EmulationFramework-${version}"/>
 	<property name="controller.package.name"       value="${package.name}.controller"/>
 	<property name="characteriser.package.name"    value="${package.name}.characteriser"/>
     <property name="cli.mainclass"			       value="${package.name}.core.EFCliAutoComp"/>
@@ -337,6 +338,7 @@ $Revision$ $Date$ $Author$
         	<zipfileset dir="${fits.dir}" prefix="eu/keep/resources/fits"/>
             <zipfileset dir="${icons.dir}" prefix="eu/keep/resources/icons"/>
             <zipfileset dir="${documentation.dir}" prefix="documentation" includes="*.pdf"/>
+        	<zipfileset dir="${testData.distr.dir}" prefix="testData"/>
         </zip>
         <echo message="${jar.name}.zip has been created in ${release.dir}" />  
     </target>
@@ -362,13 +364,11 @@ $Revision$ $Date$ $Author$
     	        compressionlevel="9"/>
     	<!-- Clean working directory -->
     	<echo message="Cleaning up working directory..."/>
+	    <delete dir="${release.dir}/EF"/>
+	    <delete dir="${release.dir}/ea"/>
+	    <delete dir="${release.dir}/swa"/>
+	    <delete dir="${release.dir}/clientGUI"/>
     	<echo message="Done."/>
-
-        <!-- clean up-->
-    <delete dir="${release.dir}/EF"/>
-    <delete dir="${release.dir}/ea"/>
-    <delete dir="${release.dir}/swa"/>
-    <delete dir="${release.dir}/clientGUI"/>
 	</target>
 	
 <!--
