@@ -336,7 +336,7 @@ ON ff.fileformat_id = ff_pf.fileformat_id LEFT OUTER JOIN apps app
 ON ff_apps.app_id = app.app_id LEFT OUTER JOIN apps_opsys app_os
 ON ff_apps.app_id = app_os.app_id LEFT OUTER JOIN opsys os
 ON (app_os.opsys_id = os.opsys_id OR ff_os.opsys_id = os.opsys_id) LEFT OUTER JOIN opsys_platform os_pf
-ON (os.opsys_id = os_pf.opsys_id OR ff_os.opsys_id = os_pf.opsys_id) LEFT OUTER JOIN platforms pf
+ON (os.opsys_id = os_pf.opsys_id OR ff_os.opsys_id = os_pf.opsys_id) INNER JOIN platforms pf
 ON (os_pf.platform_id = pf.platform_id OR ff_pf.platform_id = pf.platform_id);
 
 -- ADDED from Core
