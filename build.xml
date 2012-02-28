@@ -337,7 +337,7 @@ $Revision$ $Date$ $Author$
         	<zipfileset dir="${src.dir}" prefix="eu/keep" includes="log4j.properties"/>
         	<zipfileset dir="${fits.dir}" prefix="eu/keep/resources/fits"/>
             <zipfileset dir="${icons.dir}" prefix="eu/keep/resources/icons"/>
-            <zipfileset dir="${documentation.dir}" prefix="documentation" includes="*.pdf"/>
+            <zipfileset dir="${documentation.dir}" prefix="documentation" includes="*.pdf" excludes="ArchitecturalDesignDocument*.pdf"/>
         	<zipfileset dir="${testData.distr.dir}" prefix="testData"/>
         </zip>
         <echo message="${jar.name}.zip has been created in ${release.dir}" />  
