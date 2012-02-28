@@ -276,7 +276,7 @@ $
 	<target name="db.reset" description="Resets the database" depends="db.drop, db.create, db.populate"/>
 	
     <!-- emulator packages -->
-	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, package.Dioscuri-0.7.0, package.JavaCPC-Win6.7, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
+	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, package.Dioscuri-0.7.0, package.JavaCPC-1.1, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
 	</target>
 
 	<target name="packages.BeebEm" description="Creates the database packages for BeebEm" depends="package.BeebEm-Lin0.0.13, package.BeebEm-Win4.13">
@@ -306,11 +306,11 @@ $
 		<echo message="Created emulator packages for Dioscuri (v. 0.7.0)"/> 
 	</target>
 
-	<target name="package.JavaCPC-Win6.7">
-		<createEmuPackage packageZipName="WinJavaCPC_67Package.zip"
-	                      emulatorZipName="WinJavaCPC_67.zip"
+	<target name="package.JavaCPC-1.1">
+		<createEmuPackage packageZipName="JavaCPC_11Package.zip"
+	                      emulatorZipName="JavaCPC_11.zip"
 	                      templateDir="JavaCPC" />
-		<echo message="Created emulator packages for JavaCPC (Windows v. 6.7)"/> 
+		<echo message="Created emulator package for JavaCPC (v. 1.1)"/> 
 	</target>    
 
 	<target name="packages.Qemu" description="Creates the database packages for Qemu" depends="package.Qemu-Lin0.1.3.0, package.Qemu-Win0.9.0">
