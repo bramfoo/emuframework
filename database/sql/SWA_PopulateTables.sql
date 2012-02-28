@@ -74,6 +74,7 @@ INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, descripti
 INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1027', 'Thomson Tape Image', null, 'Thomson Tape Image (k7)', 'http://fr.wikipedia.org/wiki/SIMIV');
 INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1028', 'Thomson Cartridge Image', null, 'Thomson Cartridge Image (m7)', 'http://fr.wikipedia.org/wiki/SIMIV');
 INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1029', 'Thomson Floppy Image', null, 'Thomson Floppy Image (d7; dd7)', 'http://fr.wikipedia.org/wiki/SIMIV');
+INSERT INTO softwarearchive.fileformats (fileformat_id, name, version, description, reference) VALUES('FFT-1030', 'PDF/A', null, 'Portable Document Format files that are ISO 19005-1 compliant', 'http://en.wikipedia.org/wiki/PDF_(Adobe)');
 
 -- Platform table
 -- Contains the name and description of each known platform
