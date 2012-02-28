@@ -452,11 +452,11 @@ public class GUI extends JFrame implements CoreObserver {
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showMessageDialog(GUI.this,
                         model.getVendor() + "\n\n" +
-                                model.getTitle() + " " + model.getVersion() + " - Copyright (c) 2009-2011 Tessella plc.\n" +
-                                "GUI - Copyright (c) 2011 National Library of the Netherlands\n" +
+                                model.getTitle() + " " + model.getVersion() + " - Copyright (c) 2009-2012 Tessella plc.\n" +
+                                "GUI - Copyright (c) 2012 National Library of the Netherlands\n" +
                                 "\n" +
-                                "Software Archive version 1.1.0\n" + // TODO get version from SWA
-                                "Emulator Archive version 1.1.0\n" + // TODO get version from EA
+                                "Software Archive version 2.0.0\n" + // TODO get version from SWA
+                                "Emulator Archive version 2.0.0\n" + // TODO get version from EA
                                 "\n" +
                                 "Licensed under the Apache License, Version 2.0 (the \"License\");\n" +
                                 "you may not use this software except in compliance with the License.\n" +

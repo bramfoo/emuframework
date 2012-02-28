@@ -27,7 +27,7 @@
 -->
 
 <ivy-module version="2.0">
-    <info organisation="eu.keep" module="EFCore"/>
+    <info organisation="eu.keep" module="EFCore-2.0.0"/>
     <configurations defaultconfmapping="dist">
         <conf name="dist"/>
         <conf name="fits"/>
@@ -51,7 +51,7 @@
 		<dependency org="junit" name="junit" rev="4.7" conf="dev->default"/>
 		<dependency org="org.mockito" name="mockito-all" rev="1.8.5" conf="dev->default"/>
 <!-- FITS -->
-		<dependency org="eu.keep" name="keep-externals" rev="1.1.0" changing="true" conf="fits->fits"/>
+		<dependency org="eu.keep" name="keep-externals" rev="2.0.0" changing="true" conf="fits->fits"/>
 		<dependency org="commons-cli" name="commons-cli" rev="1.1" conf="fits->default"/> 
         <dependency org="org.jdom" name="jaxen-core" rev="1.0-FCS" conf="fits->default"/>
         <dependency org="org.jdom" name="jaxen-jdom" rev="1.0-FCS" conf="fits->default"/>
@@ -62,16 +62,16 @@
         <dependency org="org.codehaus.woodstox" name="woodstox-core-lgpl" rev="4.0.7" conf="fits->default"/>
 		<dependency org="xmlunit" name="xmlunit" rev="1.2" conf="fits->default"/>
 <!-- FITS (Droid) -->
-		<dependency org="eu.keep" name="keep-externals" rev="1.1.0" changing="true" conf="fits->fitsDroid; fits->fitsJhove; fits->fitsNZME"/>
+		<dependency org="eu.keep" name="keep-externals" rev="2.0.0" changing="true" conf="fits->fitsDroid; fits->fitsJhove; fits->fitsNZME"/>
 		<dependency org="com.sun.xml.bind" name="jaxb-impl" rev="2.0" conf="fits->default"/>
 		<dependency org="com.jgoodies" name="looks" rev="2.2.2" conf="fits->default"/>
 		<dependency org="javax.mail" name="mail" rev="1.4" conf="fits->default"/>
 		<dependency org="soap" name="soap" rev="2.3.1" conf="fits->default"/>
 		<dependency org="xerces" name="xercesImpl" rev="2.9.1" conf="fits->default"/>
 <!-- FITS (Jhove) -->
-		<dependency org="eu.keep" name="keep-externals" rev="1.1.0" changing="true" conf="fits->fitsJhove; fits->fitsNZME"/>
+		<dependency org="eu.keep" name="keep-externals" rev="2.0.0" changing="true" conf="fits->fitsJhove; fits->fitsNZME"/>
 <!-- FITS (NZME) -->
-		<dependency org="eu.keep" name="keep-externals" rev="1.1.0" changing="true" conf="fits->fitsNZME"/>
+		<dependency org="eu.keep" name="keep-externals" rev="2.0.0" changing="true" conf="fits->fitsNZME"/>
 		<dependency org="pdfbox" name="pdfbox" rev="0.7.3" conf="fits->default"/>
 		<dependency org="org.apache.poi" name="poi" rev="3.6" conf="fits->default"/>
 <!-- Unused?
