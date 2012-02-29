@@ -296,8 +296,8 @@ INSERT INTO softwarearchive.languages (language_id) VALUES('zu');
 
 -- Registries table
 -- Contains external registries 
-INSERT INTO softwarearchive.registries (registry_id, name, url, class_name, translation_view, enabled, description, comment) VALUES(2, 'PRONOM/PCR', 'http://www.nationalarchives.gov.uk/pronom/', 'eu.keep.characteriser.registry.PronomRegistry', 'EF_PCR_FORMATS', TRUE, 'PRONOM/PCR, the one and only registry', 'Does not support pathways yet');
-INSERT INTO softwarearchive.registries (registry_id, name, url, class_name, translation_view, enabled, description, comment) VALUES(3, 'UDFR', 'http://www.gdfr.info/udfr.html', 'eu.keep.characteriser.registry.UDFRRegistry', 'EF_PCR_FORMATS', TRUE, 'UDFR, the non-existing registry', 'Will this ever get implemented?');
+INSERT INTO softwarearchive.registries (registry_id, name, url, class_name, translation_view, enabled, description, comment) VALUES(2, 'PRONOM/PCR', 'http://www.nationalarchives.gov.uk/pronom/', 'eu.keep.characteriser.registry.PronomRegistry', 'EF_PCR_FORMATS', TRUE, 'PRONOM/PCR technical registry', 'This is currently a stub, since PRONOM has not been updated yet for allowing this interaction between the two systems. No pathways will be returned.');
+INSERT INTO softwarearchive.registries (registry_id, name, url, class_name, translation_view, enabled, description, comment) VALUES(3, 'TOTEM', 'http://keep-totem.co.uk/', 'eu.keep.characteriser.registry.TotemRegistry', 'EF_PCR_FORMATS', TRUE, 'TOTEM - the Trustworthy Online Technical Environment Metadata Database', 'This is currently a stub, since TOTEM has not been updated yet for allowing this interaction between the two systems. No pathways will be returned.');
 
 -- PCR File format table
 -- Contains the name of PCR file formats and IDs corresponding to EF file formats
