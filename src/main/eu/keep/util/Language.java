@@ -31,9 +31,6 @@
 */
 package eu.keep.util;
 
-//import eu.keep.emulatorarchive.emulatorpackage.EmuLanguage;
-//import eu.keep.softwarearchive.pathway.SwLanguage;
-
 /**
  * Utility class to hold language details.
  * @author nooe
