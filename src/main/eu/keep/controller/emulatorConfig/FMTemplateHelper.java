@@ -182,7 +182,12 @@ public class FMTemplateHelper {
     					}
 
     					floppy.put("digobj", diskfile.toString());
-    					floppy.put("type", FloppyDiskType.getDiskType(diskfile).name());
+    					
+    					FloppyDiskType diskType = FloppyDiskType.getDiskType(diskfile);
+    					if (diskType == FloppyDiskType.UNDEFINED)
+    						throw new IOException("Cannot determine disk type for configuration, aborting...\nPossibly the input file is corrupt, please ensure this contains a valid image");
+    					else
+    						floppy.put("type", diskType.name());
     					f.add(floppy);
     				}
     				else {
@@ -193,7 +198,11 @@ public class FMTemplateHelper {
     			}
     			else {
     				floppy.put("digobj", digObj.getAbsolutePath());
-    				floppy.put("type", FloppyDiskType.getDiskType(digObj).name());
+					FloppyDiskType diskType = FloppyDiskType.getDiskType(digObj);
+					if (diskType == FloppyDiskType.UNDEFINED)
+						throw new IOException("Cannot determine disk type for configuration, aborting...\nPossibly the input file is corrupt, please ensure this contains a valid image");
+					else
+						floppy.put("type", diskType.name());
     				f.add(floppy);
     			}
 
