@@ -21,6 +21,7 @@ public enum FloppyDiskType {
 	AMG3_5_1760(FileSystem.AMIGA, Media.DISK3_5, Size.KB1760),
 	AMS3_180(FileSystem.AMSTRAD, Media.DISK3, Size.KB180),
 	AMSTAPE(FileSystem.AMSTRAD, Media.TAPE, null),
+	BBC_XX_XX(FileSystem.BBCMICRO, Media.DISK3, Size.KB200), // FIXME: Details (media) to be sorted out
 	C64TAPE(FileSystem.C64, Media.TAPE, null),
 	C645_25_170(FileSystem.C64, Media.DISK5_25, Size.KB170),
 	C645_25_340(FileSystem.C64, Media.DISK5_25, Size.KB340),
@@ -33,11 +34,14 @@ public enum FloppyDiskType {
 	FAT5_25_320(FileSystem.FAT, Media.DISK5_25, Size.KB320),
 	FAT5_25_360(FileSystem.FAT, Media.DISK5_25, Size.KB360),
 	FAT5_25_1200(FileSystem.FAT, Media.DISK5_25, Size.KB1200),
-    UNDEFINED(null, null, null);
+	THOMSON_CART_XX(FileSystem.THOMSON, Media.CARTRIDGE, Size.KB16),
+	THOMSON_DISK_XX(FileSystem.THOMSON, Media.DISK3, Size.KB80), // FIXME: check media
+	THOMSON_TAPE_XX(FileSystem.THOMSON, Media.TAPE, Size.KB16), // FIXME: check size, seems variable
+	UNDEFINED(null, null, null);
 
-    private enum FileSystem {AMIGA, C64, FAT, AMSTRAD}
-    private enum Media {DISK3, DISK3_5, DISK5_25, TAPE};
-    private enum Size {KB160, KB170, KB180, KB320, KB340, KB360, KB640, KB720, KB880, KB1200, KB1440, KB1760, KB2880}
+    private enum FileSystem {AMIGA, AMSTRAD, BBCMICRO, C64, FAT, THOMSON}
+    private enum Media {CARTRIDGE, DISK3, DISK3_5, DISK5_25, TAPE};
+    private enum Size {KB16, KB80, KB160, KB170, KB180, KB200, KB320, KB340, KB360, KB640, KB720, KB880, KB1200, KB1440, KB1760, KB2880}
 
 	private static final Logger logger = Logger.getLogger("eu.keep.util.DiskType");
 
@@ -77,6 +81,7 @@ public enum FloppyDiskType {
     			size == null ? "-" : size.toString().replaceAll("(\\D+)(\\d+)", "$2 $1"));
     }
 
+    // FIXME: BBCMICRO to be added
     /**
      * Method to determine the FloppyDiskType given a image file. The file
      * is checked for various signatures (usually at location 0x0), which are compared
