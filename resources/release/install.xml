@@ -72,7 +72,8 @@
         <pack name="Core Emulation Framework" required="yes">
             <description>Core Emulation Framework (including comprehensive GUI).</description>
             <fileset dir="build/release/EF" targetdir="$INSTALL_PATH" excludes="**/.svn/**"/>
-            <executable targetfile="$INSTALL_PATH/runEF_adminGUI.sh"/>
+            <executable targetfile="$INSTALL_PATH/runEF_basic.sh"/>
+            <executable targetfile="$INSTALL_PATH/runEF_comprehensive.sh"/>
         </pack>
 
         <pack name="Basic GUI" required="no" preselected="yes">
