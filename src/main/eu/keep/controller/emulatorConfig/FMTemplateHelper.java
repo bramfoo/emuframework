@@ -184,9 +184,14 @@ public class FMTemplateHelper {
     					floppy.put("digobj", diskfile.toString());
     					
     					FloppyDiskType diskType = FloppyDiskType.getDiskType(diskfile);
-    					if (diskType == FloppyDiskType.UNDEFINED)
-    						throw new IOException("Cannot determine disk type for configuration, aborting...\nPossibly the input file is corrupt, please ensure this contains a valid image");
-    					else
+
+// Removed this check, as a temporary fix for SourceForge issue 3516323. 
+// This will allow BBC Micro and Thomson files to be emulated, 
+// but may cause problems later for other unsupported file types 
+// (e.g. after adding new Emulators)      					
+//    					if (diskType == FloppyDiskType.UNDEFINED)
+//    						throw new IOException("Cannot determine disk type for configuration, aborting...\nPossibly the input file is corrupt, please ensure this contains a valid image");
+//    					else
     						floppy.put("type", diskType.name());
     					f.add(floppy);
     				}
@@ -199,9 +204,13 @@ public class FMTemplateHelper {
     			else {
     				floppy.put("digobj", digObj.getAbsolutePath());
 					FloppyDiskType diskType = FloppyDiskType.getDiskType(digObj);
-					if (diskType == FloppyDiskType.UNDEFINED)
-						throw new IOException("Cannot determine disk type for configuration, aborting...\nPossibly the input file is corrupt, please ensure this contains a valid image");
-					else
+// Removed this check, as a temporary fix for SourceForge issue 3516323. 
+// This will allow BBC Micro and Thomson files to be emulated, 
+// but may cause problems later for other unsupported file types 
+// (e.g. after adding new Emulators)      					
+//					if (diskType == FloppyDiskType.UNDEFINED)
+//						throw new IOException("Cannot determine disk type for configuration, aborting...\nPossibly the input file is corrupt, please ensure this contains a valid image");
+//					else
 						floppy.put("type", diskType.name());
     				f.add(floppy);
     			}
