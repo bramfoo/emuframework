@@ -52,7 +52,7 @@
 	<property file="${CEF-common.basedir}/test.properties"/>
 
 	<!-- EF version -->
-	<property name="version" value="2.0.0"/>
+	<property name="version" value="2.1.0"/>
 	
 	<!--================================================================================-->
 	<!-- common macros 																	-->
