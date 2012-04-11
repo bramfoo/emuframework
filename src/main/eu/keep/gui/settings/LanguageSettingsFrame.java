@@ -161,7 +161,7 @@ public class LanguageSettingsFrame extends JFrame {
 
 		// Buttons for available language options
         final JRadioButton english = new JRadioButton(Language.en.getLanguageName(), guiLanguage == Language.en);
-//        final JRadioButton german = new JRadioButton(Language.de.getLanguageName(), guiLanguage == Language.de);
+        final JRadioButton german = new JRadioButton(Language.de.getLanguageName(), guiLanguage == Language.de);
         final JRadioButton french = new JRadioButton(Language.fr.getLanguageName(), guiLanguage == Language.fr);
         final JRadioButton dutch = new JRadioButton(Language.nl.getLanguageName(), guiLanguage == Language.nl);
 
@@ -172,12 +172,12 @@ public class LanguageSettingsFrame extends JFrame {
             }
         });
 
-//        german.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                guiLanguage = Language.de;
-//            }
-//        });
+        german.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guiLanguage = Language.de;
+            }
+        });
 
         french.addActionListener(new ActionListener() {
             @Override
@@ -195,13 +195,13 @@ public class LanguageSettingsFrame extends JFrame {
 
         ButtonGroup group = new ButtonGroup();
         group.add(english);
-//        group.add(german);
+        group.add(german);
         group.add(french);
         group.add(dutch);
 
         JPanel buttonGroupPanel = new JPanel(new GridLayout(0, 1));
         buttonGroupPanel.add(english);
-//        buttonGroupPanel.add(german);
+        buttonGroupPanel.add(german);
         buttonGroupPanel.add(french);
         buttonGroupPanel.add(dutch);
         
