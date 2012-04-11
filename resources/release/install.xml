@@ -45,6 +45,7 @@
         <res id="InfoPanel.info" src="readme.txt"/>
         -->
         <res id="Installer.image" src="resources/release/KEEP_Logo_small.jpg" />
+        <res id="TargetPanel.dir.windows" src="resources/release/targetdir_windows.txt"/>
     </resources>
 
     <!-- 
