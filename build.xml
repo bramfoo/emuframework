@@ -333,7 +333,7 @@ $Revision$ $Date$ $Author$
         	<fileset dir="${jar.dir}" includes="${jar.name}.jar"/>
            	<zipfileset dir="${libs.dir}" prefix="lib/" excludes="dev/**"/>
            	<zipfileset dir="${database.dir}" prefix="database/" includes="h2/**"/>
-        	<zipfileset dir="${basedir}" prefix="eu/keep" includes="*.properties" excludes="test.properties"/>
+        	<zipfileset dir="${classes.dir}/eu/keep" prefix="eu/keep" includes="*.properties" excludes="test.properties"/>
         	<zipfileset dir="${src.dir}" prefix="eu/keep" includes="log4j.properties"/>
         	<zipfileset dir="${fits.dir}" prefix="eu/keep/resources/fits"/>
             <zipfileset dir="${icons.dir}" prefix="eu/keep/resources/icons"/>
@@ -501,6 +501,7 @@ $Revision$ $Date$ $Author$
                 <include name="GUIBundle*.properties"/>
             </fileset>
         </copy>
+		<copy file="${basedir}/GUIBundle.properties" tofile="${classes.dir}/eu/keep/GUIBundle_en.properties"/>
 
 		<copy file="${resource.dir}/external/softwarearchive/PathwaySchema.xsd" todir="${classes.dir}/eu/keep/resources/external" overwrite="yes"/>	
 		<copy todir="${classes.dir}/eu/keep/resources/fits" >
