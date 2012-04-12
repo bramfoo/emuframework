@@ -1,275 +1,182 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <!--
-$Revision$ $Date$ $Author$
+$Revision$ $Date$ 
+$Author$
 -->
 
 <!--
- * Copyright (c) 2009-2011 Tessella plc.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * For more information about this project, visit
- *   http://www.keep-project.eu/
- *   http://emuframework.sourceforge.net/
- * or contact us via email:
- *   blohman at users.sourceforge.net
- *   dav_m at users.sourceforge.net
- *   bkiers at users.sourceforge.net
- * Developed by:
- *   Tessella plc <www.tessella.com>
- *   Koninklijke Bibliotheek <www.kb.nl>
- *   KEEP <www.keep-project.eu>
- * Project Title: Core Emulation Framework (Core EF)
+$header:
+* Copyright (c) 2009-2011 Tessella plc.
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*
+* For more information about this project, visit
+*   http://www.keep-project.eu/
+*   http://emuframework.sourceforge.net/
+* or contact us via email:
+*   blohman at users.sourceforge.net
+*   dav_m at users.sourceforge.net
+*   bkiers at users.sourceforge.net
+* Developed by:
+*   Tessella plc <www.tessella.com>
+*   Koninklijke Bibliotheek <www.kb.nl>
+*   KEEP <www.keep-project.eu>
+* Project Title: Emulator Archive (EA)
+$
 -->
 
-<!--
-   ============ Automated tasks for the Core Emulation Framework ===================
--->
+<project name="Emulator Archive (prototype)" default="jar" basedir=".">
 
-<project name="Core Emulation Framework" default="ivy-publish" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-
-    <description>
-        Main build file for the Core Emulation Framework
-    </description>
+	<property file="user.properties"/>
 
 	<!-- master build file with properties, macros -->
-	<import file="build.common.xml"/>
+    <property name="EFCore.dir"		 location="${basedir}/../Core"/>
+	<import file="${EFCore.dir}/build.common.xml"/>
 
-	<!-- Directories in this tree -->
-	<!-- Note that variables names must differ from the user.properties/test.properties names imported in build.common.xml-->
-	<property name="src.dir"				value="${basedir}/src/main"/>
-	<property name="build.dir"				value="${basedir}/build"/>
-	<property name="libs.dir"				value="${basedir}/lib"/>
-	<property name="devlibs.dir"			value="${libs.dir}/dev"/>
-	<property name="gen-src.dir"			value="${basedir}/src/generated"/>
-	<property name="test.dir"				value="${basedir}/src/test"/>
-	<property name="test.report.dir"		value="${build.dir}/test"/>
-	<property name="packages.dir"			value="${basedir}/packages"/>
-	<property name="resource.dir"			value="${basedir}/resources"/>
-	<property name="classes.dir"			value="${build.dir}/classes"/>
-	<property name="jar.dir"				value="${build.dir}/jar"/>
-	<property name="release.dir"			value="${build.dir}/release"/>
-	<property name="release.config.dir"		value="${resource.dir}/release"/>
-	<property name="izpack.home"			value="${release.config.dir}/IzPack"/>
-	<property name="tools.dir"			    value="${resource.dir}/tools"/>
-	<property name="doc.dir"			    value="${build.dir}/doc"/>
-	<property name="documentation.dir"		value="${basedir}/documentation"/>
-	<property name="javadoc.dir"			value="${doc.dir}/javadoc"/>
-	<property name="svnstat.dir.in"			value="${tools.dir}/svnstat"/>
-	<property name="svnstat.dir.out"		value="${doc.dir}/svnstat"/>
-	<property name="checkstyle.dir.in"     	value="${tools.dir}/checkstyle"/>
-	<property name="checkstyle.dir.out"    	value="${doc.dir}/checkstyle"/>
-	<property name="database.dir"     		value="${basedir}/database"/>    
-	<property name="testData.dir"     		value="${basedir}/testData"/>
-	<property name="testData.distr.dir" 	value="${testData.dir}/testData_distributable"/>
-	<property name="fits.dir"			    value="${basedir}/resources/fits-0.4.1"/>
-    <property name="icons.dir"			    value="${basedir}/resources/icons"/>
-	<property name="fits.classpath.dir"		value="${fits.dir}/xml/nlnz"/>
-      
-	<property name="swa.release.dir" 		value="${basedir}/../SoftwareArchive/build/release"/>
-	<property name="ea.release.dir" 		value="${basedir}/../EmulatorArchive/build/release"/>
-	<property name="clientGUI.release.dir" 	value="${basedir}/../ClientGUI/build/release"/>
-	
-	<property name="runCLI" value="runEF_comprehensive"/>
-
-	<!-- Javac options -->                                          
-    <property name="javac.args" value="-Xlint:unchecked" />
-
-	<!-- Main variables -->
-	<property name="package.name" 	               value="eu.keep"/>
-	<property name="jar.name" 		               value="EFCore-${version}"/>
-	<property name="release.name" 	               value="EmulationFramework-${version}"/>
-	<property name="controller.package.name"       value="${package.name}.controller"/>
-	<property name="characteriser.package.name"    value="${package.name}.characteriser"/>
-    <property name="cli.mainclass"			       value="${package.name}.core.EFCliAutoComp"/>
-	<property name="gui.mainclass"			       value="${package.name}.gui.GUI"/>
-
-	<!-- Class paths -->
-    <path id="ant-classpath">
-        <fileset dir="${basedir}/lib-local/ant" includes="**/*.jar"/>
-    </path>
+    <property name="server.script" value="runServer"/>
+    <property name="server.name" value="emulatorArchiveServer"/>
+    <property name="server.version" value="${version}"/>
     
-    <path id="dev.classpath">
-        <fileset dir="${libs.dir}">
-            <include name="**/*.jar"/>
-        </fileset>
-		<pathelement location="."/>
-		<pathelement location="${classes.dir}"/>
-		<pathelement location="${fits.classpath.dir}"/>
-    </path>
+    <property environment="env"/>
+    <property name="home.dir"        	location="${basedir}"/>
+    <property name="lib.dir"         	location="${basedir}/lib"/>
+    <property name="jar.dir"         	location="${basedir}"/>  
+    <property name="build.dir"       	location="${basedir}/build"/>
+    <property name="classes.dir"     	location="${build.dir}/classes"/>
+    <property name="release.dir"     	location="${build.dir}/release"/>    
+	<property name="doc.dir"		 	location="${build.dir}/doc"/>
+	<property name="javadoc.dir"	 	location="${doc.dir}/javadoc"/>
+    <property name="src.dir"         	location="${basedir}/src/main"/>
+	<property name="gen-src.dir"	 	location="${basedir}/src/generated"/>	
+    <property name="test.dir"        	location="${basedir}/src/test"/>
+    <property name="test.report.dir" 	location="${build.dir}/test"/>    
+	<property name="database.dir"    	location="${basedir}/database"/>
+	<property name="sqlscript.dir"   	location="${database.dir}/sql"/>
+	<property name="packages.dir"    	location="${basedir}/packages"/>
+	<property name="test.database.dir" 	location="${basedir}/testData/database"/>
 
-    <manifestclasspath property="dev.lib.list" jarfile="./${jar.name}.jar">
-	   <classpath refid="dev.classpath" />
-	</manifestclasspath>
-
-    <path id="release-classpath">
-        <fileset dir="${libs.dir}">
-            <include name="**/*.jar"/>
-            <exclude name="${devlibs.dir}/*.jar"/>
-        </fileset>
-		<pathelement location="${fits.classpath.dir}"/>
-    </path>
-
-    <manifestclasspath property="release.lib.list" jarfile="./${jar.name}.jar">
-	   <classpath refid="release-classpath" />
-	</manifestclasspath>
 	
-<!--
- ============ Common checks ===================
--->
+	<!-- check if user.properties file exists or not -->
+	<target name="check.user.properties">
+	    <available file="user.properties" property="user.properties.present"/>
+	    <fail message="user.properties file is missing !" unless="user.properties.present"/>
+	</target>
 
     <!-- find java version and tools.jar -->
-    <available property="tools.jar" value="$${env.JAVA_HOME}/lib/tools.jar" file="${env.JAVA_HOME}/lib/tools.jar"/>
-	
+    <available property="tools.jar" value="$${env.JAVA_HOME}/lib/tools.jar"
+               file="${env.JAVA_HOME}/lib/tools.jar"/>
     <path id="jdk.tools.classpath">
         <pathelement location="${tools.jar}"/>
     </path>
 
-    <condition property="is.java.version.1.6">
-    	<or>
+    <condition property="is.java.version.15">
+        <or>
+          <equals arg1="${ant.java.version}" arg2="1.5"/>
           <equals arg1="${ant.java.version}" arg2="1.6"/>
           <equals arg1="${ant.java.version}" arg2="1.7"/>
-    	</or>
+        </or>
     </condition>
 
-    <fail message="KEEP EF core requires Java version 1.6 or higher. You are currently using Java version ${ant.java.version}."
-          unless="is.java.version.1.6"/>
+    <fail message="${server.name} requires Java version 1.5 or higher. You are currently using Java version ${ant.java.version}."
+          unless="is.java.version.15"/>
+          
+    <!-- classpath -->
+    <path id="dev.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
 
-	<!-- check if user.properties file exists or not -->
-	<target name="check.user.properties">
-	    <available file="user.properties" property="user.properties.present"/>
-	    <fail message="user.properties file is missing. Please ensure this file is present" unless="user.properties.present"/>
-        <available file="gui.properties" property="gui.properties.present"/>
-	    <fail message="gui.properties file is missing. Please ensure this file is present" unless="gui.properties.present"/>
-	</target>
+    <manifestclasspath property="manifest.classpath" jarfile="./${server.name}-${server.version}.jar">
+	   <classpath refid="dev.classpath" />
+	</manifestclasspath>
 
-	<!-- check if test.properties file exists or not -->
-	<target name="check.test.properties">
-		<condition property="test.properties.present">
-		  <and> 
-		    <available file="test.properties"/>
-		    <available file="testKernel.properties"/>
-		  </and>
-		</condition>
-	    <fail message="test.properties or testKernel.properties file is missing. Please ensure these files are present" unless="test.properties.present"/>
-  	</target>
-
-<!--	<target name="check.test.properties">
-	    <available file="test.properties" property="test.properties.present"/>
-	    <fail message="test.properties file is missing. Please ensure this file is present" unless="test.properties.present"/>
-	    <available file="testKernel.properties" property="testKernel.properties.present"/>
-	    <fail message="testKernel.properties file is missing. Please ensure this file is present" unless="testKernel.properties.present"/>
-	</target>
--->
-	
-	
-<!--
- ============ Clean targets ===================
--->
-
-	<!-- Delete output files and directories -->
-   	<target name="clean" description="Clean the directory: build, ${gen-src.dir}/*, ${test.report.dir}">
-		<delete dir="${build.dir}"/>
+    <!-- clean -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
         <delete includeemptydirs="true">
             <fileset dir="${gen-src.dir}" includes="**/*"/>
         </delete>
-        <delete dir="${test.report.dir}"/>
-	</target>
+        <delete file="${server.script}.sh"/> 
+        <delete file="${server.script}.bat"/> 
+        <delete file="${jar.dir}/${server.name}-${server.version}.jar"/>
+        <delete>
+            <fileset dir="${packages.dir}" includes="*.zip"/>
+        </delete>
+    </target>
 
-<!--
- ============ Generated source code ===================
--->
-    <!-- JAXB compiler task definition -->
-    <taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" classpathref="ant-classpath"/>
-
-    <target name="generated.src" description="Generates the CXF classes" depends="copy.resources">
-        <echo level="info" message="Generating code using Apache CXF wsdl2java..."/>
-        <!-- temporarily copy wsdls to a fictious directory with the same tree structure as the classpath -->        
-        <copy file="${resource.dir}/external/emulatorarchive/emulatorarchive.wsdl" todir="eu/keep/resources/external" overwrite="yes"/>	    
-        <copy file="${resource.dir}/external/emulatorarchive/EmulatorPackageSchema.xsd" todir="eu/keep/resources/external" overwrite="yes"/>	    
-    	<copy file="${resource.dir}/external/softwarearchive/softwarearchive.wsdl" todir="eu/keep/resources/external" overwrite="yes"/>	
-        <copy file="${resource.dir}/external/softwarearchive/PathwaySchema.xsd" todir="eu/keep/resources/external" overwrite="yes"/>	    
-        <copy file="${resource.dir}/external/softwarearchive/SoftwarePackageSchema.xsd" todir="eu/keep/resources/external" overwrite="yes"/>	    
-    	<java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
-          <arg value="-d"/>
-          <arg value="${gen-src.dir}"/>
-          <arg value="-xjc-Xts"/>
-          <arg value="eu/keep/resources/external/emulatorarchive.wsdl"/>
-          <classpath>
-            <path refid="dev.classpath"/>
-          </classpath>
-        </java>
+	<!-- Generate automatic source -->
+    <target name="generated.src" description="Generates the CXF classes" depends="check.user.properties" if="user.properties.present">
+        <delete includeemptydirs="true">
+            <fileset dir="${gen-src.dir}" includes="**/*"/>
+        </delete>
+    	<echo level="info" message="Generating Java classes using Apache CXF wsdl2java..."/>
         <java classname="org.apache.cxf.tools.wsdlto.WSDLToJava" fork="true">
           <arg value="-d"/>
           <arg value="${gen-src.dir}"/>
           <arg value="-xjc-Xts"/>
-          <arg value="eu/keep/resources/external/softwarearchive.wsdl"/>
+          <arg value="./resources/emulatorarchive.wsdl"/>
           <classpath>
             <path refid="dev.classpath"/>
           </classpath>
         </java>
-    	<!-- clean up mockup classpath directory -->        
-		<delete dir="eu"/>
     </target>
 
-<!--
- ============ Compile, jar up and Run ===================
--->
-
-    <!-- Compile the complete source directory tree -->
-    <target name="compile" description="Compiles the source directory tree" depends="generated.src, check.user.properties">
-    	<mkdir dir="${classes.dir}"/>
-    	<echo level="info" message="Compiling generated-src..."/>
-   		<javac srcdir="${gen-src.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes">
-   			<compilerarg value="${javac.args}"/>
+	<!-- compile -->
+    <target name="compile" description="Compile the java classes" depends="clean, generated.src">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${gen-src.dir}" destdir="${classes.dir}" debug="true">
+            <classpath refid="dev.classpath" />
         </javac>
-        <echo level="info" message="Compiling src..."/>
-    	<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes">
-            <compilerarg value="${javac.args}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true">
+            <classpath refid="dev.classpath" />
         </javac>
     </target>
 
-    <!-- Create a release jar file -->
-    <target name="jar" description="Create a jar file" depends="clean, compile, copy.resources" if="user.properties.present">
+    <!-- jar -->
+    <target name="jar" description="Create a jar file" depends="compile">    
+        <manifestclasspath property="server.manifest.classpath" jarfile="./${server.name}-${server.version}.jar">
+	        <classpath refid="dev.classpath" />
+	    </manifestclasspath>
 		<mkdir dir="${jar.dir}"/>
 		<tstamp/>
-        <jar destfile="${jar.dir}/${jar.name}.jar" basedir="${classes.dir}">
-        	<exclude name="log4j.properties"/>
-        	<exclude name="eu/keep/user.properties"/>
-            <exclude name="eu/keep/gui.properties"/>
-			<exclude name="eu/keep/resources/fits/**"/>
-            <exclude name="eu/keep/resources/icons/**"/>
+        <jar destfile="${jar.dir}/${server.name}-${server.version}.jar" basedir="${classes.dir}" excludes="">
 			<manifest>
 				<attribute name="Manifest-Version"      value="1.0"/>
-			    <attribute name="Specification-Title"   value="Emulation Framework Core"/>
-			    <attribute name="Specification-Version" value="${version}"/>
+			    <attribute name="Specification-Title"   value="Emulator Archive"/>
+			    <attribute name="Specification-Version" value="${server.version}"/>
 			    <attribute name="Specification-Vendor"  value="KEEP project - http://www.keep-project.eu"/>
 			    <attribute name="Built-By"              value="Tessella plc - http://www.tessella.com"/>
-			    <attribute name="Built-Date"            value="${TODAY}"/>			    
-				<attribute name="Class-Path"            value=". ${dev.lib.list}"/>
-				<attribute name="Main-Class"            value="${gui.mainclass}"/>
+			    <attribute name="Built-Date"            value="${TODAY}"/>		
+				<attribute name="Main-Class"            value="eu.keep.emulatorarchive.EmulatorArchive"/>
+				<attribute name="Class-Path"            value=". ${manifest.classpath}"/>
 			</manifest>
-        </jar>
+		</jar>
     </target>
-
-    <!-- Generate CLI scripts to start Emulation Framework -->
-    <target name="cli.scripts">
-        <echo file="${runCLI}.sh" append="false" message="java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar $@"/>
-        <echo file="${runCLI}.bat" append="false" message="@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=./eu/keep/log4j.properties -jar ${jar.name}.jar %*"/>
+    
+    <!-- release -->
+    <target name="release" description="creates a release package" depends="jar, runServer.scripts, packages.All, db.drop, db.create, db.populate" >	   	    
+	    <property name="release.name"  value="ea.zip"/>
+        <mkdir dir="${release.dir}"/>
+        <zip destfile="${release.dir}/${release.name}" basedir="${basedir}" includes="${server.script}.*, *.jar, lib/*.jar, database/db/**, user.properties, log4j.properties" excludes="lib/junit-4.7.jar">
+        </zip>
+        <echo message="${release.name} has been created in ${release.dir}" />  
     </target>
-
-<!--
- ============ Documentation targets ===================
--->
+	
+    <!-- Generate runServer scripts for Linux (.sh) and Windows (.bat) -->
+	<target name="runServer.scripts">    
+	    <echo file="${server.script}.sh" append="false" message="java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar"/>
+	    <echo file="${server.script}.bat" append="false" message='@echo off${line.separator}REM Windows bat script${line.separator}java -Xmx256M -Dlog4j.configuration=log4j.properties -Dorg.apache.cxf.Logger=org.apache.cxf.common.logging.Log4jLogger -jar ${server.name}-${server.version}.jar'/>        
+    </target>
 
     <!-- Javadoc -->
     <target name="javadoc" description="Generates the javadoc" depends="compile">
@@ -280,7 +187,7 @@ $Revision$ $Date$ $Author$
         	     use="true"
         	     verbose="no"
         	     classpathref="dev.classpath"
-        	     noqualifier="java.*:${package.name}.*"
+        	     noqualifier="java.*:eu.keep.*"
         	     useexternalfile="yes">
         	<sourcepath path="${src.dir}"/>
         	<sourcepath path="${gen-src.dir}"/>
@@ -292,107 +199,18 @@ $Revision$ $Date$ $Author$
     	<echo message="View the JavaDoc in your browser: file://${javadoc.dir}/index.html"/>
     </target>
 
-    <!-- SvnStat -->
-    <target name="svnstat" description="Generates svnstat report">
-        <echo level="info" message="Updating SVN repository to latest revision"/>
-        <exec executable="svn">
-            <arg line="update"/>
-        </exec>
-        <echo level="info" message="Generating SVN log from repository"/>
-        <exec executable="svn" output="svnlog">
-            <arg line="log --xml --verbose"/>
-        </exec>
-        <echo level="info" message="Generating svnstat report from svn log"/>
-        <mkdir dir="${svnstat.dir.out}"/>
-        <svnstat svnlog="svnlog" dir="${svnstat.dir.in}" output="${svnstat.dir.out}"/>
-        <delete file="svnlog"/>
-       	<echo message="View the SVNstat report in your browser: file://${svnstat.dir.out}/index.html"/>
-	</target>
-
-    <!-- CheckStyle -->
-    <taskdef resource="checkstyletask.properties" classpath="${checkstyle.dir.in}/checkstyle-all-5.0.jar"/>
-
-    <target name="checkstyle" description="Generates a report of code convention violations.">
-        <mkdir dir="${checkstyle.dir.out}"/>
-        <checkstyle config="${checkstyle.dir.in}/keep_checks.xml" failureProperty="checkstyle.failure" failOnViolation="false">
-            <formatter type="xml" tofile="${checkstyle.dir.out}/checkstyle_report.xml"/>
-            <fileset dir="${src.dir}" includes="**/*.java"/>
-        </checkstyle>
-        <xslt in="${checkstyle.dir.out}/checkstyle_report.xml" out="${checkstyle.dir.out}/checkstyle_report.html" style="${checkstyle.dir.in}/checkstyle-simple.xsl"/>
-       	<echo message="View the Checkstyle report in your browser: file://${checkstyle.dir.out}/checkstyle_report.html"/>
-    </target>
-	
-<!--
- ============ Releasing targets ===================
--->
-
-    <target name="release" description="Creates a release package" depends="jar, cli.scripts, db.reset" >	   	    
-        <mkdir dir="${release.dir}"/>
-        <zip destfile="${release.dir}/${release.name}.zip">
-        	<fileset dir="${basedir}" includes="${runCLI}.*"/>
-        	<fileset dir="${jar.dir}" includes="${jar.name}.jar"/>
-           	<zipfileset dir="${libs.dir}" prefix="lib/" excludes="dev/**"/>
-           	<zipfileset dir="${database.dir}" prefix="database/" includes="h2/**"/>
-        	<zipfileset dir="${classes.dir}/eu/keep" prefix="eu/keep" includes="*.properties" excludes="test.properties"/>
-        	<zipfileset dir="${src.dir}" prefix="eu/keep" includes="log4j.properties"/>
-        	<zipfileset dir="${fits.dir}" prefix="eu/keep/resources/fits"/>
-            <zipfileset dir="${icons.dir}" prefix="eu/keep/resources/icons"/>
-            <zipfileset dir="${documentation.dir}" prefix="documentation" includes="*.pdf" excludes="ArchitecturalDesignDocument*.pdf"/>
-        	<zipfileset dir="${testData.distr.dir}" prefix="testData"/>
-        </zip>
-        <echo message="${jar.name}.zip has been created in ${release.dir}" />  
-    </target>
-
-    <!-- Create a complete release (zip file, including jars, docs, database, config and GUI) -->
-	<taskdef name="izpack" classpath="${izpack.home}/lib/standalone-compiler.jar"
-	    classname="com.izforge.izpack.ant.IzPackTask"/>
-	
-	<target name="release.installer" description="Create a complete release package" depends="release" if="user.properties.present">
-    	<unzip src="${release.dir}/${release.name}.zip" dest="${release.dir}/EF"/>
-		<unzip src="${swa.release.dir}/swa.zip" dest="${release.dir}/swa"/>	
-		<unzip src="${ea.release.dir}/ea.zip" dest="${release.dir}/ea"/>
-        <unzip src="${clientGUI.release.dir}/clientGUI.zip" dest="${release.dir}/clientGUI"/>
-
-    	<!-- Launch IzPack packaging process -->
-    	<echo message="Running IzPack to build the installer..."/>
-    	<izpack input="${resource.dir}/release/install.xml"
-    	        output="${release.dir}/${release.name}-install.jar"
-    	        installerType="standard"
-    	        inheritAll="true"
-    	        basedir="${basedir}"
-    	        compression="deflate"
-    	        compressionlevel="9"/>
-    	<!-- Clean working directory -->
-    	<echo message="Cleaning up working directory..."/>
-	    <delete dir="${release.dir}/EF"/>
-	    <delete dir="${release.dir}/ea"/>
-	    <delete dir="${release.dir}/swa"/>
-	    <delete dir="${release.dir}/clientGUI"/>
-    	<echo message="Done."/>
-	</target>
-	
-<!--
- ============ Unit tests targets ===================
--->
-
-    <!-- Compile unit test suite -->
-    <target name="test.compile" description="Compiling the unit tests classes" depends="clean, compile, check.test.properties"  
-    	if="test.properties.present">
+    <!-- unit test -->
+	<target name="test.compile" depends="compile">
 		<mkdir dir="${classes.dir}"/>
-        <javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes">
-            <compilerarg value="${javac.args}"/>
-        </javac>
+        <javac srcdir="${test.dir}" destdir="${classes.dir}" classpathref="dev.classpath" fork="yes"/>
     </target>
 
-    <!-- Run unit test suite -->
-    <target name="test.run" description="Running the unit tests" depends="test.compile, test.copy.resources" 
-    	if="test.properties.present">
+    <target name="test.run" description="Run the unit tests" depends="test.compile, testProperties.toTestDir, copy.testDB">
         <mkdir dir="${test.report.dir}"/>
         <junit printsummary="yes" haltonfailure="no" showoutput="yes" >             
             <batchtest fork="yes" todir="${test.report.dir}" >
                 <fileset dir="${classes.dir}">
                   <include name="**/Test*.class" />
-               	  <exclude name="**/*$*.class"/>
                 </fileset>
             </batchtest>
             <formatter type="xml" />
@@ -403,148 +221,201 @@ $Revision$ $Date$ $Author$
         </junit> 
     </target>
 
-    <!-- Make unit test html report -->  
-    <target name="test.report" description="Generating the unit tests report" depends="test.run"  if="test.properties.present">
-        <mkdir dir="${test.report.dir}/html/"/>
+    <target name="test.report" description="Generating the unit tests report" depends="test.run">
+        <mkdir dir="${test.report.dir}/html/" />
         <junitreport todir="${test.report.dir}">
 		      <fileset dir="${test.report.dir}">
 		        <include name="TEST-*.xml"/>
 		      </fileset>
 		      <report format="frames" todir="${test.report.dir}/html/"/>
-        </junitreport> 
+        </junitreport>
        	<echo message="View the unit test report in your browser: file://${test.report.dir}/html/index.html"/>
     </target>
-
-    <!-- targets to manage the test database-->
-    <target name="test.db.create" description="Creates the test schemas and tables for the engine test db" 
-    	depends="check.test.properties" if="test.properties.present">
-        <H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}"
-                 user="${test.h2.db.admin}"
-                 password="${test.h2.db.adminpassw}"
-                 script="${testData.dir}/database/sql/Test_CEF_CreateUser.sql"
-                 failonerror="true">
-        </H2RunScript>
-    	<H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}"
-                user="${test.h2.db.admin}"
-                password="${test.h2.db.adminpassw}"
-                script="${testData.dir}/database/sql/Test_CEF_CreateSchema.sql"
-                failonerror="true">
-        </H2RunScript>
-        <H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}${test.h2.db.schema}"
-                user="${test.h2.db.user}"
-                password="${test.h2.db.userpassw}"
-                script="${database.dir}/CEF_CreateTables.sql"
-                failonerror="true">
-        </H2RunScript>
-    </target>
-	
-	<target name="test.db.drop" description="Drops the users, schemas and tables of the engine test db" depends="check.test.properties" if="test.properties.present">
-		<H2RunScript url="${test.h2.jdbc.prefix}${test.h2.db.url}${test.h2.db.exists}"
-			     user="${test.h2.db.admin}"
-				 password="${test.h2.db.adminpassw}"
-				 script="${testData.dir}/database/sql/Test_CEF_DropUserSchema.sql"
-				 failonerror="true">
-		</H2RunScript>
-		<delete dir="${test.h2.db.url}.lobs.db"/>
-    </target>
-	
-	<target name="test.db.reset" description="Resets the database" depends="test.db.drop, test.db.create"/>
-
-<!--
- ============ Database targets ===================
--->
-
-	<target name="db.create" description="Creates the users, schemas and tables of the core engine" depends="check.user.properties" if="user.properties.present">
+ 
+	<!-- database -->    
+	<target name="db.create" description="Creates the database users/schemas/tables" depends="check.user.properties" if="user.properties.present">
 		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
 			     user="${h2.db.admin}"
 				 password="${h2.db.adminpassw}"
-				 script="${database.dir}/CEF_CreateUser.sql"
+				 script="${sqlscript.dir}/EA_CreateUser.sql"
 				 failonerror="false">
 		</H2RunScript>
 		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
 			     user="${h2.db.admin}"
 				 password="${h2.db.adminpassw}"
-				 script="${database.dir}/CEF_CreateSchema.sql"
+				 script="${sqlscript.dir}/EA_CreateSchema.sql"
 				 failonerror="true">
 		</H2RunScript>
 		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}${h2.db.schema}"
 			     user="${h2.db.user}"
 				 password="${h2.db.userpassw}"
-				 script="${database.dir}/CEF_CreateTables.sql"
+				 script="${sqlscript.dir}/EA_CreateTables.sql"
 				 failonerror="true">
 		</H2RunScript>
 	</target>
-
-	<target name="db.drop" description="Drops the users, schemas and tables of the core engine" depends="check.user.properties" if="user.properties.present">
+	
+	<target name="db.populate" description="Populates the database" depends="check.user.properties" if="user.properties.present">
+		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
+			     user="${h2.db.user}"
+				 password="${h2.db.userpassw}"
+				 script="${sqlscript.dir}/EA_PopulateTables.sql"
+				 failonerror="true">
+		</H2RunScript>
+	</target>	
+	
+	<target name="db.drop" description="Drops the database users/schemas/tables" depends="check.user.properties" if="user.properties.present">
 		<H2RunScript url="${h2.jdbc.prefix}${h2.db.url}${h2.db.exists}"
 			     user="${h2.db.admin}"
 				 password="${h2.db.adminpassw}"
-				 script="${database.dir}/CEF_DropUserSchema.sql"
+				 script="${sqlscript.dir}/EA_DropUserSchema.sql"
 				 failonerror="true">
 		</H2RunScript>
 		<delete dir="${h2.db.url}.lobs.db"/>
 	</target>
 
-	<target name="db.reset" description="Resets the database" depends="db.drop, db.create"/>
+	<target name="db.reset" description="Resets the database" depends="db.drop, db.create, db.populate"/>
+	
+    <!-- emulator packages -->
+	<target name="packages.All" description="Creates the database packages for all emulators" depends="packages.BeebEm, package.Dioscuri-0.7.0, package.JavaCPC-1.1, packages.Qemu, packages.Thomson, packages.UAE, packages.Vice">
+	</target>
 
-<!--
- ============ copy files/resources ===================
--->
+	<target name="packages.BeebEm" description="Creates the database packages for BeebEm" depends="package.BeebEm-Lin0.0.13, package.BeebEm-Win4.13">
+		<echo message="Created emulator packages for BeebEm (Linux v. 0.0.13, Windows v. 4.13)"/> 
+	</target>
+	
+	<target name="package.BeebEm-Lin0.0.13">
+		<copy file="${packages.dir}/templates/BeebEm/templateCLI.ftl.lin" tofile="${packages.dir}/templates/BeebEm/templateCLI.ftl" overwrite="yes"/>
+		<createEmuPackage packageZipName="LinBeebEm_0013Package.zip"
+	                      emulatorZipName="LinBeebEm_0013.zip"
+	                      templateDir="BeebEm" />
+		<delete file="BeebEm/templateCLI.ftl"/>
+	</target>
 
-	<target name="copy.resources" description="copy resources (properties file, xsd) onto the classpath for dynamic reading">
-        <copy file="${src.dir}/log4j.properties" todir="${classes.dir}"/>
-		<copy file="${basedir}/user.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
-        <copy file="${basedir}/gui.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
+	<target name="package.BeebEm-Win4.13">
+		<copy file="${packages.dir}/templates/BeebEm/templateCLI.ftl.win" tofile="${packages.dir}/templates/BeebEm/templateCLI.ftl" overwrite="yes"/>
+		<createEmuPackage packageZipName="WinBeebEm_413Package.zip"
+	                      emulatorZipName="WinBeebEm_413.zip"
+	                      templateDir="BeebEm" />
+		<delete file="${packages.dir}/templates/BeebEm/templateCLI.ftl"/>
+	</target>
 
-        <copy todir="${classes.dir}/eu/keep">
-            <fileset dir="${basedir}">
-                <include name="GUIBundle*.properties"/>
-            </fileset>
-        </copy>
-		<copy file="${basedir}/GUIBundle.properties" tofile="${classes.dir}/eu/keep/GUIBundle_en.properties"/>
+	<target name="package.Dioscuri-0.7.0">
+		<createEmuPackage packageZipName="Dioscuri_070Package.zip"
+	                      emulatorZipName="Dioscuri_070.zip"
+	                      templateDir="Dioscuri" />
+		<echo message="Created emulator packages for Dioscuri (v. 0.7.0)"/> 
+	</target>
 
-		<copy file="${resource.dir}/external/softwarearchive/PathwaySchema.xsd" todir="${classes.dir}/eu/keep/resources/external" overwrite="yes"/>	
-		<copy todir="${classes.dir}/eu/keep/resources/fits" >
-		    <fileset dir="${fits.dir}" includes="**"/>
-		</copy>
-        <copy todir="${classes.dir}/eu/keep/resources/icons" >
-		    <fileset dir="${icons.dir}" includes="*.png"/>
-		</copy>
-    </target>
+	<target name="package.JavaCPC-1.1">
+		<createEmuPackage packageZipName="JavaCPC_11Package.zip"
+	                      emulatorZipName="JavaCPC_11.zip"
+	                      templateDir="JavaCPC" />
+		<echo message="Created emulator package for JavaCPC (v. 1.1)"/> 
+	</target>    
 
-    <target name="test.copy.resources" description="copy test.properties onto classpath for dynamic reading">
+	<target name="packages.Qemu" description="Creates the database packages for Qemu" depends="package.Qemu-Lin0.1.3.0, package.Qemu-Win0.9.0">
+		<echo message="Created emulator packages for Qemu (Linux v. 0.1.3.0, Windows v. 0.9.0)"/> 
+	</target>
+
+	<target name="package.Qemu-Lin0.1.3.0">
+		<createEmuPackage packageZipName="LinQemu_0130Package.zip"
+	                      emulatorZipName="LinQemu_0130.zip"
+	                      templateDir="Qemu" />
+	</target>
+
+	<target name="package.Qemu-Win0.9.0">
+		<createEmuPackage packageZipName="WinQemu_090Package.zip"
+	                      emulatorZipName="WinQemu_090.zip"
+	                      templateDir="Qemu" />
+	</target>
+
+    <target name="packages.Thomson" description="Creates the database packages for Thomson" depends="package.WinThomson_10">
+		<echo message="Created emulator packages for Thomson (Windows v. 1.0)"/>
+	</target>
+
+    <target name="package.WinThomson_10">
+		<createEmuPackage packageZipName="WinThomson_10Package.zip"
+	                      emulatorZipName="WinThomson_10.zip"
+	                      templateDir="Thomson" />
+	</target>
+
+	<target name="packages.Vice" description="Creates the database packages for Vice" depends="package.Vice-Lin2.2, package.Vice-Win2.2">
+		<echo message="Created emulator packages for Vice (Linux, Windows v. 2.2)"/> 
+	</target>
+
+	<target name="package.Vice-Lin2.2">
+		<createEmuPackage packageZipName="LinVICE_22Package.zip"
+	                      emulatorZipName="LinVICE_22.zip"
+	                      templateDir="Vice" />
+	</target>
+
+	<target name="package.Vice-Win2.2">
+		<createEmuPackage packageZipName="WinVICE_22Package.zip"
+	                      emulatorZipName="WinVICE_22.zip"
+	                      templateDir="Vice" />
+	</target>
+
+	<target name="packages.UAE" description="Creates the database packages for UAE" depends="package.UAE-Lin0.8.29, package.UAE-Win1.6">
+		<echo message="Created emulator packages for UAE (Linux v. 0.8.29, Windows v. 1.6)"/> 
+	</target>
+
+	<target name="package.UAE-Lin0.8.29">
+		<createEmuPackage packageZipName="LinUAE_0829Package.zip"
+	                      emulatorZipName="LinUAE_0829.zip"
+	                      templateDir="UAE" />
+	</target>
+
+	<target name="package.UAE-Win1.6">
+		<createEmuPackage packageZipName="WinUAE_16Package.zip"
+	                      emulatorZipName="WinUAE_16.zip"
+	                      templateDir="UAE" />
+	</target>    
+
+    <!-- Ant macro to create emulator packages from the given files -->
+    <macrodef name="createEmuPackage">
+        <attribute name="packageZipName" default=""/>
+        <attribute name="emulatorZipName" default=""/>
+        <attribute name="templateDir" default=""/>
+        <sequential>
+			<echo level="info" 
+			message="Building package: @{packageZipName} using emulator @{emulatorZipName} and template directory @{templateDir}"/>
+
+    		<delete file="${packages.dir}/@{packageZipName}" />
+    		<zip destfile="${packages.dir}/@{packageZipName}">
+            	<zipfileset src="${packages.dir}/emulators/@{emulatorZipName}" includes="**/*" prefix=""/>
+            	<fileset dir="${packages.dir}/templates/@{templateDir}">
+            		<include name="**/*.stg"/>
+            		<include name="**/*.ftl"/>
+    			</fileset>
+            </zip>
+    		<delete file="${packages.dir}/@{emulatorZipName}" />
+        </sequential>
+    </macrodef>
+        
+	
+    <!-- Copy test.properties onto classpath -->
+    <target name="testProperties.toTestDir">
         <copy file="${basedir}/test.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
-    	<copy file="${basedir}/user.properties" todir="${classes.dir}/eu/keep" overwrite="yes"/>
+        <copy file="${basedir}/log4j.properties" todir="${classes.dir}" overwrite="yes"/>
     </target>
 
-<!--
-============ Ivy ===================
--->
+    <!-- Copy database to testData directory -->
+	<target name="copy.testDB" depends="db.drop, db.create, db.populate">
+		<delete>
+			<fileset dir="${test.database.dir}">
+				<include name="EF_ea.trace.db"/>	
+				<include name="EF_ea.lobs.db/*.lob.db"/>
+				<exclude name="EF_ea.lobs.db/.svn"/>
+			</fileset>
+		</delete>
 
-    <target name="ivy-resolve" description="Resolves transitive dependencies">
-        <ivy:resolve/>
-    </target>
-
-    <target name="ivy-report" depends="ivy-resolve" description="Generates a report detailing all the dependencies of the module">
-        <ivy:report todir="${basedir}/report/ivy"/>
-    </target>
-
-    <target name="ivy-retrieve" depends="ivy-resolve" description="Retrieve dependencies into cache">
-        <ivy:retrieve pattern="${ivy.lib.dir}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
-    </target>
-
-    <target name="ivy-publish-external" description="Publish the external jars to the repository">
-        <delete quiet="true">
-            <fileset dir="${basedir}/lib-local/external/">
-                <include name="ivy.xml"/>
-            </fileset>
-        </delete>
-        <ivy:resolve file="${basedir}/ivy-external.xml"/>
-        <ivy:publish resolver="local" pubrevision="${version}" overwrite="true" artifactspattern="${basedir}/lib-local/external/[artifact].[ext]"/>
-    </target>
-
-    <target name="ivy-publish" description="Publish the EFCore jar to the repository" depends="ivy-publish-external, ivy-retrieve, clean, jar">
-        <ivy:publish resolver="local" pubrevision="${version}" overwrite="true" artifactspattern="${jar.dir}/[artifact].[ext]"/>
-    </target>
+		<copy todir="${test.database.dir}" overwrite="yes">
+	        <fileset dir="${database.dir}/db">
+	            <include name="EF_ea.lobs.db/*.*"/>
+	        	<include name="EF_ea.h2.db"/>
+	        </fileset>
+		</copy>
+	</target>
+	
 
 </project>
