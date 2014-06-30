@@ -1,7 +1,6 @@
 emuframework
 ============
 
-Emulation Framework
 The Emulation Framework offers a convenient way to open old digital files and run programs in their native computer environment.
 The EF supports emulators for the x86 computer platform, Commodore 64, Amiga, Amstrad CPC, BBC Micro and Thomson.
 For more information, please visit http://emuframework.sourceforge.net/
