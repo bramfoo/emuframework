@@ -1,0 +1,4 @@
+To start MS Office Viewer, type 'wordview.lua' at the command line, or select wordview from the Apps/Office menu. If the Viewer is registered as default viewer for .doc files, simply double-clicking a .doc file with the mouse will also start the Viewer.
+First, a small window will open to select the file you want to view: press 'Select' and navigate to the desired file. Select 'View' to start the main Viewer window.
+In the main Viewer window, use the menu-bars at the top to open/close files, zoom in/out, change the page orientation or size, etc.
+To exit MS Office Viewer, select Quit from the file-menu.

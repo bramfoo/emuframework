@@ -1,0 +1,5 @@
+To start FreeDOS Edit, type ''edit'' at the command line.
+If your mouse does not work in the emulated environment, you can access menu items using the Alt-key plus the highlighted letter in the menu option. For example, type Alt-F to open the File-menu, Alt-E to open the Edit menu, etc. Sometimes, F10 needs to be pressed to bring the focus back to the current level.
+To exit FreeDOS Edit, press Alt-x.
+For help, press F1.
+For further information, see http://help.fdos.info/en/hhstndrd/base/edit.htm.

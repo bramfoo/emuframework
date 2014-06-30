@@ -1,0 +1,4 @@
+To start Xpdf, type 'xpdf' at the command line.
+In Xpdf, right-click the mouse to access the file options menu (e.g. open/close a file, quit Xpdf).
+Use the buttons at the bottom of the window to navigate through the document, zoom in or out, search for text in the document.
+For further help, press the '?' button at the bottom of the window, or type 'man xpdf' at the command line. 
